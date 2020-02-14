@@ -1,41 +1,59 @@
 {
-    "name": "yiisoft/_____",
+    "name": "yiisoft/yii-debug-viewer",
     "type": "library",
-    "description": "_____",
+    "description": "Viewer of debug results from yii-debug package",
     "keywords": [
-        "_____"
+        "yii-debug-viewer",
+        "yiisoft",
+        "yii",
+        "debug",
+        "viewer"
     ],
     "homepage": "https://www.yiiframework.com/",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/_____/issues?state=open",
+        "issues": "https://github.com/yiisoft/yii-debug-viewer/issues?state=open",
         "forum": "https://www.yiiframework.com/forum/",
         "wiki": "https://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/_____"
+        "source": "https://github.com/yiisoft/yii-debug-viewer"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4"
+        "php": "^7.4",
+        "psr/container": "1.0",
+        "yiisoft/di": "dev-master",
+        "yiisoft/http": "dev-master",
+        "yiisoft/event-dispatcher": "dev-master",
+        "nyholm/psr7": "^1.0",
+
+        "yiisoft/yii-dataview": "^3.0@dev",
+        "yiisoft/yii-web": "^3.0@dev",
+        "yiisoft/assets": "dev-master",
+        "yiisoft/view": "^3.0@dev"
     },
     "require-dev": {
+        "hiqdev/composer-config-plugin": "^1.0@dev",
         "phpunit/phpunit": "^9.0",
         "phan/phan": "^2.4"
     },
     "autoload": {
         "psr-4": {
-            "Yiisoft\\_____\\": "src"
+            "Yiisoft\\Yii\\Debug\\Viewer\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Yiisoft\\_____\\Tests\\": "tests"
+            "Yiisoft\\Yii\\Debug\\Viewer\\Tests\\": "tests"
         }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
+        },
+        "config-plugin": {
+            "web": "config/web.php"
         }
     },
     "scripts": {
