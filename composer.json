@@ -30,7 +30,8 @@
         "yiisoft/yii-dataview": "^3.0@dev",
         "yiisoft/yii-web": "^3.0@dev",
         "yiisoft/assets": "dev-master",
-        "yiisoft/view": "^3.0@dev"
+        "yiisoft/view": "^3.0@dev",
+        "yiisoft/yii-debug": "^3.0@dev"
     },
     "require-dev": {
         "hiqdev/composer-config-plugin": "^1.0@dev",
