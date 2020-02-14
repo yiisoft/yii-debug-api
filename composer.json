@@ -27,7 +27,6 @@
         "yiisoft/http": "dev-master",
         "yiisoft/event-dispatcher": "dev-master",
         "nyholm/psr7": "^1.0",
-
         "yiisoft/yii-dataview": "^3.0@dev",
         "yiisoft/yii-web": "^3.0@dev",
         "yiisoft/assets": "dev-master",
@@ -53,6 +52,7 @@
             "dev-master": "3.0.x-dev"
         },
         "config-plugin": {
+            "params": "config/params.php",
             "web": "config/web.php"
         }
     },
