@@ -7,8 +7,8 @@ use yii\helpers\Url;
 /* @var $summary array */
 /* @var $tag string */
 /* @var $manifest array */
-/* @var $panels \Yiisoft\Yii\Debug\Panel[] */
-/* @var $activePanel \Yiisoft\Yii\Debug\Panel */
+/* @var $panels \Yiisoft\Yii\Debug\Viewer\Panel[] */
+/* @var $activePanel \Yiisoft\Yii\Debug\Viewer\Panel */
 
 $this->title = 'Yii Debugger';
 ?>

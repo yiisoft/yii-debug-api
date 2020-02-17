@@ -1,11 +1,12 @@
 <?php
-namespace Yiisoft\Yii\Debug\Panels;
+
+namespace Yiisoft\Yii\Debug\Viewer\Panels;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LogLevel;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\View;
-use Yiisoft\Yii\Debug\Panel;
+use Yiisoft\Yii\Debug\Viewer\Panel;
 
 /**
  * Debugger panel that collects and displays database queries performed.
@@ -51,7 +52,7 @@ class DbPanel extends Panel
         $this->request = $request;
         parent::__construct($view);
         $this->actions['db-explain'] = [
-            '__class' => \Yiisoft\Yii\Debug\Actions\DB\ExplainAction::class,
+            '__class' => \Yiisoft\Yii\Debug\Viewer\Actions\DB\ExplainAction::class,
             'panel' => $this,
         ];
     }

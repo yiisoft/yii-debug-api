@@ -1,9 +1,10 @@
 <?php
-namespace Yiisoft\Yii\Debug\Panels;
+
+namespace Yiisoft\Yii\Debug\Viewer\Panels;
 
 use Psr\Http\Message\RequestInterface;
 use Yiisoft\View\View;
-use Yiisoft\Yii\Debug\Panel;
+use Yiisoft\Yii\Debug\Viewer\Panel;
 
 /**
  * Debugger panel that collects and displays timeline data.
@@ -45,7 +46,7 @@ class TimelinePanel extends Panel
      * @var array
      */
     private $_svgOptions = [
-        '__class' => \Yiisoft\Yii\Debug\Models\Timeline\Svg::class
+        '__class' => \Yiisoft\Yii\Debug\Viewer\Models\Timeline\Svg::class
     ];
     /**
      * @var int Used memory in request

@@ -1,10 +1,11 @@
 <?php
-namespace Yiisoft\Yii\Debug\Panels;
+
+namespace Yiisoft\Yii\Debug\Viewer\Panels;
 
 use Psr\Http\Message\RequestInterface;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\View\View;
-use Yiisoft\Yii\Debug\Panel;
+use Yiisoft\Yii\Debug\Viewer\Panel;
 
 /**
  * Debugger panel that collects and displays the generated emails.

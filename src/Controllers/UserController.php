@@ -1,5 +1,6 @@
 <?php
-namespace Yiisoft\Yii\Debug\Controllers;
+
+namespace Yiisoft\Yii\Debug\Viewer\Controllers;
 
 /**
  * User controller

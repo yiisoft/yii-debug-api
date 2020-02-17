@@ -1,8 +1,9 @@
 <?php
-namespace Yiisoft\Yii\Debug\Panels;
+
+namespace Yiisoft\Yii\Debug\Viewer\Panels;
 
 use Yiisoft\View\View;
-use Yiisoft\Yii\Debug\Panel;
+use Yiisoft\Yii\Debug\Viewer\Panel;
 
 /**
  * Debugger panel that collects and displays application configuration and environment.

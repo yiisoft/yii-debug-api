@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 
-/* @var $model Yiisoft\Yii\Debug\Models\Router */
+/* @var $model Yiisoft\Yii\Debug\Viewer\Models\Router */
 ?>
 
 <h1>

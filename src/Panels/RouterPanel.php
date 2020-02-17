@@ -1,9 +1,10 @@
 <?php
-namespace Yiisoft\Yii\Debug\Panels;
+
+namespace Yiisoft\Yii\Debug\Viewer\Panels;
 
 use Psr\Log\LogLevel;
 use Yiisoft\View\View;
-use Yiisoft\Yii\Debug\Panel;
+use Yiisoft\Yii\Debug\Viewer\Panel;
 
 /**
  * RouterPanel provides a panel which displays information about routing process.

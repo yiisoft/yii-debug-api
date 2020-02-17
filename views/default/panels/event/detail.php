@@ -2,8 +2,8 @@
 
 use Yiisoft\Yii\DataView\GridView;
 
-/* @var $panel Yiisoft\Yii\Debug\Panels\EventPanel */
-/* @var $searchModel Yiisoft\Yii\Debug\Models\Search\Event */
+/* @var $panel Yiisoft\Yii\Debug\Viewer\Panels\EventPanel */
+/* @var $searchModel Yiisoft\Yii\Debug\Viewer\Models\Search\Event */
 /* @var $dataProvider yii\data\ArrayDataProvider */
 ?>
 <h1>Events</h1>

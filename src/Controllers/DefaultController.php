@@ -1,5 +1,6 @@
 <?php
-namespace Yiisoft\Yii\Debug\Controllers;
+
+namespace Yiisoft\Yii\Debug\Viewer\Controllers;
 
 /**
  * Debugger controller provides browsing over available debug logs.
@@ -60,7 +61,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @see \Yiisoft\Yii\Debug\Panel
+     * @see \Yiisoft\Yii\Debug\Viewer\Panel
      * @param string|null $tag debug data tag.
      * @param string|null $panel debug panel ID.
      * @return mixed response.

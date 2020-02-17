@@ -1,6 +1,6 @@
 <?php
 
-return (bool)($params['debug.enabled'] ?? false) ? [
+return (bool)($params['debug.enabled'] ?? true) ? [
     'app' => [
         'bootstrap' => ['debug' => 'debug'],
         'modules' => [
@@ -9,37 +9,37 @@ return (bool)($params['debug.enabled'] ?? false) ? [
                 'allowedIPs' => $params['debug.allowedIPs'],
                 'panels' => [
                     'config' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\ConfigPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\ConfigPanel::class,
                     ],
                     'request' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\RequestPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\RequestPanel::class,
                     ],
                     'log' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\LogPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\LogPanel::class,
                     ],
                     'profiling' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\ProfilingPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\ProfilingPanel::class,
                     ],
                     'db' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\DbPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\DbPanel::class,
                     ],
                     'event' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\EventPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\EventPanel::class,
                     ],
                     'assets' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\AssetPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\AssetPanel::class,
                     ],
                     'mail' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\MailPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\MailPanel::class,
                     ],
                     'timeline' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\TimelinePanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\TimelinePanel::class,
                     ],
                     'user' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\UserPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\UserPanel::class,
                     ],
                     'router' => [
-                        '__class' => \Yiisoft\Yii\Debug\Panels\RouterPanel::class,
+                        '__class' => \Yiisoft\Yii\Debug\Viewer\Panels\RouterPanel::class,
                     ],
                 ],
             ]),

@@ -4,8 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\VarDumper;
 use Yiisoft\Yii\DataView\GridView;
 
-/* @var $panel Yiisoft\Yii\Debug\Panels\DumpPanel */
-/* @var $searchModel Yiisoft\Yii\Debug\Models\Search\Log */
+/* @var $panel Yiisoft\Yii\Debug\Viewer\Panels\DumpPanel */
+/* @var $searchModel Yiisoft\Yii\Debug\Viewer\Models\Search\Log */
 /* @var $dataProvider yii\data\ArrayDataProvider */
 ?>
     <h1>Dump</h1>

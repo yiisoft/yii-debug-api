@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 use Yiisoft\Strings\StringHelper;
-use Yiisoft\Yii\Debug\Asset\TimelineAsset;
+use Yiisoft\Yii\Debug\Viewer\Asset\TimelineAsset;
 
-/* @var $panel Yiisoft\Yii\Debug\Panels\TimelinePanel */
-/* @var $searchModel \Yiisoft\Yii\Debug\Models\Timeline\Search */
-/* @var $dataProvider \Yiisoft\Yii\Debug\Models\Timeline\DataProvider */
+/* @var $panel Yiisoft\Yii\Debug\Viewer\Panels\TimelinePanel */
+/* @var $searchModel \Yiisoft\Yii\Debug\Viewer\Models\Timeline\Search */
+/* @var $dataProvider \Yiisoft\Yii\Debug\Viewer\Models\Timeline\DataProvider */
 
 TimelineAsset::register($this);
 ?>

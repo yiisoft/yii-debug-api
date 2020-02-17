@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use Yiisoft\Strings\Inflector;
 
-/* @var $panel Yiisoft\Yii\Debug\Panels\AssetPanel */
+/* @var $panel Yiisoft\Yii\Debug\Viewer\Panels\AssetPanel */
 ?>
 <h1>Asset Bundles</h1>
 

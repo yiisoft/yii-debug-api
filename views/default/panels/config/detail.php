@@ -1,5 +1,5 @@
 <?php
-/* @var $panel Yiisoft\Yii\Debug\Panels\ConfigPanel */
+/* @var $panel Yiisoft\Yii\Debug\Viewer\Panels\ConfigPanel */
 $extensions = $panel->getExtensions();
 ?>
     <h1>Configuration</h1>

@@ -6,9 +6,9 @@ use Yiisoft\Yii\DataView\GridView;
 
 /* @var $this \yii\web\View */
 /* @var $manifest array */
-/* @var $searchModel Yiisoft\Yii\Debug\Models\Search\Debug */
+/* @var $searchModel Yiisoft\Yii\Debug\Viewer\Models\Search\Debug */
 /* @var $dataProvider ArrayDataProvider */
-/* @var $panels Yiisoft\Yii\Debug\Panel[] */
+/* @var $panels Yiisoft\Yii\Debug\Viewer\Panel[] */
 
 $this->title = 'Yii Debugger';
 ?>
@@ -92,7 +92,7 @@ $this->title = 'Yii Debugger';
                         'attribute' => 'sqlCount',
                         'label' => 'Query Count',
                         'value' => function ($data) {
-                            /* @var $dbPanel \Yiisoft\Yii\Debug\Panels\DbPanel */
+                            /* @var $dbPanel \Yiisoft\Yii\Debug\Viewer\Panels\DbPanel */
                             $dbPanel = $this->context->module->panels['db'];
 
                             if ($dbPanel->isQueryCountCritical($data['sqlCount'])) {

@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 
-/* @var $panel Yiisoft\Yii\Debug\Panels\RouterPanel */
+/* @var $panel Yiisoft\Yii\Debug\Viewer\Panels\RouterPanel */
 
 ?>
 <div class="yii-debug-toolbar__block">

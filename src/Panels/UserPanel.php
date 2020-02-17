@@ -1,13 +1,14 @@
 <?php
-namespace Yiisoft\Yii\Debug\Panels;
+
+namespace Yiisoft\Yii\Debug\Viewer\Panels;
 
 use Psr\Http\Message\RequestInterface;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Auth\IdentityInterface;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\View\View;
-use Yiisoft\Yii\Debug\Controllers\UserController;
-use Yiisoft\Yii\Debug\Panel;
+use Yiisoft\Yii\Debug\Viewer\Controllers\UserController;
+use Yiisoft\Yii\Debug\Viewer\Panel;
 use Yiisoft\Yii\Web\User\User;
 
 /**
@@ -57,12 +58,12 @@ class UserPanel extends Panel
 
         if (!is_object($this->filterModel)
             && class_exists($this->filterModel)
-            && in_array(\Yiisoft\Yii\Debug\Models\Search\UserSearchInterface::class, class_implements($this->filterModel), true)
+            && in_array(\Yiisoft\Yii\Debug\Viewer\Models\Search\UserSearchInterface::class, class_implements($this->filterModel), true)
         ) {
             $this->filterModel = new $this->filterModel();
         } elseif ($this->getUser() && $this->getUser()->identityClass) {
             if (is_subclass_of($this->getUser()->identityClass, ActiveRecord::class)) {
-                $this->filterModel = new \Yiisoft\Yii\Debug\Models\Search\User();
+                $this->filterModel = new \Yiisoft\Yii\Debug\Viewer\Models\Search\User();
             }
         }
     }
