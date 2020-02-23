@@ -1,23 +1,25 @@
 <?php
 
-use yii\helpers\Html;
-use yii\helpers\Url;
+use Yiisoft\Html\Html;
 
-/* @var $this \yii\web\View */
+/* @var $this \Yiisoft\View\View */
 /* @var $panels Yiisoft\Yii\Debug\Viewer\Panel[] */
 /* @var $tag string */
 /* @var $position string */
 /* @var $defaultHeight int */
+/* @var $logo string */
+/* @var $urlGenerator \Yiisoft\Router\UrlGeneratorInterface */
 
 $firstPanel = reset($panels);
-$url = $firstPanel->getUrl();
+
 ?>
-<div id="yii-debug-toolbar" class="yii-debug-toolbar yii-debug-toolbar_position_<?= $position ?>" data-height="<?= $defaultHeight ?>">
+<div id="yii-debug-toolbar" class="yii-debug-toolbar yii-debug-toolbar_position_<?= $position ?>"
+     data-height="<?= $defaultHeight ?>">
     <div class="yii-debug-toolbar__resize-handle"></div>
     <div class="yii-debug-toolbar__bar">
         <div class="yii-debug-toolbar__block yii-debug-toolbar__title">
-            <a href="<?= Url::to(['index']) ?>">
-                <img width="30" height="30" alt="Yii" src="<?= \Yiisoft\Yii\Debug\Viewer\Module::getYiiLogo() ?>">
+            <a href="/">
+                <img width="30" height="30" alt="Yii" src="<?= $logo ?>">
             </a>
         </div>
 
@@ -43,7 +45,7 @@ $url = $firstPanel->getUrl();
             <?php if ($panel->hasError()): ?>
                 <div class="yii-debug-toolbar__block">
                     <a href="<?= $panel->getUrl() ?>"
-                       title="<?= Html::encode($panel->getError()->getMessage()); ?>"><?= Html::encode($panel->getName()) ?>
+                       title="<?= Html::encode($panel->getError()); ?>"><?= Html::encode($panel->getName()) ?>
                         <span class="yii-debug-toolbar__label yii-debug-toolbar__label_error">error</span></a>
                 </div>
             <?php else: ?>
