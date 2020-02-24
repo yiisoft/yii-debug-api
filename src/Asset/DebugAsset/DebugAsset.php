@@ -6,7 +6,7 @@ use Yiisoft\Assets\AssetBundle;
 
 final class DebugAsset extends AssetBundle
 {
-    public ?string $sourcePath = __DIR__ . '/../../../assets';
+    public ?string $sourcePath = __DIR__ . '/../../../assets/';
     public ?string $basePath = '@public';
 
     public ?string $baseUrl = '@web';
@@ -17,5 +17,8 @@ final class DebugAsset extends AssetBundle
     public array $js = [
         'js/toolbar.js',
         'js/bs4-native.min.js',
+    ];
+    public array $jsOptions = [
+        'position' => 1,
     ];
 }

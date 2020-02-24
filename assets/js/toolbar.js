@@ -1,4 +1,4 @@
-(function () {
+const load = function () {
     'use strict';
 
     var findToolbar = function () {
@@ -385,4 +385,6 @@
         };
     }
 
-})();
+}
+
+window.onload=load
