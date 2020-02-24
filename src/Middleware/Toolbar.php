@@ -9,6 +9,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Yiisoft\Assets\AssetManager;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\View\WebView;
+use Yiisoft\Yii\Debug\Viewer\Asset\DebugAsset\DebugAsset;
 
 class Toolbar implements MiddlewareInterface
 {
@@ -25,6 +26,7 @@ class Toolbar implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->assetManager->register([DebugAsset::class]);
         $response = $handler->handle($request);
         $body = $response->getBody();
         $body->write($this->renderToolbar());
