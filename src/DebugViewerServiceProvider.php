@@ -8,7 +8,7 @@ use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 use Yiisoft\Router\RouteCollectorInterface;
 use Yiisoft\Yii\Debug\Viewer\Controllers\ToolbarController;
-use Yiisoft\Yii\Debug\Viewer\Middleware\TagHeader;
+use Yiisoft\Yii\Debug\Viewer\Middleware\DebugHeaders;
 use Yiisoft\Yii\Debug\Viewer\Middleware\Toolbar;
 use Yiisoft\Yii\Web\MiddlewareDispatcher;
 
@@ -26,7 +26,7 @@ class DebugViewerServiceProvider implements ServiceProviderInterface
             )
         );
         $middleware = $container->get(MiddlewareDispatcher::class);
-        $middleware->addMiddleware($container->get(TagHeader::class));
+        $middleware->addMiddleware($container->get(DebugHeaders::class));
         $middleware->addMiddleware($container->get(Toolbar::class));
     }
 }
