@@ -1,12 +1,12 @@
 <?php
 
-namespace Yiisoft\Yii\Debug\Viewer\Asset\DebugAsset;
+namespace Yiisoft\Yii\Debug\Viewer\Asset;
 
 use Yiisoft\Assets\AssetBundle;
 
 final class DebugAsset extends AssetBundle
 {
-    public ?string $sourcePath = __DIR__ . '/../../../assets/';
+    public ?string $sourcePath = __DIR__ . '/../../assets/';
     public ?string $basePath = '@public';
 
     public ?string $baseUrl = '@web';

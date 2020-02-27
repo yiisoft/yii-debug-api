@@ -10,7 +10,7 @@ use Yiisoft\Assets\AssetManager;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\View\WebView;
 use Yiisoft\Yii\Debug\Debugger;
-use Yiisoft\Yii\Debug\Viewer\Asset\DebugAsset\DebugAsset;
+use Yiisoft\Yii\Debug\Viewer\Asset\DebugAsset;
 
 class Toolbar implements MiddlewareInterface
 {
