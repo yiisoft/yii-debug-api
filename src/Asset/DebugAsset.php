@@ -3,6 +3,7 @@
 namespace Yiisoft\Yii\Debug\Viewer\Asset;
 
 use Yiisoft\Assets\AssetBundle;
+use Yiisoft\View\WebView;
 
 final class DebugAsset extends AssetBundle
 {
@@ -19,6 +20,6 @@ final class DebugAsset extends AssetBundle
         'js/bs4-native.min.js',
     ];
     public array $jsOptions = [
-        'position' => 1,
+        'position' => WebView::POSITION_HEAD,
     ];
 }
