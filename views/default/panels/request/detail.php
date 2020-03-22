@@ -48,8 +48,10 @@ $items['nav'][] = 'Parameters';
 $items['content'][] = $parametersContent;
 
 $items['nav'][] = 'Headers';
-$items['content'][] = $this->render('table',
-        ['caption' => 'Request Headers', 'values' => $panel->data['requestHeaders']])
+$items['content'][] = $this->render(
+    'table',
+    ['caption' => 'Request Headers', 'values' => $panel->data['requestHeaders']]
+)
     . $this->render('table', ['caption' => 'Response Headers', 'values' => $panel->data['responseHeaders']]);
 
 if (isset($panel->data['SESSION'], $panel->data['flashes'])) {

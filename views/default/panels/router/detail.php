@@ -8,11 +8,14 @@ use yii\helpers\Html;
 <h1>
     Router
     <small>
-        <?= $this->app->i18n->format('{rulesTested, plural, =0{} =1{tested # rule} other{tested # rules}} {hasMatch, plural, =0{} other{before match}}',
-            [
+        <?= $this->app->i18n->format(
+    '{rulesTested, plural, =0{} =1{tested # rule} other{tested # rules}} {hasMatch, plural, =0{} other{before match}}',
+    [
                 'rulesTested' => $model->count,
                 'hasMatch' => (int)$model->hasMatch,
-            ], 'en_US') ?>
+            ],
+    'en_US'
+) ?>
     </small>
 </h1>
 
