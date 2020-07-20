@@ -1,27 +1,27 @@
 {
-    "name": "yiisoft/yii-debug-viewer",
+    "name": "yiisoft/yii-debug-api",
     "type": "library",
-    "description": "Viewer of debug results from yii-debug package",
+    "description": "Yii debug API",
     "keywords": [
-        "yii-debug-viewer",
+        "yii-debug-api",
         "yiisoft",
         "yii",
         "debug",
-        "viewer"
+        "api"
     ],
     "homepage": "https://www.yiiframework.com/",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/yii-debug-viewer/issues?state=open",
+        "issues": "https://github.com/yiisoft/yii-debug-api/issues?state=open",
         "forum": "https://www.yiiframework.com/forum/",
         "wiki": "https://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii-debug-viewer"
+        "source": "https://github.com/yiisoft/yii-debug-api"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4",
+        "php": "^7.4|^8.0",
         "psr/container": "1.0",
         "yiisoft/di": "dev-master",
         "yiisoft/http": "dev-master",
@@ -40,12 +40,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Yiisoft\\Yii\\Debug\\Viewer\\": "src"
+            "Yiisoft\\Yii\\Debug\\Api\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Yiisoft\\Yii\\Debug\\Viewer\\Tests\\": "tests"
+            "Yiisoft\\Yii\\Debug\\Api\\Tests\\": "tests"
         }
     },
     "extra": {
