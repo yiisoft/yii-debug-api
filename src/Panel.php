@@ -1,6 +1,6 @@
 <?php
 
-namespace Yiisoft\Yii\Debug\Viewer;
+namespace Yiisoft\Yii\Debug\Api;
 
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\View;

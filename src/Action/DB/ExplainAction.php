@@ -1,8 +1,8 @@
 <?php
 
-namespace Yiisoft\Yii\Debug\Viewer\Actions\DB;
+namespace Yiisoft\Yii\Debug\Api\Actions\DB;
 
-use Yiisoft\Yii\Debug\Viewer\Panels\DbPanel;
+use Yiisoft\Yii\Debug\Api\Panel\DbPanel;
 
 /**
  * ExplainAction provides EXPLAIN information for SQL queries
