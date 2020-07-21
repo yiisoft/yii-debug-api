@@ -6,7 +6,7 @@
     <br>
 </p>
 
-The package ...
+This extension provides an API for [Yii Debug](https://github.com/yiisoft/yii-debug) extension.
 
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii-debug-api/v/stable.png)](https://packagist.org/packages/yiisoft/yii-debug-api)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii-debug-api/downloads.png)](https://packagist.org/packages/yiisoft/yii-debug-api)
