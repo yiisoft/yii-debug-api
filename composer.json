@@ -1,7 +1,7 @@
 {
     "name": "yiisoft/yii-debug-api",
     "type": "library",
-    "description": "API for debug results from yii-debug package",
+    "description": "Yii debug API",
     "keywords": [
         "yii-debug-api",
         "yiisoft",
