@@ -52,7 +52,8 @@
         },
         "config-plugin": {
             "params": "config/params.php",
-            "web": "config/web.php"
+            "web": "config/web.php",
+            "providers-web": "config/providers-web.php"
         }
     },
     "scripts": {
