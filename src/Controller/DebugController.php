@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Collector\WebAppInfoCollector;
 use Yiisoft\Yii\Debug\Debugger;
 
 /**
@@ -39,25 +41,30 @@ class DebugController
     }
 
     /**
-     * @param string|null $id debug data tag.
-     * @param string|null $collector debug collector ID.
-     * @return array response.
+     * Summary action
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
      */
-    public function view(?string $id = null, ?string $collector = null): array
+    public function summary(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO: implement
-        return [];
+        $data = $this->collectorRepository->getSummary($request->getAttribute('id'));
+        return $this->responseFactory->createResponse($data);
     }
 
     /**
-     * Toolbar action
+     * Detail action
      *
-     * @param string $id
-     * @return array
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface response.
      */
-    public function summary(?string $id = null): object
+    public function view(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO: implement
-        return $this->responseFactory->createResponse(['test' => $this->debugger->getId()]);
+        $data = $this->collectorRepository->getDetail(
+            $request->getAttribute('id') ?? $this->debugger->getId(),
+            $request->getAttribute('collector') ?? WebAppInfoCollector::class
+        );
+
+        return $this->responseFactory->createResponse($data);
     }
 }

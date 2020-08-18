@@ -8,5 +8,5 @@ interface CollectorRepositoryInterface
 {
     public function getSummary(?string $id = null): array;
 
-    public function getDetail(string $id): array;
+    public function getDetail(string $id, string $collector): array;
 }
