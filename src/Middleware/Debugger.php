@@ -28,12 +28,10 @@ final class Debugger implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
-        $duration = number_format((microtime(true) - $request->getAttribute('applicationStartTime')) * 1000 + 1);
         $link = $this->urlGenerator->generate('debug/view', ['id' => $this->idGenerator->getId()]);
 
         return $response
             ->withHeader('X-Debug-Id', $this->idGenerator->getId())
-            ->withHeader('X-Debug-Duration', $duration)
             ->withHeader('X-Debug-Link', $link);
     }
 }

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Middleware;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Http\Status;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 
 /**
@@ -29,17 +31,23 @@ final class ResponseDataWrapper implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $status = Status::OK;
+        $data = [
+            'id' => $request->getAttribute('id'),
+            'data' => null,
+            'error' => null,
+            'success' => true,
+        ];
         try {
             /** @var DataResponse $response */
             $response = $handler->handle($request);
-            $data = $response->getData();
-            return $response->withData(['id' => $request->getAttribute('id'), 'success' => true, 'data' => $data]);
+            $data['data'] = $response->getData();
         } catch (NotFoundException $exception) {
-            $message = $exception->getMessage();
+            $data['success'] = false;
+            $data['error'] = $exception->getMessage();
+            $status = Status::NOT_FOUND;
         }
 
-        return $this->responseFactory->createResponse(
-            ['id' => $request->getAttribute('id'), 'success' => false, 'error' => ['message' => $message]]
-        );
+        return $this->responseFactory->createResponse($data, $status);
     }
 }

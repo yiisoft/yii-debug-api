@@ -33,8 +33,8 @@ class DebugApiProvider extends ServiceProvider
      */
     public function register(Container $container): void
     {
+        $allowedIPs = (array)$this->params['allowedIPs'];
         $routeCollector = $container->get(RouteCollectorInterface::class);
-        $allowedIPs = $this->params['allowedIPs'];
         $routeCollector->addGroup(
             Group::create(
                 '/debug',
@@ -47,10 +47,10 @@ class DebugApiProvider extends ServiceProvider
                 ->addMiddleware(ResponseDataWrapper::class)
                 ->addMiddleware(FormatDataResponseAsJson::class)
                 ->addMiddleware(
-                    static function () use ($container, $allowedIPs) {
+                    static function (ResponseFactoryInterface $responseFactory) use ($allowedIPs) {
                         return new IpFilter(
                             (new Ip())->ranges($allowedIPs),
-                            $container->get(ResponseFactoryInterface::class)
+                            $responseFactory
                         );
                     }
                 )

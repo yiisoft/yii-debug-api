@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Repository;
 
+use Yiisoft\Json\Json;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 
 class CollectorRepository implements CollectorRepositoryInterface
@@ -32,18 +33,15 @@ class CollectorRepository implements CollectorRepositoryInterface
     public function getDetail(string $id, string $collector): array
     {
         $data = $this->loadData();
-        if (isset($data[$id])) {
-            $data = $data[$id];
-        } else {
+        if (!isset($data[$id])) {
             throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
         }
 
-        if (isset($data[$collector])) {
-            $data = $data[$collector];
-        } else {
+        if (!isset($data[$id][$collector])) {
             throw new NotFoundException(sprintf('Unable to find debug data collected with "%s"', $collector));
         }
-        return $data;
+
+        return $data[$id][$collector];
     }
 
     private function loadIndexData(): array
@@ -53,7 +51,7 @@ class CollectorRepository implements CollectorRepositoryInterface
         $data = [];
         foreach ($dataFiles as $file) {
             $id = \basename($file, '.index.json');
-            $data[$id] = json_decode(file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
+            $data[$id] = Json::decode(file_get_contents($file));
         }
 
         return $data;
@@ -65,7 +63,7 @@ class CollectorRepository implements CollectorRepositoryInterface
         $dataFiles = \glob($this->path . '/yii-debug*.data.json', GLOB_NOSORT);
         $data = [];
         foreach ($dataFiles as $file) {
-            $data = json_decode(file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
+            $data = Json::decode(file_get_contents($file));
         }
 
         return $data;
