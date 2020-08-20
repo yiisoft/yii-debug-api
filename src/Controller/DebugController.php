@@ -12,7 +12,7 @@ use Yiisoft\Yii\Debug\Collector\WebAppInfoCollector;
 use Yiisoft\Yii\Debug\Debugger;
 
 /**
- * Debug controller provides browsing over available debug logs.
+ * Debug controller provides endpoints that expose information about requests processed that debugger collected.
  */
 class DebugController
 {
@@ -31,7 +31,7 @@ class DebugController
     }
 
     /**
-     * Index action
+     * List of requests processed.
      *
      * @return ResponseInterface
      */
@@ -41,7 +41,7 @@ class DebugController
     }
 
     /**
-     * Summary action
+     * Summary about a processed request identified by ID specified.
      *
      * @param ServerRequestInterface $request
      * @return ResponseInterface
@@ -53,7 +53,7 @@ class DebugController
     }
 
     /**
-     * Detail action
+     * Detail information about a processed request identified by ID and debugger data collector specified.
      *
      * @param ServerRequestInterface $request
      * @return ResponseInterface response.

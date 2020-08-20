@@ -11,6 +11,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\Debug\DebuggerIdGenerator;
 
+/**
+ * Adds debug headers to response. Information from these headers may be used to request information about
+ * the current request as it is done in the debug toolbar.
+ */
 final class DebugHeaders implements MiddlewareInterface
 {
     private DebuggerIdGenerator $idGenerator;
@@ -22,9 +26,6 @@ final class DebugHeaders implements MiddlewareInterface
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
