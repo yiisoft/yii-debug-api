@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 return [
-    'debug.enabled' => defined('YII_ENV_DEV') && YII_ENV_DEV,
-    'debug.allowedIPs' => [],
+    'yiisoft/yii-debug-api' => [
+        'enabled' => true,
+        'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedHosts' => []
+    ],
 ];

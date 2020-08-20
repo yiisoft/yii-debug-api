@@ -25,7 +25,9 @@
         "psr/container": "1.0",
         "nyholm/psr7": "^1.0",
         "yiisoft/di": "^3.0@dev",
+        "yiisoft/data-response": "^3.0@dev",
         "yiisoft/http": "1.0.x-dev",
+        "yiisoft/json": "^3.0.@dev",
         "yiisoft/router": "^3.0@dev",
         "yiisoft/router-fastroute": "^3.0@dev",
         "yiisoft/yii-rest": "^3.0@dev",
@@ -52,7 +54,8 @@
         },
         "config-plugin": {
             "params": "config/params.php",
-            "web": "config/web.php"
+            "web": "config/web.php",
+            "providers-web": "config/providers-web.php"
         }
     },
     "scripts": {
