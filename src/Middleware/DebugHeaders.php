@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\Debug\DebuggerIdGenerator;
 
-final class Debugger implements MiddlewareInterface
+final class DebugHeaders implements MiddlewareInterface
 {
     private DebuggerIdGenerator $idGenerator;
     private UrlGeneratorInterface $urlGenerator;

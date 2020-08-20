@@ -13,7 +13,7 @@ use Yiisoft\Router\Route;
 use Yiisoft\Router\RouteCollectorInterface;
 use Yiisoft\Validator\Rule\Ip;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
-use Yiisoft\Yii\Debug\Api\Middleware\Debugger;
+use Yiisoft\Yii\Debug\Api\Middleware\DebugHeaders;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
 use Yiisoft\Yii\Web\Middleware\IpFilter;
 use Yiisoft\Yii\Web\MiddlewareDispatcher;
@@ -57,6 +57,6 @@ class DebugApiProvider extends ServiceProvider
         );
 
         $middlewareDispatcher = $container->get(MiddlewareDispatcher::class);
-        $middlewareDispatcher->addMiddleware($container->get(Debugger::class));
+        $middlewareDispatcher->addMiddleware($container->get(DebugHeaders::class));
     }
 }
