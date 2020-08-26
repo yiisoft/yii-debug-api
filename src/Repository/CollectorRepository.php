@@ -41,7 +41,7 @@ class CollectorRepository implements CollectorRepositoryInterface
             return $data[$id];
         }
 
-        if (isset($data[$id][$collector])) {
+        if (!isset($data[$id][$collector])) {
             throw new NotFoundException(sprintf('Unable to find debug data collected with "%s"', $collector));
         }
 
