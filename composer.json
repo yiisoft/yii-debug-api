@@ -27,7 +27,7 @@
         "yiisoft/di": "^3.0@dev",
         "yiisoft/data-response": "^3.0@dev",
         "yiisoft/http": "1.0.x-dev",
-        "yiisoft/json": "^3.0.@dev",
+        "yiisoft/json": "^1.0",
         "yiisoft/router": "^3.0@dev",
         "yiisoft/router-fastroute": "^3.0@dev",
         "yiisoft/yii-rest": "^3.0@dev",
