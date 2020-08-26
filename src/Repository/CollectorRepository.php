@@ -18,7 +18,7 @@ class CollectorRepository implements CollectorRepositoryInterface
 
     public function getSummary(?string $id = null): array
     {
-        $data = $this->loadIndexData();
+        $data = $this->loadData('.index.json');
         if ($id !== null) {
             if (isset($data[$id])) {
                 return $data[$id];
@@ -32,38 +32,29 @@ class CollectorRepository implements CollectorRepositoryInterface
 
     public function getDetail(string $id, string $collector): array
     {
-        $data = $this->loadData();
+        $data = $this->loadData('.data.json');
         if (!isset($data[$id])) {
             throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
         }
 
-        if (!isset($data[$id][$collector])) {
+        if (empty($collector)) {
+            return $data[$id];
+        }
+
+        if (isset($data[$id][$collector])) {
             throw new NotFoundException(sprintf('Unable to find debug data collected with "%s"', $collector));
         }
 
         return $data[$id][$collector];
     }
 
-    private function loadIndexData(): array
+    private function loadData(string $fileSuffix): array
     {
         clearstatcache();
-        $dataFiles = \glob($this->path . '/yii-debug*.index.json', GLOB_NOSORT);
+        $dataFiles = \glob($this->path . '/yii-debug*' . $fileSuffix, GLOB_NOSORT);
         $data = [];
         foreach ($dataFiles as $file) {
-            $id = \basename($file, '.index.json');
-            $data[$id] = Json::decode(file_get_contents($file));
-        }
-
-        return $data;
-    }
-
-    private function loadData(): array
-    {
-        clearstatcache();
-        $dataFiles = \glob($this->path . '/yii-debug*.data.json', GLOB_NOSORT);
-        $data = [];
-        foreach ($dataFiles as $file) {
-            $id = \basename($file, '.data.json');
+            $id = \basename($file, $fileSuffix);
             $data[$id] = Json::decode(file_get_contents($file));
         }
 

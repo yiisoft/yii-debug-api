@@ -62,7 +62,7 @@ class DebugController
     {
         $data = $this->collectorRepository->getDetail(
             $request->getAttribute('id') ?? $this->debugger->getId(),
-            $request->getAttribute('collector') ?? WebAppInfoCollector::class
+            $request->getAttribute('collector')
         );
 
         return $this->responseFactory->createResponse($data);
