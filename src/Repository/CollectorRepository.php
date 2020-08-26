@@ -30,7 +30,7 @@ class CollectorRepository implements CollectorRepositoryInterface
         return array_values($data);
     }
 
-    public function getDetail(string $id, string $collector): array
+    public function getDetail(string $id, string $collector = null): array
     {
         $data = $this->loadData('.data.json');
         if (!isset($data[$id])) {
