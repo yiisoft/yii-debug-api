@@ -63,7 +63,8 @@ class CollectorRepository implements CollectorRepositoryInterface
         $dataFiles = \glob($this->path . '/yii-debug*.data.json', GLOB_NOSORT);
         $data = [];
         foreach ($dataFiles as $file) {
-            $data = Json::decode(file_get_contents($file));
+            $id = \basename($file, '.data.json');
+            $data[$id] = Json::decode(file_get_contents($file));
         }
 
         return $data;
