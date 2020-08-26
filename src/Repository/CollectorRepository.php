@@ -54,7 +54,7 @@ class CollectorRepository implements CollectorRepositoryInterface
         $data = [];
         if (!empty($id)) {
             $file = $this->path . DIRECTORY_SEPARATOR . $id . $fileSuffix;
-            if (file_exists($file)) {
+            if (file_exists($file) && !is_dir($file)) {
                 $id = \basename($file, $fileSuffix);
                 $data[$id] = Json::decode(file_get_contents($file));
             }
