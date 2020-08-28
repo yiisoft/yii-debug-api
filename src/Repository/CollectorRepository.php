@@ -18,7 +18,7 @@ class CollectorRepository implements CollectorRepositoryInterface
 
     public function getSummary(?string $id = null): array
     {
-        $data = $this->loadIndexData();
+        $data = $this->loadData('.index.json', $id);
         if ($id !== null) {
             if (isset($data[$id])) {
                 return $data[$id];
@@ -30,11 +30,15 @@ class CollectorRepository implements CollectorRepositoryInterface
         return array_values($data);
     }
 
-    public function getDetail(string $id, string $collector): array
+    public function getDetail(string $id, ?string $collector = null): array
     {
-        $data = $this->loadData();
+        $data = $this->loadData('.data.json', $id);
         if (!isset($data[$id])) {
             throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
+        }
+
+        if (empty($collector)) {
+            return $data[$id];
         }
 
         if (!isset($data[$id][$collector])) {
@@ -44,26 +48,24 @@ class CollectorRepository implements CollectorRepositoryInterface
         return $data[$id][$collector];
     }
 
-    private function loadIndexData(): array
+    private function loadData(string $fileSuffix, ?string $id = null): array
     {
         clearstatcache();
-        $dataFiles = \glob($this->path . '/yii-debug*.index.json', GLOB_NOSORT);
         $data = [];
-        foreach ($dataFiles as $file) {
-            $id = \basename($file, '.index.json');
-            $data[$id] = Json::decode(file_get_contents($file));
+        if (!empty($id)) {
+            $file = $this->path . DIRECTORY_SEPARATOR . $id . $fileSuffix;
+            if (file_exists($file) && !is_dir($file)) {
+                $id = \basename($file, $fileSuffix);
+                $data[$id] = Json::decode(file_get_contents($file));
+            }
+
+            return $data;
         }
 
-        return $data;
-    }
-
-    private function loadData(): array
-    {
-        clearstatcache();
-        $dataFiles = \glob($this->path . '/yii-debug*.data.json', GLOB_NOSORT);
-        $data = [];
+        $dataFiles = \glob($this->path . '/yii-debug*' . $fileSuffix, GLOB_NOSORT);
         foreach ($dataFiles as $file) {
-            $data = Json::decode(file_get_contents($file));
+            $id = \basename($file, $fileSuffix);
+            $data[$id] = Json::decode(file_get_contents($file));
         }
 
         return $data;
