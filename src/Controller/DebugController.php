@@ -61,7 +61,7 @@ class DebugController
     public function view(ServerRequestInterface $request): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
-            $request->getAttribute('id') ?? $this->debugger->getId(),
+            $request->getAttribute('id'),
             $request->getAttribute('collector')
         );
 

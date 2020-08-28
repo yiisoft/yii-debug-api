@@ -40,8 +40,8 @@ class DebugApiProvider extends ServiceProvider
                 '/debug',
                 [
                     Route::get('[/]', [DebugController::class, 'index'])->name('debug/index'),
-                    Route::get('/summary[/{id}]', [DebugController::class, 'summary'])->name('debug/summary'),
-                    Route::get('/view[/{id}[/{collector}]]', [DebugController::class, 'view'])->name('debug/view')
+                    Route::get('/summary/{id}', [DebugController::class, 'summary'])->name('debug/summary'),
+                    Route::get('/view/{id}[/{collector}]', [DebugController::class, 'view'])->name('debug/view')
                 ]
             )
                 ->addMiddleware(ResponseDataWrapper::class)
