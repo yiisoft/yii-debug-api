@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
-use Yiisoft\Yii\Debug\Debugger;
 
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
@@ -20,8 +19,7 @@ class DebugController
 
     public function __construct(
         DataResponseFactoryInterface $responseFactory,
-        CollectorRepositoryInterface $collectorRepository,
-        Debugger $debugger
+        CollectorRepositoryInterface $collectorRepository
     ) {
         $this->responseFactory = $responseFactory;
         $this->collectorRepository = $collectorRepository;
