@@ -8,8 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
-use Yiisoft\Yii\Debug\Collector\WebAppInfoCollector;
-use Yiisoft\Yii\Debug\Debugger;
 
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
@@ -18,16 +16,13 @@ class DebugController
 {
     private DataResponseFactoryInterface $responseFactory;
     private CollectorRepositoryInterface $collectorRepository;
-    private Debugger $debugger;
 
     public function __construct(
         DataResponseFactoryInterface $responseFactory,
-        CollectorRepositoryInterface $collectorRepository,
-        Debugger $debugger
+        CollectorRepositoryInterface $collectorRepository
     ) {
         $this->responseFactory = $responseFactory;
         $this->collectorRepository = $collectorRepository;
-        $this->debugger = $debugger;
     }
 
     /**
@@ -61,6 +56,22 @@ class DebugController
     public function view(ServerRequestInterface $request): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
+            $request->getAttribute('id'),
+            $request->getAttribute('collector')
+        );
+
+        return $this->responseFactory->createResponse($data);
+    }
+
+    /**
+     * Dump information about a processed request identified by ID and debugger data collector specified.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface response.
+     */
+    public function object(ServerRequestInterface $request): ResponseInterface
+    {
+        $data = $this->collectorRepository->getDumpObject(
             $request->getAttribute('id'),
             $request->getAttribute('collector')
         );

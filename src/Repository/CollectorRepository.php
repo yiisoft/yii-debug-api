@@ -41,6 +41,21 @@ class CollectorRepository implements CollectorRepositoryInterface
         return $data[$collector];
     }
 
+    public function getDumpObject(string $id, ?string $collector): array
+    {
+        $data = $this->loadData('.obj.json', $id);
+
+        if (empty($collector)) {
+            return $data;
+        }
+
+        if (!isset($data[$collector])) {
+            throw new NotFoundException(sprintf('Unable to find debug data collected with "%s"', $collector));
+        }
+
+        return $data[$collector];
+    }
+
     private function loadData(string $fileSuffix, ?string $id = null): array
     {
         clearstatcache();
