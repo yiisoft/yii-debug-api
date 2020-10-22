@@ -62,7 +62,7 @@ class CollectorRepository implements CollectorRepositoryInterface
         if (!empty($id)) {
             $files = \glob($this->path . '/**/' . $id . '/' . $fileType, GLOB_NOSORT);
             $file = current($files);
-            if (!file_exists($file) || is_dir($file)) {
+            if ($file === false || !file_exists($file) || is_dir($file)) {
                 throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
             }
 
