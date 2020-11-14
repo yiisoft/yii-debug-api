@@ -72,7 +72,8 @@ class CollectorRepository implements CollectorRepositoryInterface
         $data = [];
         $dataFiles = \glob($this->path . '/**/**/' . $fileType, GLOB_NOSORT);
         foreach ($dataFiles as $file) {
-            $id = \basename($file, $fileType);
+            $dir = \dirname($file);
+            $id = \substr($dir, \strlen($this->path));
             $data[$id] = Json::decode(file_get_contents($file));
         }
 
