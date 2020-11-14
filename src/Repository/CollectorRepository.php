@@ -18,7 +18,7 @@ class CollectorRepository implements CollectorRepositoryInterface
 
     public function getSummary(?string $id = null): array
     {
-        $data = $this->loadData('.index.json', $id);
+        $data = $this->loadData('index.json', $id);
         if ($id !== null) {
             return $data;
         }
@@ -28,7 +28,7 @@ class CollectorRepository implements CollectorRepositoryInterface
 
     public function getDetail(string $id, ?string $collector = null): array
     {
-        $data = $this->loadData('.data.json', $id);
+        $data = $this->loadData('data.json', $id);
 
         if (empty($collector)) {
             return $data;
@@ -43,7 +43,7 @@ class CollectorRepository implements CollectorRepositoryInterface
 
     public function getDumpObject(string $id, ?string $collector): array
     {
-        $data = $this->loadData('.obj.json', $id);
+        $data = $this->loadData('objects.json', $id);
 
         if (empty($collector)) {
             return $data;
@@ -56,12 +56,13 @@ class CollectorRepository implements CollectorRepositoryInterface
         return $data[$collector];
     }
 
-    private function loadData(string $fileSuffix, ?string $id = null): array
+    private function loadData(string $fileType, ?string $id = null): array
     {
         clearstatcache();
         if (!empty($id)) {
-            $file = $this->path . DIRECTORY_SEPARATOR . $id . $fileSuffix;
-            if (!file_exists($file) || is_dir($file)) {
+            $files = \glob($this->path . '/**/' . $id . '/' . $fileType, GLOB_NOSORT);
+            $file = current($files);
+            if ($file === false || !file_exists($file) || is_dir($file)) {
                 throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
             }
 
@@ -69,9 +70,10 @@ class CollectorRepository implements CollectorRepositoryInterface
         }
 
         $data = [];
-        $dataFiles = \glob($this->path . '/yii-debug*' . $fileSuffix, GLOB_NOSORT);
+        $dataFiles = \glob($this->path . '/**/**/' . $fileType, GLOB_NOSORT);
         foreach ($dataFiles as $file) {
-            $id = \basename($file, $fileSuffix);
+            $dir = \dirname($file);
+            $id = \substr($dir, \strlen($this->path));
             $data[$id] = Json::decode(file_get_contents($file));
         }
 
