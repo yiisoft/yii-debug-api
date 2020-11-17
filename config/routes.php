@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Psr\Http\Message\ResponseFactoryInterface;
+use Tuupola\Middleware\CorsMiddleware;
 use Yiisoft\DataResponse\Middleware\FormatDataResponseAsJson;
 use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
@@ -25,6 +26,7 @@ return [
             Route::get('/object/{id}[/{collector}]', [DebugController::class, 'object'])->name('debug/object'),
         ]
     )
+        ->addMiddleware(CorsMiddleware::class)
         ->addMiddleware(ResponseDataWrapper::class)
         ->addMiddleware(FormatDataResponseAsJson::class)
         ->addMiddleware(
