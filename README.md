@@ -19,7 +19,7 @@ This extension provides an API for [Yii Debug](https://github.com/yiisoft/yii-de
 Add the package to your application:
 
 ```
-composer require yiisoft/debug-api
+composer require yiisoft/yii-debug-api
 ```
 
 Routes will be registered automatically within Yii application router.
