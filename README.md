@@ -14,5 +14,13 @@ This extension provides an API for [Yii Debug](https://github.com/yiisoft/yii-de
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/?branch=master)
 
-## General usage
+## Installation
 
+Add the package to your application:
+
+```
+composer require yiisoft/yii-debug-api
+```
+
+Routes will be registered automatically within Yii application router.
+You can check if everything is OK by going to `/debug` URL.
