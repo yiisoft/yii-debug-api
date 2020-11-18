@@ -31,7 +31,7 @@
         "yiisoft/router": "^3.0@dev",
         "yiisoft/router-fastroute": "^3.0@dev",
         "yiisoft/yii-debug": "^3.0@dev",
-        "tuupola/cors-middleware": "^1.2"
+        "tuupola/cors-middleware": "^1.2.1"
     },
     "require-dev": {
         "yiisoft/composer-config-plugin": "^1.0@dev",
