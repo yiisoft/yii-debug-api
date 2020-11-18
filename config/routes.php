@@ -22,9 +22,9 @@ return [
         '/debug',
         [
             Route::methods([Method::GET, Method::OPTIONS], '[/]', [DebugController::class, 'index'])->name('debug/index'),
-            Route::methods([Method::GET, Method::OPTIONS],'/summary/{id}', [DebugController::class, 'summary'])->name('debug/summary'),
-            Route::methods([Method::GET, Method::OPTIONS],'/view/{id}[/{collector}]', [DebugController::class, 'view'])->name('debug/view'),
-            Route::methods([Method::GET, Method::OPTIONS],'/object/{id}[/{collector}]', [DebugController::class, 'object'])->name('debug/object'),
+            Route::methods([Method::GET, Method::OPTIONS], '/summary/{id}', [DebugController::class, 'summary'])->name('debug/summary'),
+            Route::methods([Method::GET, Method::OPTIONS], '/view/{id}[/{collector}]', [DebugController::class, 'view'])->name('debug/view'),
+            Route::methods([Method::GET, Method::OPTIONS], '/object/{id}[/{collector}]', [DebugController::class, 'object'])->name('debug/object'),
         ]
     )
         ->addMiddleware(ResponseDataWrapper::class)
