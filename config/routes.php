@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Psr\Http\Message\ResponseFactoryInterface;
 use Tuupola\Middleware\CorsMiddleware;
 use Yiisoft\DataResponse\Middleware\FormatDataResponseAsJson;
+use Yiisoft\Http\Method;
 use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 use Yiisoft\Validator\Rule\Ip;
@@ -20,13 +21,12 @@ return [
     Group::create(
         '/debug',
         [
-            Route::get('[/]', [DebugController::class, 'index'])->name('debug/index'),
-            Route::get('/summary/{id}', [DebugController::class, 'summary'])->name('debug/summary'),
-            Route::get('/view/{id}[/{collector}]', [DebugController::class, 'view'])->name('debug/view'),
-            Route::get('/object/{id}[/{collector}]', [DebugController::class, 'object'])->name('debug/object'),
+            Route::methods([Method::GET, Method::OPTIONS], '[/]', [DebugController::class, 'index'])->name('debug/index'),
+            Route::methods([Method::GET, Method::OPTIONS],'/summary/{id}', [DebugController::class, 'summary'])->name('debug/summary'),
+            Route::methods([Method::GET, Method::OPTIONS],'/view/{id}[/{collector}]', [DebugController::class, 'view'])->name('debug/view'),
+            Route::methods([Method::GET, Method::OPTIONS],'/object/{id}[/{collector}]', [DebugController::class, 'object'])->name('debug/object'),
         ]
     )
-        ->addMiddleware(CorsMiddleware::class)
         ->addMiddleware(ResponseDataWrapper::class)
         ->addMiddleware(FormatDataResponseAsJson::class)
         ->addMiddleware(
@@ -37,4 +37,5 @@ return [
                 );
             }
         )
+        ->addMiddleware(CorsMiddleware::class)
 ];
