@@ -15,5 +15,5 @@ return [
     CollectorRepositoryInterface::class => static function (ContainerInterface $container) use ($params) {
         $aliases = $container->get(Aliases::class);
         return new CollectorRepository($aliases->get($params['yiisoft/yii-debug']['path']));
-    }
+    },
 ];

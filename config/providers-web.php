@@ -9,5 +9,5 @@ if (!(bool)($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
 }
 
 return [
-    'yiisoft/yii-debug-api' => DebugApiProvider::class
+    'yiisoft/yii-debug-api' => DebugApiProvider::class,
 ];
