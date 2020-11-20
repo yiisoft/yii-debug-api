@@ -13,6 +13,7 @@ class DebugApiProvider extends ServiceProvider
 {
     /**
      * @suppress PhanAccessMethodProtected
+     *
      * @param Container $container
      */
     public function register(Container $container): void

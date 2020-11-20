@@ -37,5 +37,5 @@ return [
                 );
             }
         )
-        ->addMiddleware(CorsMiddleware::class)
+        ->addMiddleware(CorsMiddleware::class),
 ];

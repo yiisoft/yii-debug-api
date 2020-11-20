@@ -39,6 +39,7 @@ class DebugController
      * Summary about a processed request identified by ID specified.
      *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
     public function summary(ServerRequestInterface $request): ResponseInterface
@@ -51,6 +52,7 @@ class DebugController
      * Detail information about a processed request identified by ID and debugger data collector specified.
      *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface response.
      */
     public function view(ServerRequestInterface $request): ResponseInterface
@@ -67,6 +69,7 @@ class DebugController
      * Dump information about a processed request identified by ID and debugger data collector specified.
      *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface response.
      */
     public function object(ServerRequestInterface $request): ResponseInterface
