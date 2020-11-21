@@ -36,7 +36,8 @@
     "require-dev": {
         "yiisoft/composer-config-plugin": "^1.0@dev",
         "phpunit/phpunit": "^9.3",
-        "phan/phan": "^3.0"
+        "roave/infection-static-analysis-plugin": "^1.3",
+        "vimeo/psalm": "^4.1"
     },
     "autoload": {
         "psr-4": {
@@ -60,7 +61,6 @@
         }
     },
     "scripts": {
-        "phan": "phan --progress-bar -o analysis.txt",
         "test": [
             "phpunit --colors --no-interaction"
         ]
