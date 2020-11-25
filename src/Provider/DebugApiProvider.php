@@ -7,7 +7,7 @@ namespace Yiisoft\Yii\Debug\Api\Provider;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\Support\ServiceProvider;
 use Yiisoft\Yii\Debug\Api\Middleware\DebugHeaders;
-use Yiisoft\Yii\Web\MiddlewareDispatcher;
+use Yiisoft\Router\RouteCollectorInterface;
 
 class DebugApiProvider extends ServiceProvider
 {
@@ -18,7 +18,7 @@ class DebugApiProvider extends ServiceProvider
      */
     public function register(Container $container): void
     {
-        $middlewareDispatcher = $container->get(MiddlewareDispatcher::class);
-        $middlewareDispatcher->addMiddleware($container->get(DebugHeaders::class));
+        $routeCollector = $container->get(RouteCollectorInterface::class);
+        $routeCollector->addMiddleware(DebugHeaders::class);
     }
 }
