@@ -23,7 +23,7 @@ class CollectorRepository implements CollectorRepositoryInterface
             return $data;
         }
 
-        return array_values($data);
+        return array_values(array_reverse($data));
     }
 
     public function getDetail(string $id, ?string $collector = null): array
