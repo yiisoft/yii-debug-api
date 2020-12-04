@@ -49,7 +49,7 @@ class DebugController
     }
 
     /**
-     * Detail information about a processed request identified by ID and debugger data collector specified.
+     * Detail information about a processed request identified by ID.
      *
      * @param ServerRequestInterface $request
      *
@@ -58,15 +58,14 @@ class DebugController
     public function view(ServerRequestInterface $request): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
-            $request->getAttribute('id'),
-            $request->getAttribute('collector')
+            $request->getAttribute('id')
         );
 
         return $this->responseFactory->createResponse($data);
     }
 
     /**
-     * Dump information about a processed request identified by ID and debugger data collector specified.
+     * Dump information about a processed request identified by ID.
      *
      * @param ServerRequestInterface $request
      *
@@ -75,8 +74,7 @@ class DebugController
     public function object(ServerRequestInterface $request): ResponseInterface
     {
         $data = $this->collectorRepository->getDumpObject(
-            $request->getAttribute('id'),
-            $request->getAttribute('collector')
+            $request->getAttribute('id')
         );
 
         return $this->responseFactory->createResponse($data);
