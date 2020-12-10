@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Repository;
 
-use Yiisoft\Json\Json;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
@@ -45,7 +44,7 @@ class CollectorRepository implements CollectorRepositoryInterface
                 throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
             }
 
-            return Json::decode($data[$id]);
+            return $data[$id];
         }
 
         return $data;
