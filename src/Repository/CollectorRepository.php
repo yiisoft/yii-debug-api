@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Repository;
 
-use Yiisoft\Json\Json;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
+use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
 class CollectorRepository implements CollectorRepositoryInterface
 {
-    private string $path;
+    private StorageInterface $storage;
 
-    public function __construct(string $path)
+    public function __construct(StorageInterface $storage)
     {
-        $this->path = $path;
+        $this->storage = $storage;
     }
 
     public function getSummary(?string $id = null): array
     {
-        $data = $this->loadData('index.json', $id);
+        $data = $this->loadData(StorageInterface::TYPE_INDEX, $id);
         if ($id !== null) {
             return $data;
         }
@@ -28,33 +28,23 @@ class CollectorRepository implements CollectorRepositoryInterface
 
     public function getDetail(string $id): array
     {
-        return $this->loadData('data.json', $id);
+        return $this->loadData(StorageInterface::TYPE_DATA, $id);
     }
 
     public function getDumpObject(string $id): array
     {
-        return $this->loadData('objects.json', $id);
+        return $this->loadData(StorageInterface::TYPE_OBJECTS, $id);
     }
 
     private function loadData(string $fileType, ?string $id = null): array
     {
-        clearstatcache();
+        $data = $this->storage->read($fileType);
         if (!empty($id)) {
-            $files = \glob($this->path . '/**/' . $id . '/' . $fileType, GLOB_NOSORT);
-            $file = current($files);
-            if ($file === false || !file_exists($file) || is_dir($file)) {
+            if (!isset($data[$id])) {
                 throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
             }
 
-            return Json::decode(file_get_contents($file));
-        }
-
-        $data = [];
-        $dataFiles = \glob($this->path . '/**/**/' . $fileType, GLOB_NOSORT);
-        foreach ($dataFiles as $file) {
-            $dir = \dirname($file);
-            $id = \substr($dir, \strlen($this->path));
-            $data[$id] = Json::decode(file_get_contents($file));
+            return $data[$id];
         }
 
         return $data;
