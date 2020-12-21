@@ -12,9 +12,7 @@ use Yiisoft\Router\RouteCollectorInterface;
 class DebugApiProvider extends ServiceProvider
 {
     /**
-     * @suppress PhanAccessMethodProtected
-     *
-     * @param Container $container
+     * @psalm-suppress InaccessibleMethod
      */
     public function register(Container $container): void
     {
