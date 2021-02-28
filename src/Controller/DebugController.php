@@ -71,10 +71,27 @@ class DebugController
      *
      * @return ResponseInterface response.
      */
-    public function object(ServerRequestInterface $request): ResponseInterface
+    public function dump(ServerRequestInterface $request): ResponseInterface
     {
         $data = $this->collectorRepository->getDumpObject(
             $request->getAttribute('id')
+        );
+
+        return $this->responseFactory->createResponse($data);
+    }
+
+    /**
+     * Object information about a processed request identified by ID.
+     *
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface response.
+     */
+    public function object(ServerRequestInterface $request): ResponseInterface
+    {
+        $data = $this->collectorRepository->getObject(
+            $request->getAttribute('id'),
+            $request->getAttribute('objectId')
         );
 
         return $this->responseFactory->createResponse($data);
