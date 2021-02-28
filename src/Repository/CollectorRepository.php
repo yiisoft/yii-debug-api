@@ -36,6 +36,19 @@ class CollectorRepository implements CollectorRepositoryInterface
         return $this->loadData(StorageInterface::TYPE_OBJECTS, $id);
     }
 
+    public function getObject(string $id, string $objectId)
+    {
+        $dump = $this->loadData(StorageInterface::TYPE_OBJECTS, $id);
+
+        foreach ($dump as $name => $value) {
+            if (strrpos($name, "#$objectId") !== false) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
     private function loadData(string $fileType, ?string $id = null): array
     {
         $data = $this->storage->read($fileType);

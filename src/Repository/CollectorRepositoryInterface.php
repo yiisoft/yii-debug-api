@@ -11,4 +11,6 @@ interface CollectorRepositoryInterface
     public function getDetail(string $id): array;
 
     public function getDumpObject(string $id): array;
+
+    public function getObject(string $id, string $objectId);
 }
