@@ -17,6 +17,6 @@ class DebugApiProvider extends ServiceProvider
     public function register(Container $container): void
     {
         $routeCollector = $container->get(RouteCollectorInterface::class);
-        $routeCollector->addMiddleware(DebugHeaders::class);
+        $routeCollector->prependMiddleware(DebugHeaders::class);
     }
 }
