@@ -13,9 +13,6 @@ use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Http\Status;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 
-/**
- * @internal
- */
 final class ResponseDataWrapper implements MiddlewareInterface
 {
     private DataResponseFactoryInterface $responseFactory;
