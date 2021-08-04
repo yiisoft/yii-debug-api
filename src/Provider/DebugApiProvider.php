@@ -4,19 +4,28 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Provider;
 
-use Yiisoft\Di\Container;
-use Yiisoft\Di\Support\ServiceProvider;
+use Psr\Container\ContainerInterface;
+use Yiisoft\Di\Contracts\ServiceProviderInterface;
 use Yiisoft\Yii\Debug\Api\Middleware\DebugHeaders;
 use Yiisoft\Router\RouteCollectorInterface;
 
-class DebugApiProvider extends ServiceProvider
+class DebugApiProvider implements ServiceProviderInterface
 {
     /**
      * @psalm-suppress InaccessibleMethod
      */
-    public function register(Container $container): void
+    public function getDefinitions(): array
     {
-        $routeCollector = $container->get(RouteCollectorInterface::class);
-        $routeCollector->prependMiddleware(DebugHeaders::class);
+        return [];
+    }
+
+    public function getExtensions(): array
+    {
+        return [
+            RouteCollectorInterface::class => static function (ContainerInterface $container, RouteCollectorInterface $routeCollector) {
+                $routeCollector->prependMiddleware(DebugHeaders::class);
+                return $routeCollector;
+            }
+        ];
     }
 }
