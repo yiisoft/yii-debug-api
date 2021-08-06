@@ -25,7 +25,7 @@ class DebugApiProvider implements ServiceProviderInterface
             RouteCollectorInterface::class => static function (ContainerInterface $container, RouteCollectorInterface $routeCollector) {
                 $routeCollector->prependMiddleware(DebugHeaders::class);
                 return $routeCollector;
-            }
+            },
         ];
     }
 }
