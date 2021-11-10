@@ -7,7 +7,7 @@ namespace Yiisoft\Yii\Debug\Api\Repository;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
-class CollectorRepository implements CollectorRepositoryInterface
+final class CollectorRepository implements CollectorRepositoryInterface
 {
     private StorageInterface $storage;
 

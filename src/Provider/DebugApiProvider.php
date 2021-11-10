@@ -9,7 +9,7 @@ use Yiisoft\Di\Contracts\ServiceProviderInterface;
 use Yiisoft\Yii\Debug\Api\Middleware\DebugHeaders;
 use Yiisoft\Router\RouteCollectorInterface;
 
-class DebugApiProvider implements ServiceProviderInterface
+final class DebugApiProvider implements ServiceProviderInterface
 {
     /**
      * @psalm-suppress InaccessibleMethod
