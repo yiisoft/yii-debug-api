@@ -12,7 +12,7 @@ use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
  */
-class DebugController
+final class DebugController
 {
     private DataResponseFactoryInterface $responseFactory;
     private CollectorRepositoryInterface $collectorRepository;
