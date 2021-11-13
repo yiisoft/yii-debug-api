@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Router\CurrentRouteInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 
 /**
@@ -38,27 +38,27 @@ final class DebugController
     /**
      * Summary about a processed request identified by ID specified.
      *
-     * @param ServerRequestInterface $request
+     * @param CurrentRouteInterface $currentRoute
      *
      * @return ResponseInterface
      */
-    public function summary(ServerRequestInterface $request): ResponseInterface
+    public function summary(CurrentRouteInterface $currentRoute): ResponseInterface
     {
-        $data = $this->collectorRepository->getSummary($request->getAttribute('id'));
+        $data = $this->collectorRepository->getSummary($currentRoute->getParameter('id'));
         return $this->responseFactory->createResponse($data);
     }
 
     /**
      * Detail information about a processed request identified by ID.
      *
-     * @param ServerRequestInterface $request
+     * @param CurrentRouteInterface $currentRoute
      *
      * @return ResponseInterface response.
      */
-    public function view(ServerRequestInterface $request): ResponseInterface
+    public function view(CurrentRouteInterface $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
-            $request->getAttribute('id')
+            $currentRoute->getParameter('id')
         );
 
         return $this->responseFactory->createResponse($data);
@@ -67,14 +67,14 @@ final class DebugController
     /**
      * Dump information about a processed request identified by ID.
      *
-     * @param ServerRequestInterface $request
+     * @param CurrentRouteInterface $currentRoute
      *
      * @return ResponseInterface response.
      */
-    public function dump(ServerRequestInterface $request): ResponseInterface
+    public function dump(CurrentRouteInterface $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getDumpObject(
-            $request->getAttribute('id')
+            $currentRoute->getParameter('id')
         );
 
         return $this->responseFactory->createResponse($data);
@@ -83,15 +83,15 @@ final class DebugController
     /**
      * Object information about a processed request identified by ID.
      *
-     * @param ServerRequestInterface $request
+     * @param CurrentRouteInterface $currentRoute
      *
      * @return ResponseInterface response.
      */
-    public function object(ServerRequestInterface $request): ResponseInterface
+    public function object(CurrentRouteInterface $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getObject(
-            $request->getAttribute('id'),
-            $request->getAttribute('objectId')
+            $currentRoute->getParameter('id'),
+            $currentRoute->getParameter('objectId')
         );
 
         return $this->responseFactory->createResponse($data);
