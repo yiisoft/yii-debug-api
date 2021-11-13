@@ -10,7 +10,7 @@ use Yiisoft\Router\Route;
 use Yiisoft\Validator\Rule\Ip;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
-use Yiisoft\Yii\Web\Middleware\IpFilter;
+use Yiisoft\Yii\Middleware\IpFilter;
 
 if (!(bool)($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
     return [];
