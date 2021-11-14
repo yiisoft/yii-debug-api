@@ -30,7 +30,8 @@
         "yiisoft/di": "^3.0@dev",
         "yiisoft/http": "^1.2",
         "yiisoft/router": "^3.0@dev",
-        "yiisoft/yii-debug": "^3.0@dev"
+        "yiisoft/yii-debug": "^3.0@dev",
+        "yiisoft/yii-middleware": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
