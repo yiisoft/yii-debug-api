@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Provider;
 
 use Psr\Container\ContainerInterface;
-use Yiisoft\Di\Contracts\ServiceProviderInterface;
+use Yiisoft\Di\ServiceProviderInterface;
 use Yiisoft\Yii\Debug\Api\Middleware\DebugHeaders;
 use Yiisoft\Router\RouteCollectorInterface;
 
