@@ -44,7 +44,7 @@ final class DebugController
      */
     public function summary(CurrentRouteInterface $currentRoute): ResponseInterface
     {
-        $data = $this->collectorRepository->getSummary($currentRoute->getParameter('id'));
+        $data = $this->collectorRepository->getSummary($currentRoute->getArgument('id'));
         return $this->responseFactory->createResponse($data);
     }
 
@@ -58,7 +58,7 @@ final class DebugController
     public function view(CurrentRouteInterface $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
-            $currentRoute->getParameter('id')
+            $currentRoute->getArgument('id')
         );
 
         return $this->responseFactory->createResponse($data);
@@ -74,7 +74,7 @@ final class DebugController
     public function dump(CurrentRouteInterface $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getDumpObject(
-            $currentRoute->getParameter('id')
+            $currentRoute->getArgument('id')
         );
 
         return $this->responseFactory->createResponse($data);
@@ -90,8 +90,8 @@ final class DebugController
     public function object(CurrentRouteInterface $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getObject(
-            $currentRoute->getParameter('id'),
-            $currentRoute->getParameter('objectId')
+            $currentRoute->getArgument('id'),
+            $currentRoute->getArgument('objectId')
         );
 
         return $this->responseFactory->createResponse($data);
