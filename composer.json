@@ -27,7 +27,7 @@
         "psr/container": "^1.0|^2.0",
         "tuupola/cors-middleware": "^1.2.1",
         "yiisoft/data-response": "^1.0",
-        "yiisoft/di": "^3.0@dev",
+        "yiisoft/di": "^1.0",
         "yiisoft/http": "^1.2",
         "yiisoft/router": "^3.0@dev",
         "yiisoft/yii-debug": "^3.0@dev",
