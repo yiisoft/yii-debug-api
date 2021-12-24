@@ -6,7 +6,7 @@ namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
-use Yiisoft\Router\CurrentRouteInterface;
+use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 
 /**
@@ -38,11 +38,11 @@ final class DebugController
     /**
      * Summary about a processed request identified by ID specified.
      *
-     * @param CurrentRouteInterface $currentRoute
+     * @param CurrentRoute $currentRoute
      *
      * @return ResponseInterface
      */
-    public function summary(CurrentRouteInterface $currentRoute): ResponseInterface
+    public function summary(CurrentRoute $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getSummary($currentRoute->getArgument('id'));
         return $this->responseFactory->createResponse($data);
@@ -51,11 +51,11 @@ final class DebugController
     /**
      * Detail information about a processed request identified by ID.
      *
-     * @param CurrentRouteInterface $currentRoute
+     * @param CurrentRoute $currentRoute
      *
      * @return ResponseInterface response.
      */
-    public function view(CurrentRouteInterface $currentRoute): ResponseInterface
+    public function view(CurrentRoute $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
             $currentRoute->getArgument('id')
@@ -67,11 +67,11 @@ final class DebugController
     /**
      * Dump information about a processed request identified by ID.
      *
-     * @param CurrentRouteInterface $currentRoute
+     * @param CurrentRoute $currentRoute
      *
      * @return ResponseInterface response.
      */
-    public function dump(CurrentRouteInterface $currentRoute): ResponseInterface
+    public function dump(CurrentRoute $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getDumpObject(
             $currentRoute->getArgument('id')
@@ -83,11 +83,11 @@ final class DebugController
     /**
      * Object information about a processed request identified by ID.
      *
-     * @param CurrentRouteInterface $currentRoute
+     * @param CurrentRoute $currentRoute
      *
      * @return ResponseInterface response.
      */
-    public function object(CurrentRouteInterface $currentRoute): ResponseInterface
+    public function object(CurrentRoute $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getObject(
             $currentRoute->getArgument('id'),
