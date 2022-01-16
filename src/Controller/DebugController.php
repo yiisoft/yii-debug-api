@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
+use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
+use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
+ *
+ * @OA\Tag(
+ *     name="yii-debug-api",
+ *     description="Yii Debug API"
+ * )
  */
 final class DebugController
 {
@@ -28,6 +35,21 @@ final class DebugController
     /**
      * List of requests processed.
      *
+     * @OA\Get(
+     *     tags={"yii-debug-api"},
+     *     path="/debug",
+     *     description="List of requests processed",
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
+     *              }
+     *          )
+     *     )
+     * )
+     *
      * @return ResponseInterface
      */
     public function index(): ResponseInterface
@@ -38,9 +60,37 @@ final class DebugController
     /**
      * Summary about a processed request identified by ID specified.
      *
-     * @param CurrentRoute $currentRoute
-     *
-     * @return ResponseInterface
+     * @OA\Get(
+     *     tags={"yii-debug-api"},
+     *     path="/debug/summary/{id}",
+     *     description="Summary about a processed request identified by ID specified",
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          @OA\Schema(type="string"),
+     *          in="path",
+     *          parameter="id",
+     *          description="Request ID for getting the summary"
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
+     *              }
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not found",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
+     *              }
+     *          )
+     *     )
+     * )
      */
     public function summary(CurrentRoute $currentRoute): ResponseInterface
     {
@@ -51,9 +101,45 @@ final class DebugController
     /**
      * Detail information about a processed request identified by ID.
      *
-     * @param CurrentRoute $currentRoute
-     *
-     * @return ResponseInterface response.
+     * @OA\Get(
+     *     tags={"yii-debug-api"},
+     *     path="/debug/view/{id}/{collector}",
+     *     description="Detail information about a processed request identified by ID",
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          @OA\Schema(type="string"),
+     *          in="path",
+     *          parameter="id",
+     *          description="Request ID for getting the detail information"
+     *     ),
+     *     @OA\Parameter(
+     *          name="collector",
+     *          allowEmptyValue=true,
+     *          @OA\Schema(type="string"),
+     *          in="path",
+     *          parameter="collector",
+     *          description="Collector for getting the detail information"
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
+     *              }
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not found",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
+     *              }
+     *          )
+     *     )
+     * )
      */
     public function view(CurrentRoute $currentRoute): ResponseInterface
     {
@@ -61,13 +147,64 @@ final class DebugController
             $currentRoute->getArgument('id')
         );
 
+        if ($currentRoute->getArgument('collector') !== null) {
+            if (isset($data[$currentRoute->getArgument('collector')])) {
+                $data = $data[$currentRoute->getArgument('collector')];
+            } else {
+                throw new NotFoundException(sprintf('Requested collector doesn\'t exists: %s.', $currentRoute->getArgument('collector')));
+            }
+        }
+
         return $this->responseFactory->createResponse($data);
     }
 
     /**
      * Dump information about a processed request identified by ID.
      *
+     * @OA\Get(
+     *     tags={"yii-debug-api"},
+     *     path="/debug/dump/{id}/{collector}",
+     *     description="Dump information about a processed request identified by ID",
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          @OA\Schema(type="string"),
+     *          in="path",
+     *          parameter="id",
+     *          description="Request ID for getting the dump information"
+     *     ),
+     *     @OA\Parameter(
+     *          name="collector",
+     *          allowEmptyValue=true,
+     *          required=false,
+     *          @OA\Schema(type="string"),
+     *          in="path",
+     *          parameter="collector",
+     *          description="Collector for getting the dump information"
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
+     *              }
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not found",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
+     *              }
+     *          )
+     *     )
+     * )
+     *
      * @param CurrentRoute $currentRoute
+     *
+     * @throws NotFoundException
      *
      * @return ResponseInterface response.
      */
@@ -77,11 +214,59 @@ final class DebugController
             $currentRoute->getArgument('id')
         );
 
+        if ($currentRoute->getArgument('collector') !== null) {
+            if (isset($data[$currentRoute->getArgument('collector')])) {
+                $data = $data[$currentRoute->getArgument('collector')];
+            } else {
+                throw new NotFoundException('Requested collector doesn\'t exists.');
+            }
+        }
+
         return $this->responseFactory->createResponse($data);
     }
 
     /**
      * Object information about a processed request identified by ID.
+     *
+     * @OA\Get(
+     *     tags={"yii-debug-api"},
+     *     path="/debug/object/{id}/{objectId}",
+     *     description="Object information about a processed request identified by ID",
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          @OA\Schema(type="string"),
+     *          in="path",
+     *          parameter="id",
+     *          description="Request ID for getting the object information"
+     *     ),
+     *     @OA\Parameter(
+     *          name="objectId",
+     *          required=true,
+     *          @OA\Schema(type="string"),
+     *          in="path",
+     *          parameter="objectId",
+     *          description="ID for getting the object information"
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
+     *              }
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not found",
+     *          @OA\JsonContent(
+     *              allOf={
+     *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
+     *              }
+     *          )
+     *     )
+     * )
      *
      * @param CurrentRoute $currentRoute
      *

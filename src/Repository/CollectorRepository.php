@@ -49,6 +49,9 @@ final class CollectorRepository implements CollectorRepositoryInterface
         return null;
     }
 
+    /**
+     * @throws NotFoundException
+     */
     private function loadData(string $fileType, ?string $id = null): array
     {
         $data = $this->storage->read($fileType);
