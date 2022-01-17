@@ -36,10 +36,10 @@ return [
             Route::get('/summary/{id}')
                 ->action([DebugController::class, 'summary'])
                 ->name('debug/summary'),
-            Route::get('/view/{id}/[{collector}]')
+            Route::get('/view/{id}[/[{collector}]]')
                 ->action([DebugController::class, 'view'])
                 ->name('debug/view'),
-            Route::get('/dump/{id}/[{collector}]')
+            Route::get('/dump/{id}[/[{collector}]]')
                 ->action([DebugController::class, 'dump'])
                 ->name('debug/dump'),
             Route::get('/object/{id}/{objectId}')
