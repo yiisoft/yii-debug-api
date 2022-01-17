@@ -11,4 +11,10 @@ return [
         'allowedIPs' => ['127.0.0.1', '::1'],
         'allowedHosts' => [],
     ],
+    'yiisoft/yii-swagger' => [
+        'annotation-paths' => [
+            dirname(__DIR__) . '/src/Controller',
+            dirname(__DIR__) . '/src/Middleware',
+        ],
+    ],
 ];
