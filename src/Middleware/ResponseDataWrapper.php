@@ -68,7 +68,7 @@ use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
  *                   description="Data",
  *                   title="Data",
  *                   property="data",
- *                   type=null,
+ *                   type="object",
  *                   nullable=true,
  *                   example=null
  *              ),
