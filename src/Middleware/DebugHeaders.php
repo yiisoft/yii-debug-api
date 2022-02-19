@@ -29,7 +29,7 @@ final class DebugHeaders implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
-        $link = $this->urlGenerator->generate('debug/view', ['id' => $this->idGenerator->getId()]);
+        $link = $this->urlGenerator->generate('debug/api/view', ['id' => $this->idGenerator->getId()]);
 
         return $response
             ->withHeader('X-Debug-Id', $this->idGenerator->getId())

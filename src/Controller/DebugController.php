@@ -37,7 +37,7 @@ final class DebugController
      *
      * @OA\Get(
      *     tags={"yii-debug-api"},
-     *     path="/debug",
+     *     path="/debug/api",
      *     description="List of requests processed",
      *     @OA\Response(
      *          response="200",
@@ -62,7 +62,7 @@ final class DebugController
      *
      * @OA\Get(
      *     tags={"yii-debug-api"},
-     *     path="/debug/summary/{id}",
+     *     path="/debug/api/summary/{id}",
      *     description="Summary about a processed request identified by ID specified",
      *     @OA\Parameter(
      *          name="id",
@@ -103,7 +103,7 @@ final class DebugController
      *
      * @OA\Get(
      *     tags={"yii-debug-api"},
-     *     path="/debug/view/{id}/{collector}",
+     *     path="/debug/api/view/{id}/{collector}",
      *     description="Detail information about a processed request identified by ID",
      *     @OA\Parameter(
      *          name="id",
@@ -163,7 +163,7 @@ final class DebugController
      *
      * @OA\Get(
      *     tags={"yii-debug-api"},
-     *     path="/debug/dump/{id}/{collector}",
+     *     path="/debug/api/dump/{id}/{collector}",
      *     description="Dump information about a processed request identified by ID",
      *     @OA\Parameter(
      *          name="id",
@@ -230,7 +230,7 @@ final class DebugController
      *
      * @OA\Get(
      *     tags={"yii-debug-api"},
-     *     path="/debug/object/{id}/{objectId}",
+     *     path="/debug/api/object/{id}/{objectId}",
      *     description="Object information about a processed request identified by ID",
      *     @OA\Parameter(
      *          name="id",

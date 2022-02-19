@@ -17,7 +17,7 @@ if (!(bool)($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
 }
 
 return [
-    Group::create('/debug')
+    Group::create('/debug/api')
         ->middleware(CorsMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory) use ($params) {
@@ -29,21 +29,22 @@ return [
         )
         ->middleware(FormatDataResponseAsJson::class)
         ->middleware(ResponseDataWrapper::class)
+        ->namePrefix('debug/api/')
         ->routes(
             Route::get('[/]')
                 ->action([DebugController::class, 'index'])
-                ->name('debug/index'),
+                ->name('index'),
             Route::get('/summary/{id}')
                 ->action([DebugController::class, 'summary'])
-                ->name('debug/summary'),
+                ->name('summary'),
             Route::get('/view/{id}[/[{collector}]]')
                 ->action([DebugController::class, 'view'])
-                ->name('debug/view'),
+                ->name('view'),
             Route::get('/dump/{id}[/[{collector}]]')
                 ->action([DebugController::class, 'dump'])
-                ->name('debug/dump'),
+                ->name('dump'),
             Route::get('/object/{id}/{objectId}')
                 ->action([DebugController::class, 'object'])
-                ->name('debug/object')
+                ->name('object')
         ),
 ];
