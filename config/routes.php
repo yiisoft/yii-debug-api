@@ -18,7 +18,7 @@ if (!(bool)($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
 
 return [
     Group::create('/debug/api')
-        ->middleware(CorsMiddleware::class)
+        ->withCors(CorsMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory) use ($params) {
                 return new IpFilter(
