@@ -7,7 +7,7 @@ use Tuupola\Middleware\CorsMiddleware;
 use Yiisoft\DataResponse\Middleware\FormatDataResponseAsJson;
 use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
-use Yiisoft\Validator\Rule\Ip;
+use Yiisoft\Validator\ValidatorInterface;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
 use Yiisoft\Yii\Middleware\IpFilter;
@@ -20,10 +20,12 @@ return [
     Group::create('/debug/api')
         ->withCors(CorsMiddleware::class)
         ->middleware(
-            static function (ResponseFactoryInterface $responseFactory) use ($params) {
+            static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
                 return new IpFilter(
-                    Ip::rule()->ranges($params['yiisoft/yii-debug-api']['allowedIPs']),
-                    $responseFactory
+                    $validator,
+                    $responseFactory,
+                    null,
+                    $params['yiisoft/yii-debug-api']['allowedIPs']
                 );
             }
         )
