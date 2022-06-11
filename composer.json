@@ -32,7 +32,7 @@
         "yiisoft/http": "^1.2",
         "yiisoft/router": "^1.0",
         "yiisoft/yii-debug": "^3.0@dev",
-        "yiisoft/yii-middleware": "dev-adjust-validator",
+        "yiisoft/yii-middleware": "dev-master",
         "zircote/swagger-php": "^4.0"
     },
     "require-dev": {
