@@ -24,7 +24,7 @@ final class Cors implements MiddlewareInterface
             ->withHeader(Header::VARY, 'Origin')
             ->withHeader(Header::ACCESS_CONTROL_ALLOW_ORIGIN, '*')
             ->withHeader(Header::ACCESS_CONTROL_ALLOW_METHODS, 'GET,OPTIONS,HEAD')
-            ->withHeader(Header::ACCESS_CONTROL_ALLOW_HEADERS, 'Origin,Content-Type,Accept')
+            ->withHeader(Header::ACCESS_CONTROL_ALLOW_HEADERS, '*')
             ->withHeader(Header::ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true');
     }
 }
