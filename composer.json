@@ -60,6 +60,7 @@
             "source-directory": "config"
         },
         "config-plugin": {
+            "bootstrap": "bootstrap.php",
             "params": "params.php",
             "web": "web.php",
             "routes": "routes.php",
