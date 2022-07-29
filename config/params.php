@@ -6,7 +6,7 @@ return [
     'yiisoft/yii-debug' => [
         'optionalRequests' => [
             '/debug**',
-            '/inspect/*',
+            '/inspect**',
         ],
     ],
     'yiisoft/yii-debug-api' => [
