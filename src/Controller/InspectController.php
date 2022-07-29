@@ -28,7 +28,7 @@ class InspectController
         $this->collectorRepository = $collectorRepository;
     }
 
-    public function index(): ResponseInterface
+    public function config(): ResponseInterface
     {
         // TODO: how to get params for console or other param groups?
         $params = ApplicationState::$params;
@@ -37,6 +37,14 @@ class InspectController
 
 //        $config = ApplicationState::$config;
 //        return $this->responseFactory->createResponse([$config->get('web'), $params]);
+
+        return $this->responseFactory->createResponse($params);
+    }
+
+    public function params(): ResponseInterface
+    {
+        $params = ApplicationState::$params;
+        ksort($params);
 
         return $this->responseFactory->createResponse($params);
     }

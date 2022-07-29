@@ -64,9 +64,9 @@ return [
         ->middleware(ResponseDataWrapper::class)
         ->namePrefix('inspect/api/')
         ->routes(
-            Route::get('[/]')
-                ->action([InspectController::class, 'index'])
-                ->name('index'),
+            Route::get('/params')
+                ->action([InspectController::class, 'params'])
+                ->name('params'),
             Route::get('/classes')
                 ->action([InspectController::class, 'classes'])
                 ->name('classes'),
