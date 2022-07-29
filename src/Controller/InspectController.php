@@ -15,7 +15,6 @@ use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\ApplicationState;
 use Yiisoft\Yii\Debug\Api\PhpUnitCommand;
-use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 
 class InspectController
 {
