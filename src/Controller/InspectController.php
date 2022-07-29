@@ -23,15 +23,17 @@ class InspectController
     ) {
     }
 
-    public function config(ContainerInterface $container): ResponseInterface
+    public function config(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
     {
         $config = $container->get(ConfigInterface::class);
 
-        // TODO: pass different envs
-        $data = $config->get('web');
+        $request = $request->getQueryParams();
+        $group = $request['group'] ?? 'web';
+
+        $data = $config->get($group);
         ksort($data);
+
         foreach ($data as &$value) {
-//            $value = get_debug_type($value);
             if ($value instanceof Closure) {
                 $value = VarDumper::create($value)->asString();
             }
