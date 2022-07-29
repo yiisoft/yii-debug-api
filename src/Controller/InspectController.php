@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use InvalidArgumentException;
+use Closure;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
+use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\ApplicationState;
@@ -17,28 +19,26 @@ use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 
 class InspectController
 {
-    private DataResponseFactoryInterface $responseFactory;
-    private CollectorRepositoryInterface $collectorRepository;
-
     public function __construct(
-        DataResponseFactoryInterface $responseFactory,
-        CollectorRepositoryInterface $collectorRepository
+        private DataResponseFactoryInterface $responseFactory,
     ) {
-        $this->responseFactory = $responseFactory;
-        $this->collectorRepository = $collectorRepository;
     }
 
-    public function config(): ResponseInterface
+    public function config(ContainerInterface $container): ResponseInterface
     {
-        // TODO: how to get params for console or other param groups?
-        $params = ApplicationState::$params;
+        $config = $container->get(ConfigInterface::class);
 
-        // TODO: also would be nice to inspect application config to access to di config at least
+        // TODO: pass different envs
+        $data = $config->get('web');
+        ksort($data);
+        foreach ($data as &$value) {
+//            $value = get_debug_type($value);
+            if ($value instanceof Closure) {
+                $value = VarDumper::create($value)->asString();
+            }
+        }
 
-//        $config = ApplicationState::$config;
-//        return $this->responseFactory->createResponse([$config->get('web'), $params]);
-
-        return $this->responseFactory->createResponse($params);
+        return $this->responseFactory->createResponse($data);
     }
 
     public function params(): ResponseInterface
@@ -99,6 +99,7 @@ class InspectController
 
     public function command(ContainerInterface $container, PhpUnitCommand $command): ResponseInterface
     {
+        // TODO: pass different commands
 //        $request = $request->getQueryParams();
 //        $className = $request['command'];
 

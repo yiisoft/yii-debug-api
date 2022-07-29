@@ -67,6 +67,9 @@ return [
             Route::get('/params')
                 ->action([InspectController::class, 'params'])
                 ->name('params'),
+            Route::get('/config')
+                ->action([InspectController::class, 'config'])
+                ->name('config'),
             Route::get('/classes')
                 ->action([InspectController::class, 'classes'])
                 ->name('classes'),
