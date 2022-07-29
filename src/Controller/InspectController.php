@@ -12,6 +12,7 @@ use ReflectionClass;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\ApplicationState;
+use Yiisoft\Yii\Debug\Api\PhpUnitCommand;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 
 class InspectController
@@ -48,13 +49,14 @@ class InspectController
         $inspected = array_merge(get_declared_classes(), get_declared_interfaces());
         // TODO: think how to ignore heavy objects
         $patterns = [
-            'ComposerAutoloaderInit',
-            'Composer\\',
-            'Yiisoft\\Yii\\Debug\\',
-            'Yiisoft\\ErrorHandler\\ErrorHandler',
+            fn (string $class) => !str_starts_with($class, 'ComposerAutoloaderInit'),
+            fn (string $class) => !str_starts_with($class, 'Composer\\'),
+            fn (string $class) => !str_starts_with($class, 'Yiisoft\\Yii\\Debug\\'),
+            fn (string $class) => !str_starts_with($class, 'Yiisoft\\ErrorHandler\\ErrorHandler'),
+            fn (string $class) => !str_contains($class, '@anonymous'),
         ];
-        foreach ($patterns as $pattern) {
-            $inspected = array_filter($inspected, fn (string $class) => !str_starts_with($class, $pattern));
+        foreach ($patterns as $patternFunction) {
+            $inspected = array_filter($inspected, $patternFunction);
         }
 
         foreach ($inspected as $className) {
@@ -83,6 +85,16 @@ class InspectController
         }
 
         $result = VarDumper::create($container->get($className))->asString();
+
+        return $this->responseFactory->createResponse($result);
+    }
+
+    public function command(ContainerInterface $container, PhpUnitCommand $command): ResponseInterface
+    {
+//        $request = $request->getQueryParams();
+//        $className = $request['command'];
+
+        $result = $command->run();
 
         return $this->responseFactory->createResponse($result);
     }
