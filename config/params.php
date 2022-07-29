@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 return [
     'yiisoft/yii-debug' => [
-        'optionalRequests' => ['/debug**'],
+        'optionalRequests' => [
+            '/debug**',
+            '/inspect/*',
+        ],
     ],
     'yiisoft/yii-debug-api' => [
         'enabled' => true,

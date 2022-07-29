@@ -73,5 +73,8 @@ return [
             Route::get('/object')
                 ->action([InspectController::class, 'object'])
                 ->name('object'),
+            Route::get('/command')
+                ->action([InspectController::class, 'command'])
+                ->name('command'),
         ),
 ];
