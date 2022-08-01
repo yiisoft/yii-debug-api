@@ -26,7 +26,7 @@ class PHPUnitJSONReporter implements ResultPrinter
 
     public function __construct()
     {
-        $this->prettifier = new NamePrettifier;
+        $this->prettifier = new NamePrettifier();
     }
 
     public function printResult(TestResult $result): void
