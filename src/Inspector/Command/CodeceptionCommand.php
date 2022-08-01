@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api;
+namespace Yiisoft\Yii\Debug\Api\Inspector\Command;
 
 use Symfony\Component\Process\Process;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Yii\Debug\Api\Inspector\CodeceptionJSONReporter;
+use Yiisoft\Yii\Debug\Api\Inspector\Test\CodeceptionJSONReporter;
 
 class CodeceptionCommand
 {

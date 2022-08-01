@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Inspector;
+namespace Yiisoft\Yii\Debug\Api\Inspector\Test;
 
 use Codeception\Event\FailEvent;
 use Codeception\Event\PrintResultEvent;
