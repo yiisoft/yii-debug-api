@@ -14,6 +14,7 @@ use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\ApplicationState;
+use Yiisoft\Yii\Debug\Api\CodeceptionCommand;
 use Yiisoft\Yii\Debug\Api\PhpUnitCommand;
 
 class InspectController
@@ -98,7 +99,7 @@ class InspectController
         return $this->responseFactory->createResponse($result);
     }
 
-    public function command(ContainerInterface $container, PhpUnitCommand $command): ResponseInterface
+    public function command(ContainerInterface $container, CodeceptionCommand $command): ResponseInterface
     {
         // TODO: pass different commands
 //        $request = $request->getQueryParams();
