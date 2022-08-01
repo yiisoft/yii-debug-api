@@ -36,6 +36,7 @@
         "zircote/swagger-php": "^4.0"
     },
     "require-dev": {
+        "codeception/codeception": "^5.0",
         "phpunit/phpunit": "^9.5",
         "roave/infection-static-analysis-plugin": "^1.16",
         "spatie/phpunit-watcher": "^1.23",
