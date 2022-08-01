@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
-use InvalidArgumentException;
 use Closure;
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,9 +13,9 @@ use ReflectionClass;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
-use Yiisoft\Yii\Debug\Api\ApplicationState;
-use Yiisoft\Yii\Debug\Api\CodeceptionCommand;
-use Yiisoft\Yii\Debug\Api\PhpUnitCommand;
+use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
+use Yiisoft\Yii\Debug\Api\Inspector\Command\CodeceptionCommand;
+use Yiisoft\Yii\Debug\Api\Inspector\Command\PHPUnitCommand;
 
 class InspectController
 {
@@ -99,13 +99,22 @@ class InspectController
         return $this->responseFactory->createResponse($result);
     }
 
-    public function command(ContainerInterface $container, CodeceptionCommand $command): ResponseInterface
+    public function command(ServerRequestInterface $request, ContainerInterface $container): ResponseInterface
     {
-        // TODO: pass different commands
-//        $request = $request->getQueryParams();
-//        $className = $request['command'];
+        // TODO: would be great to recognise test engine automatically
+        $map = [
+            'test/phpunit' => PHPUnitCommand::class,
+            'test/codeception' => CodeceptionCommand::class,
+        ];
 
-        $result = $command->run();
+        $request = $request->getQueryParams();
+        $commandName = $request['command'] ?? 'test/codeception';
+
+        if (!array_key_exists($commandName, $map)) {
+            throw new InvalidArgumentException('Unknown command');
+        }
+
+        $result = $container->get($map[$commandName])->run();
 
         return $this->responseFactory->createResponse($result);
     }

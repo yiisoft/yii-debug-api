@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api;
+namespace Yiisoft\Yii\Debug\Api\Inspector;
 
 class ApplicationState
 {
     public static $params;
-    public static $config;
 }
