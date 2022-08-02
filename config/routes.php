@@ -8,6 +8,7 @@ use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 use Yiisoft\Validator\ValidatorInterface;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
+use Yiisoft\Yii\Debug\Api\Controller\InspectController;
 use Yiisoft\Yii\Debug\Api\Middleware\Cors;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
 use Yiisoft\Yii\Middleware\IpFilter;
@@ -47,5 +48,36 @@ return [
             Route::get('/object/{id}/{objectId}')
                 ->action([DebugController::class, 'object'])
                 ->name('object')
+        ),
+    Group::create('/inspect/api')
+        ->withCors(Cors::class)
+        ->middleware(
+            static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
+                return new IpFilter(
+                    validator: $validator,
+                    responseFactory: $responseFactory,
+                    ipRanges: $params['yiisoft/yii-debug-api']['allowedIPs']
+                );
+            }
+        )
+        ->middleware(FormatDataResponseAsJson::class)
+        ->middleware(ResponseDataWrapper::class)
+        ->namePrefix('inspect/api/')
+        ->routes(
+            Route::get('/params')
+                ->action([InspectController::class, 'params'])
+                ->name('params'),
+            Route::get('/config')
+                ->action([InspectController::class, 'config'])
+                ->name('config'),
+            Route::get('/classes')
+                ->action([InspectController::class, 'classes'])
+                ->name('classes'),
+            Route::get('/object')
+                ->action([InspectController::class, 'object'])
+                ->name('object'),
+            Route::get('/command')
+                ->action([InspectController::class, 'command'])
+                ->name('command'),
         ),
 ];
