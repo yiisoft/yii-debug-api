@@ -6,29 +6,23 @@ namespace Yiisoft\Yii\Debug\Api\Inspector\Command;
 
 use Symfony\Component\Process\Process;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Yii\Debug\Api\Inspector\Test\CodeceptionJSONReporter;
 
-class CodeceptionCommand
+class PsalmCommand
 {
     public function __construct(private Aliases $aliases)
     {
     }
 
-    public function run(): mixed
+    public function run()
     {
         $projectDirectory = $this->aliases->get('@root');
         $debugDirectory = $this->aliases->get('@runtime/debug');
 
-        $extension = CodeceptionJSONReporter::class;
+        $outputFilePath = $debugDirectory . DIRECTORY_SEPARATOR . 'psalm-report.json';
+
         $params = [
-            'vendor/bin/codecept',
-            'run',
-            '--silent',
-            '-e',
-            $extension,
-            '--override',
-            "extensions: config: {$extension}: output-path: {$debugDirectory}",
-            '-vvv',
+            'vendor/bin/psalm',
+            '--report=' . $outputFilePath,
         ];
 
         $process = new Process($params);
@@ -39,7 +33,7 @@ class CodeceptionCommand
             ->run();
 
         return json_decode(
-            file_get_contents($debugDirectory . DIRECTORY_SEPARATOR . CodeceptionJSONReporter::FILENAME),
+            file_get_contents($outputFilePath),
             true
         );
     }

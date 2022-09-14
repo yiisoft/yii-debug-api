@@ -16,6 +16,7 @@ use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\CodeceptionCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\PHPUnitCommand;
+use Yiisoft\Yii\Debug\Api\Inspector\Command\PsalmCommand;
 
 class InspectController
 {
@@ -105,6 +106,7 @@ class InspectController
         $map = [
             'test/phpunit' => PHPUnitCommand::class,
             'test/codeception' => CodeceptionCommand::class,
+            'analyse/psalm' => PsalmCommand::class,
         ];
 
         $request = $request->getQueryParams();
