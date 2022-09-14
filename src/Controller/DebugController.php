@@ -204,9 +204,9 @@ final class DebugController
      *
      * @param CurrentRoute $currentRoute
      *
-     * @return ResponseInterface response.
      * @throws NotFoundException
      *
+     * @return ResponseInterface response.
      */
     public function dump(CurrentRoute $currentRoute): ResponseInterface
     {
