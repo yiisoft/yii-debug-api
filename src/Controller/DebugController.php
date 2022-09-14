@@ -148,7 +148,7 @@ final class DebugController
             $currentRoute->getArgument('id')
         );
 
-        $collectorClass = $serverRequest->getQueryParams()['collector'];
+        $collectorClass = $serverRequest->getQueryParams()['collector'] ?? null;
         if ($collectorClass !== null) {
             $data = $data[$collectorClass] ?? throw new NotFoundException(
                 sprintf("Requested collector doesn't exists: %s.", $collectorClass)
