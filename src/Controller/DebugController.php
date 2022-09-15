@@ -6,6 +6,7 @@ namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
@@ -103,7 +104,7 @@ final class DebugController
      *
      * @OA\Get(
      *     tags={"yii-debug-api"},
-     *     path="/debug/api/view/{id}/{collector}",
+     *     path="/debug/api/view/{id}/?collector={collector}",
      *     description="Detail information about a processed request identified by ID",
      *     @OA\Parameter(
      *          name="id",
@@ -117,7 +118,7 @@ final class DebugController
      *          name="collector",
      *          allowEmptyValue=true,
      *          @OA\Schema(type="string"),
-     *          in="path",
+     *          in="query",
      *          parameter="collector",
      *          description="Collector for getting the detail information"
      *     ),
@@ -141,18 +142,17 @@ final class DebugController
      *     )
      * )
      */
-    public function view(CurrentRoute $currentRoute): ResponseInterface
+    public function view(CurrentRoute $currentRoute, ServerRequestInterface $serverRequest): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
             $currentRoute->getArgument('id')
         );
 
-        if ($currentRoute->getArgument('collector') !== null) {
-            if (isset($data[$currentRoute->getArgument('collector')])) {
-                $data = $data[$currentRoute->getArgument('collector')];
-            } else {
-                throw new NotFoundException(sprintf('Requested collector doesn\'t exists: %s.', $currentRoute->getArgument('collector')));
-            }
+        $collectorClass = $serverRequest->getQueryParams()['collector'] ?? null;
+        if ($collectorClass !== null) {
+            $data = $data[$collectorClass] ?? throw new NotFoundException(
+                sprintf("Requested collector doesn't exist: %s.", $collectorClass)
+            );
         }
 
         return $this->responseFactory->createResponse($data);

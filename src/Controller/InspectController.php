@@ -94,9 +94,9 @@ class InspectController
             throw new InvalidArgumentException('error');
         }
 
-        $result = VarDumper::create($container->get($className))->asString();
+        $result = VarDumper::create($container->get($className))->asJson();
 
-        return $this->responseFactory->createResponse($result);
+        return $this->responseFactory->createResponse(json_decode($result));
     }
 
     public function command(ServerRequestInterface $request, ContainerInterface $container): ResponseInterface
