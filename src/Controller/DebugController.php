@@ -151,7 +151,7 @@ final class DebugController
         $collectorClass = $serverRequest->getQueryParams()['collector'] ?? null;
         if ($collectorClass !== null) {
             $data = $data[$collectorClass] ?? throw new NotFoundException(
-                sprintf("Requested collector doesn't exists: %s.", $collectorClass)
+                sprintf("Requested collector doesn't exist: %s.", $collectorClass)
             );
         }
 
