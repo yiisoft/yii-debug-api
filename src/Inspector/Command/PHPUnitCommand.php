@@ -14,7 +14,7 @@ class PHPUnitCommand
     {
     }
 
-    public function run()
+    public function run(): mixed
     {
         $projectDirectory = $this->aliases->get('@root');
         $debugDirectory = $this->aliases->get('@runtime/debug');
