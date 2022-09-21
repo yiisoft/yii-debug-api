@@ -34,13 +34,8 @@ class InspectController
         $data = $config->get($group);
         ksort($data);
 
-        foreach ($data as &$value) {
-            if ($value instanceof Closure) {
-                $value = VarDumper::create($value)->asString();
-            }
-        }
-
-        return $this->responseFactory->createResponse($data);
+        $response = VarDumper::create($data)->asJson(false, 255);
+        return $this->responseFactory->createResponse(json_decode($response));
     }
 
     public function params(): ResponseInterface
