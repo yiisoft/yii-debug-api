@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
-use Closure;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -35,13 +34,8 @@ class InspectController
         $data = $config->get($group);
         ksort($data);
 
-        foreach ($data as &$value) {
-            if ($value instanceof Closure) {
-                $value = VarDumper::create($value)->asString();
-            }
-        }
-
-        return $this->responseFactory->createResponse($data);
+        $response = VarDumper::create($data)->asJson(false, 255);
+        return $this->responseFactory->createResponse(json_decode($response));
     }
 
     public function params(): ResponseInterface
@@ -95,9 +89,9 @@ class InspectController
             throw new InvalidArgumentException('error');
         }
 
-        $result = VarDumper::create($container->get($className))->asString();
+        $result = VarDumper::create($container->get($className))->asJson();
 
-        return $this->responseFactory->createResponse($result);
+        return $this->responseFactory->createResponse(json_decode($result));
     }
 
     public function command(ServerRequestInterface $request, ContainerInterface $container): ResponseInterface
