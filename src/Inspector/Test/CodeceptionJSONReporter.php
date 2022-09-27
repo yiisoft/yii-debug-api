@@ -63,7 +63,7 @@ final class CodeceptionJSONReporter extends Extension
 
     public function all(PrintResultEvent $event): void
     {
-        file_put_contents($this->config['output-path'] . DIRECTORY_SEPARATOR . self::FILENAME, json_encode($this->data));
+        file_put_contents($this->config['output-path'] . DIRECTORY_SEPARATOR . self::FILENAME, json_encode($this->data, JSON_THROW_ON_ERROR));
     }
 
     private function getTestName(TestEvent $event): string

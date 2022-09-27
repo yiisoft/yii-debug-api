@@ -17,13 +17,8 @@ use Yiisoft\Yii\Debug\DebuggerIdGenerator;
  */
 final class DebugHeaders implements MiddlewareInterface
 {
-    private DebuggerIdGenerator $idGenerator;
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(DebuggerIdGenerator $idGenerator, UrlGeneratorInterface $urlGenerator)
+    public function __construct(private DebuggerIdGenerator $idGenerator, private UrlGeneratorInterface $urlGenerator)
     {
-        $this->idGenerator = $idGenerator;
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
