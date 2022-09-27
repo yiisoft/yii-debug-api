@@ -43,7 +43,6 @@ final class DebugController
      *          )
      *     )
      * )
-     *
      */
     public function index(): ResponseInterface
     {
@@ -194,7 +193,6 @@ final class DebugController
      *     )
      * )
      *
-     *
      * @throws NotFoundException
      *
      * @return ResponseInterface response.
@@ -258,7 +256,6 @@ final class DebugController
      *          )
      *     )
      * )
-     *
      *
      * @return ResponseInterface response.
      */
