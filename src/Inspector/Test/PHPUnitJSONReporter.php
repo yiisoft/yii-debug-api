@@ -36,7 +36,7 @@ class PHPUnitJSONReporter implements ResultPrinter
 
         file_put_contents(
             $path . DIRECTORY_SEPARATOR . self::FILENAME,
-            json_encode(array_values($this->data))
+            json_encode(array_values($this->data), JSON_THROW_ON_ERROR)
         );
     }
 

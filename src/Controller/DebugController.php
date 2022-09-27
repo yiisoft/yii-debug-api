@@ -22,15 +22,8 @@ use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
  */
 final class DebugController
 {
-    private DataResponseFactoryInterface $responseFactory;
-    private CollectorRepositoryInterface $collectorRepository;
-
-    public function __construct(
-        DataResponseFactoryInterface $responseFactory,
-        CollectorRepositoryInterface $collectorRepository
-    ) {
-        $this->responseFactory = $responseFactory;
-        $this->collectorRepository = $collectorRepository;
+    public function __construct(private DataResponseFactoryInterface $responseFactory, private CollectorRepositoryInterface $collectorRepository)
+    {
     }
 
     /**
@@ -50,8 +43,6 @@ final class DebugController
      *          )
      *     )
      * )
-     *
-     * @return ResponseInterface
      */
     public function index(): ResponseInterface
     {
@@ -202,8 +193,6 @@ final class DebugController
      *     )
      * )
      *
-     * @param CurrentRoute $currentRoute
-     *
      * @throws NotFoundException
      *
      * @return ResponseInterface response.
@@ -267,8 +256,6 @@ final class DebugController
      *          )
      *     )
      * )
-     *
-     * @param CurrentRoute $currentRoute
      *
      * @return ResponseInterface response.
      */

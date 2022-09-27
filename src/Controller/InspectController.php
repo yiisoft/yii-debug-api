@@ -35,7 +35,7 @@ class InspectController
         ksort($data);
 
         $response = VarDumper::create($data)->asJson(false, 255);
-        return $this->responseFactory->createResponse(json_decode($response));
+        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
     }
 
     public function params(): ResponseInterface
@@ -51,7 +51,7 @@ class InspectController
         // TODO: how to get params for console or other param groups?
         $classes = [];
 
-        $inspected = array_merge(get_declared_classes(), get_declared_interfaces());
+        $inspected = [...get_declared_classes(), ...get_declared_interfaces()];
         // TODO: think how to ignore heavy objects
         $patterns = [
             fn (string $class) => !str_starts_with($class, 'ComposerAutoloaderInit'),
@@ -91,7 +91,7 @@ class InspectController
 
         $result = VarDumper::create($container->get($className))->asJson();
 
-        return $this->responseFactory->createResponse(json_decode($result));
+        return $this->responseFactory->createResponse(json_decode($result, null, 512, JSON_THROW_ON_ERROR));
     }
 
     public function command(ServerRequestInterface $request, ContainerInterface $container): ResponseInterface
