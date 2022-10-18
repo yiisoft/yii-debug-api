@@ -60,7 +60,7 @@ class InspectController
             fn (string $class) => !str_starts_with($class, 'Yiisoft\\Yii\\Debug\\'),
             fn (string $class) => !str_starts_with($class, 'Yiisoft\\ErrorHandler\\ErrorHandler'),
             fn (string $class) => !str_contains($class, '@anonymous'),
-            fn (string $class) => !in_array(Throwable::class, class_implements($class), true),
+            fn (string $class) => !is_subclass_of($class, Throwable::class),
         ];
         foreach ($patterns as $patternFunction) {
             $inspected = array_filter($inspected, $patternFunction);
