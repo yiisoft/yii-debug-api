@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
+use Throwable;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
@@ -59,6 +60,7 @@ class InspectController
             fn (string $class) => !str_starts_with($class, 'Yiisoft\\Yii\\Debug\\'),
             fn (string $class) => !str_starts_with($class, 'Yiisoft\\ErrorHandler\\ErrorHandler'),
             fn (string $class) => !str_contains($class, '@anonymous'),
+            fn (string $class) => !is_subclass_of($class, Throwable::class),
         ];
         foreach ($patterns as $patternFunction) {
             $inspected = array_filter($inspected, $patternFunction);
@@ -89,7 +91,8 @@ class InspectController
             throw new InvalidArgumentException('error');
         }
 
-        $result = VarDumper::create($container->get($className))->asJson();
+        $variable = $container->get($className);
+        $result = VarDumper::create($variable)->asJson();
 
         return $this->responseFactory->createResponse(json_decode($result));
     }
