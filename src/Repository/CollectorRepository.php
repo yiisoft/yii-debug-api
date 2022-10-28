@@ -9,11 +9,8 @@ use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
 final class CollectorRepository implements CollectorRepositoryInterface
 {
-    private StorageInterface $storage;
-
-    public function __construct(StorageInterface $storage)
+    public function __construct(private StorageInterface $storage)
     {
-        $this->storage = $storage;
     }
 
     public function getSummary(?string $id = null): array

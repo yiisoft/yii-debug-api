@@ -40,7 +40,9 @@ class CodeceptionCommand
 
         return json_decode(
             file_get_contents($debugDirectory . DIRECTORY_SEPARATOR . CodeceptionJSONReporter::FILENAME),
-            true
+            true,
+            512,
+            JSON_THROW_ON_ERROR
         );
     }
 }
