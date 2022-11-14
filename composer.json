@@ -30,8 +30,8 @@
         "yiisoft/data-response": "^1.0",
         "yiisoft/di": "^1.0",
         "yiisoft/http": "^1.2",
-        "yiisoft/router": "^1.0",
-        "yiisoft/var-dumper": "^1.2",
+        "yiisoft/router": "^2.0",
+        "yiisoft/var-dumper": "^1.4",
         "yiisoft/yii-debug": "^3.0@dev",
         "yiisoft/yii-middleware": "dev-master",
         "zircote/swagger-php": "^4.0"
@@ -44,7 +44,7 @@
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.18",
         "yiisoft/psr-dummy-provider": "^1.0",
-        "yiisoft/router-fastroute": "^1.0"
+        "yiisoft/router-fastroute": "^2.0"
     },
     "autoload": {
         "psr-4": {
