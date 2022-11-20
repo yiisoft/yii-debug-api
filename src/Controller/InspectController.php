@@ -9,9 +9,11 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
+use RuntimeException;
 use Throwable;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\CodeceptionCommand;
@@ -37,6 +39,37 @@ class InspectController
 
         $response = VarDumper::create($data)->asJson(false, 255);
         return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+    }
+
+    public function translations(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
+    {
+        /**
+         * @var $categorySources CategorySource[]
+         */
+        $categorySources = $container->get('tag@translation.categorySource');
+
+        $params = ApplicationState::$params;
+
+        $locales = array_keys($params['locale']['locales']);
+        if ($locales === []) {
+            throw new RuntimeException(
+                'Unable to determine list of available locales. ' .
+                'Make sure that "$params[\'locale\'][\'locales\']" contains all available locales.'
+            );
+        }
+        $messages = [];
+        foreach ($categorySources as $categorySource) {
+            $messages[$categorySource->getName()] = [
+                'messages' => [],
+            ];
+
+            foreach ($locales as $locale) {
+                $messages[$categorySource->getName()]['messages'][$locale] = $categorySource->getMessages($locale);
+            }
+        }
+
+        $response = VarDumper::create($messages)->asPrimitives(255);
+        return $this->responseFactory->createResponse($response);
     }
 
     public function params(): ResponseInterface

@@ -79,5 +79,8 @@ return [
             Route::get('/command')
                 ->action([InspectController::class, 'command'])
                 ->name('command'),
+            Route::get('/translations')
+                ->action([InspectController::class, 'translations'])
+                ->name('translations'),
         ),
 ];
