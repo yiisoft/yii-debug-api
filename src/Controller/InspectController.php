@@ -67,7 +67,7 @@ class InspectController
                 foreach ($locales as $locale) {
                     $messages[$categorySource->getName()]['messages'][$locale] = $categorySource->getMessages($locale);
                 }
-            } catch (Throwable){
+            } catch (Throwable) {
             }
         }
 
