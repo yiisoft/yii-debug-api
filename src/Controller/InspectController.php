@@ -56,7 +56,7 @@ class InspectController
         $request = $request->getQueryParams();
         $path = $request['path'] ?? '';
 
-        $rootPath = $aliases->get("@root");
+        $rootPath = $aliases->get('@root');
 
         $destination = realpath($rootPath . $path);
 
@@ -198,7 +198,7 @@ class InspectController
     {
         if ($uid ===0 || !function_exists('posix_getpwuid') || false === ($info = posix_getpwuid($uid))) {
             return [
-                'id' => $uid
+                'id' => $uid,
             ];
         }
         return [
@@ -212,7 +212,7 @@ class InspectController
     {
         if ($gid ===0 || !function_exists('posix_getgrgid') || false === ($info = posix_getgrgid($gid))) {
             return [
-                'id' => $gid
+                'id' => $gid,
             ];
         }
         return [
