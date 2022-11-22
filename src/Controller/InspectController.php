@@ -58,12 +58,12 @@ class InspectController
 
         $rootPath = $aliases->get('@root');
 
-        $destination = realpath($rootPath . $path);
+        $destination = $this->removeBasePath($rootPath, $path);
+        $destination = realpath($rootPath . $destination);
 
         if (!file_exists($destination)) {
             throw new InvalidArgumentException(sprintf('Destination "%s" does not exist', $destination));
         }
-
 
         if (!is_dir($destination)) {
             $file = new SplFileInfo($destination);
