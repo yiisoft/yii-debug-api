@@ -88,11 +88,14 @@ class InspectController
         $class = new ReflectionClass($className);
 
         if ($class->isInternal()) {
-            throw new InvalidArgumentException('error');
+            throw new InvalidArgumentException('Inspector cannot initialize internal classes.');
+        }
+        if ($class->implementsInterface(Throwable::class)) {
+            throw new InvalidArgumentException('Inspector cannot initialize exceptions.');
         }
 
         $variable = $container->get($className);
-        $result = VarDumper::create($variable)->asJson();
+        $result = VarDumper::create($variable)->asJson(false, 3);
 
         return $this->responseFactory->createResponse(json_decode($result, null, 512, JSON_THROW_ON_ERROR));
     }
