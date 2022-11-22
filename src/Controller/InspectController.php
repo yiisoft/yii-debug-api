@@ -148,8 +148,8 @@ class InspectController
 
     public function object(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
     {
-        $request = $request->getQueryParams();
-        $className = $request['classname'];
+        $queryParams = $request->getQueryParams();
+        $className = $queryParams['classname'];
 
         $class = new ReflectionClass($className);
 
