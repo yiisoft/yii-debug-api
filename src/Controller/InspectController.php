@@ -67,13 +67,16 @@ class InspectController
 
         if (!is_dir($destination)) {
             $file = new SplFileInfo($destination);
-            return $this->responseFactory->createResponse([
-                'directory' => $this->removeBasePath($rootPath, dirname($destination)),
-                'content' => file_get_contents($destination),
-                'path' => $this->removeBasePath($rootPath, $destination),
-                'absolutePath' => $destination,
-                ...$this->serializeFileInfo($file),
-            ]);
+            return $this->responseFactory->createResponse(
+                array_merge([
+                    'directory' => $this->removeBasePath($rootPath, dirname($destination)),
+                    'content' => file_get_contents($destination),
+                    'path' => $this->removeBasePath($rootPath, $destination),
+                    'absolutePath' => $destination,
+                ],
+                    $this->serializeFileInfo($file)
+                )
+            );
         }
 
         /**
@@ -104,10 +107,11 @@ class InspectController
                 continue;
             }
             $path = $this->removeBasePath($rootPath, $path);
-            $files[] = [
+            $files[] = array_merge([
                 'path' => $path,
-                ...$this->serializeFileInfo($file),
-            ];
+            ],
+                $this->serializeFileInfo($file)
+            );
         }
 
         return $this->responseFactory->createResponse($files);
@@ -196,7 +200,7 @@ class InspectController
 
     private function getUserOwner(int $uid): array
     {
-        if ($uid ===0 || !function_exists('posix_getpwuid') || false === ($info = posix_getpwuid($uid))) {
+        if ($uid === 0 || !function_exists('posix_getpwuid') || false === ($info = posix_getpwuid($uid))) {
             return [
                 'id' => $uid,
             ];
@@ -210,7 +214,7 @@ class InspectController
 
     private function getGroupOwner(int $gid): array
     {
-        if ($gid ===0 || !function_exists('posix_getgrgid') || false === ($info = posix_getgrgid($gid))) {
+        if ($gid === 0 || !function_exists('posix_getgrgid') || false === ($info = posix_getgrgid($gid))) {
             return [
                 'id' => $gid,
             ];
@@ -226,8 +230,8 @@ class InspectController
         return [
             'baseName' => $file->getBasename(),
             'extension' => $file->getExtension(),
-            'user' => $this->getUserOwner((int)$file->getOwner()),
-            'group' => $this->getGroupOwner((int)$file->getGroup()),
+            'user' => $this->getUserOwner((int) $file->getOwner()),
+            'group' => $this->getGroupOwner((int) $file->getGroup()),
             'size' => $file->getSize(),
             'type' => $file->getType(),
             'permissions' => substr(sprintf('%o', $file->getPerms()), -4),
