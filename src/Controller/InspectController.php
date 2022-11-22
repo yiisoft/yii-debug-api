@@ -68,12 +68,13 @@ class InspectController
         if (!is_dir($destination)) {
             $file = new SplFileInfo($destination);
             return $this->responseFactory->createResponse(
-                array_merge([
-                    'directory' => $this->removeBasePath($rootPath, dirname($destination)),
-                    'content' => file_get_contents($destination),
-                    'path' => $this->removeBasePath($rootPath, $destination),
-                    'absolutePath' => $destination,
-                ],
+                array_merge(
+                    [
+                        'directory' => $this->removeBasePath($rootPath, dirname($destination)),
+                        'content' => file_get_contents($destination),
+                        'path' => $this->removeBasePath($rootPath, $destination),
+                        'absolutePath' => $destination,
+                    ],
                     $this->serializeFileInfo($file)
                 )
             );
@@ -107,9 +108,10 @@ class InspectController
                 continue;
             }
             $path = $this->removeBasePath($rootPath, $path);
-            $files[] = array_merge([
-                'path' => $path,
-            ],
+            $files[] = array_merge(
+                [
+                    'path' => $path,
+                ],
                 $this->serializeFileInfo($file)
             );
         }
