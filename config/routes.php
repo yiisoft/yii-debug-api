@@ -79,5 +79,8 @@ return [
             Route::get('/command')
                 ->action([InspectController::class, 'command'])
                 ->name('command'),
+            Route::get('/files')
+                ->action([InspectController::class, 'files'])
+                ->name('files'),
         ),
 ];
