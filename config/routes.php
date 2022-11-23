@@ -77,8 +77,11 @@ return [
                 ->action([InspectController::class, 'object'])
                 ->name('object'),
             Route::get('/command')
-                ->action([InspectController::class, 'command'])
-                ->name('command'),
+                ->action([InspectController::class, 'getCommands'])
+                ->name('getCommands'),
+            Route::post('/command')
+                ->action([InspectController::class, 'runCommand'])
+                ->name('runCommand'),
             Route::get('/files')
                 ->action([InspectController::class, 'files'])
                 ->name('files'),

@@ -7,13 +7,25 @@ namespace Yiisoft\Yii\Debug\Api\Inspector\Command;
 use Symfony\Component\Process\Process;
 use Yiisoft\Aliases\Aliases;
 
-class PsalmCommand
+class PsalmCommand implements InspectorCommandInterface
 {
+    public const COMMAND_NAME = 'analyse/psalm';
+
     public function __construct(private Aliases $aliases)
     {
     }
 
-    public function run()
+    public static function getTitle(): string
+    {
+        return 'Psalm';
+    }
+
+    public static function getDescription(): string
+    {
+        return '';
+    }
+
+    public function run(): mixed
     {
         $projectDirectory = $this->aliases->get('@root');
         $debugDirectory = $this->aliases->get('@runtime/debug');

@@ -8,10 +8,22 @@ use Symfony\Component\Process\Process;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Yii\Debug\Api\Inspector\Test\CodeceptionJSONReporter;
 
-class CodeceptionCommand
+class CodeceptionCommand implements InspectorCommandInterface
 {
+    public const COMMAND_NAME = 'test/codeception';
+
     public function __construct(private Aliases $aliases)
     {
+    }
+
+    public static function getTitle(): string
+    {
+        return 'Codeception';
+    }
+
+    public static function getDescription(): string
+    {
+        return '';
     }
 
     public function run(): mixed

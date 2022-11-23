@@ -8,10 +8,22 @@ use Symfony\Component\Process\Process;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Yii\Debug\Api\Inspector\Test\PHPUnitJSONReporter;
 
-class PHPUnitCommand
+class PHPUnitCommand implements InspectorCommandInterface
 {
+    public const COMMAND_NAME = 'test/phpunit';
+
     public function __construct(private Aliases $aliases)
     {
+    }
+
+    public static function getTitle(): string
+    {
+        return 'PHPUnit';
+    }
+
+    public static function getDescription(): string
+    {
+        return '';
     }
 
     public function run(): mixed
