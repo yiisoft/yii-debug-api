@@ -59,6 +59,11 @@ class InspectController
         $rootPath = $aliases->get('@root');
 
         $destination = $this->removeBasePath($rootPath, $path);
+
+        if (!str_starts_with('/', $destination)) {
+            $destination = '/' . $destination;
+        }
+
         $destination = realpath($rootPath . $destination);
 
         if (!file_exists($destination)) {
