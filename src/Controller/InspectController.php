@@ -162,19 +162,22 @@ class InspectController
         $queryParams = $request->getQueryParams();
         $className = $queryParams['classname'];
 
-        $class = new ReflectionClass($className);
+        $reflection = new ReflectionClass($className);
 
-        if ($class->isInternal()) {
+        if ($reflection->isInternal()) {
             throw new InvalidArgumentException('Inspector cannot initialize internal classes.');
         }
-        if ($class->implementsInterface(Throwable::class)) {
+        if ($reflection->implementsInterface(Throwable::class)) {
             throw new InvalidArgumentException('Inspector cannot initialize exceptions.');
         }
 
         $variable = $container->get($className);
         $result = VarDumper::create($variable)->asJson(false, 3);
 
-        return $this->responseFactory->createResponse(json_decode($result, null, 512, JSON_THROW_ON_ERROR));
+        return $this->responseFactory->createResponse([
+            'object' => json_decode($result, null, 512, JSON_THROW_ON_ERROR),
+            'path' => $reflection->getFileName(),
+        ]);
     }
 
     public function command(ServerRequestInterface $request, ContainerInterface $container): ResponseInterface
