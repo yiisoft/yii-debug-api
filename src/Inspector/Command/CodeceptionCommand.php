@@ -6,9 +6,11 @@ namespace Yiisoft\Yii\Debug\Api\Inspector\Command;
 
 use Symfony\Component\Process\Process;
 use Yiisoft\Aliases\Aliases;
+use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
+use Yiisoft\Yii\Debug\Api\Inspector\CommandResponse;
 use Yiisoft\Yii\Debug\Api\Inspector\Test\CodeceptionJSONReporter;
 
-class CodeceptionCommand implements InspectorCommandInterface
+class CodeceptionCommand implements CommandInterface
 {
     public const COMMAND_NAME = 'test/codeception';
 
@@ -26,7 +28,7 @@ class CodeceptionCommand implements InspectorCommandInterface
         return '';
     }
 
-    public function run(): mixed
+    public function run(): CommandResponse
     {
         $projectDirectory = $this->aliases->get('@root');
         $debugDirectory = $this->aliases->get('@runtime/debug');
@@ -50,11 +52,22 @@ class CodeceptionCommand implements InspectorCommandInterface
             ->setTimeout(null)
             ->run();
 
-        return json_decode(
-            file_get_contents($debugDirectory . DIRECTORY_SEPARATOR . CodeceptionJSONReporter::FILENAME),
-            true,
-            512,
-            JSON_THROW_ON_ERROR
+        if (!$process->isSuccessful()) {
+            return new CommandResponse(
+                status: CommandResponse::STATUS_ERROR,
+                result: null,
+                errors: [$process->getErrorOutput()],
+            );
+        }
+
+        return new CommandResponse(
+            status: CommandResponse::STATUS_OK,
+            result: json_decode(
+                file_get_contents($debugDirectory . DIRECTORY_SEPARATOR . CodeceptionJSONReporter::FILENAME),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            )
         );
     }
 }

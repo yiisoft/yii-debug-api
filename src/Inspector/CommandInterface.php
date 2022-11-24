@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Inspector\Command;
+namespace Yiisoft\Yii\Debug\Api\Inspector;
 
-interface InspectorCommandInterface
+interface CommandInterface
 {
     public static function getTitle(): string;
 
     public static function getDescription(): string;
 
-    public function run(): mixed;
+    public function run(): CommandResponse;
 }

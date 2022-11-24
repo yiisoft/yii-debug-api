@@ -6,8 +6,10 @@ namespace Yiisoft\Yii\Debug\Api\Inspector\Command;
 
 use Symfony\Component\Process\Process;
 use Yiisoft\Aliases\Aliases;
+use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
+use Yiisoft\Yii\Debug\Api\Inspector\CommandResponse;
 
-class PsalmCommand implements InspectorCommandInterface
+class PsalmCommand implements CommandInterface
 {
     public const COMMAND_NAME = 'analyse/psalm';
 
@@ -25,7 +27,7 @@ class PsalmCommand implements InspectorCommandInterface
         return '';
     }
 
-    public function run(): mixed
+    public function run(): CommandResponse
     {
         $projectDirectory = $this->aliases->get('@root');
         $debugDirectory = $this->aliases->get('@runtime/debug');
@@ -44,11 +46,22 @@ class PsalmCommand implements InspectorCommandInterface
             ->setTimeout(null)
             ->run();
 
-        return json_decode(
-            file_get_contents($outputFilePath),
-            true,
-            512,
-            JSON_THROW_ON_ERROR
+        if (!$process->isSuccessful()) {
+            return new CommandResponse(
+                status: CommandResponse::STATUS_ERROR,
+                result: null,
+                errors: [$process->getErrorOutput()],
+            );
+        }
+
+        return new CommandResponse(
+            status: CommandResponse::STATUS_OK,
+            result: json_decode(
+                file_get_contents($outputFilePath),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            )
         );
     }
 }

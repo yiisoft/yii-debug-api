@@ -18,7 +18,7 @@ use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
-use Yiisoft\Yii\Debug\Api\Inspector\Command\InspectorCommandInterface;
+use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 
 class InspectController
 {
@@ -183,7 +183,7 @@ class InspectController
         $result = [];
         foreach ($commandMap as $groupName => $commands) {
             foreach ($commands as $name => $command) {
-                if (!is_subclass_of($command, InspectorCommandInterface::class)) {
+                if (!is_subclass_of($command, CommandInterface::class)) {
                     continue;
                 }
                 $result[] = [
@@ -207,12 +207,12 @@ class InspectController
         $commandMap = $params['yiisoft/yii-debug-api']['inspector']['commandMap'] ?? [];
 
         /**
-         * @var array<string, class-string<InspectorCommandInterface>> $commandList
+         * @var array<string, class-string<CommandInterface>> $commandList
          */
         $commandList = [];
         foreach ($commandMap as $commands) {
             foreach ($commands as $name => $command) {
-                if (!is_subclass_of($command, InspectorCommandInterface::class)) {
+                if (!is_subclass_of($command, CommandInterface::class)) {
                     continue;
                 }
                 $commandList[$name] = $command;
@@ -242,10 +242,18 @@ class InspectController
         }
 
         $commandClass = $commandList[$commandName];
+        /**
+         * @var $command CommandInterface
+         */
+        $command = $container->get($commandClass);
 
-        $result = $container->get($commandClass)->run();
+        $result = $command->run();
 
-        return $this->responseFactory->createResponse($result);
+        return $this->responseFactory->createResponse([
+            'status' => $result->getStatus(),
+            'result' => $result->getResult(),
+            'error' => $result->getErrors(),
+        ]);
     }
 
     private function removeBasePath(string $rootPath, string $path): string|array|null
