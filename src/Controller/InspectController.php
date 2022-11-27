@@ -11,8 +11,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
-use SplFileInfo;
 use RuntimeException;
+use SplFileInfo;
 use Throwable;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
@@ -43,7 +43,7 @@ class InspectController
         return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
     }
 
-    public function translations(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
+    public function getTranslations(ContainerInterface $container): ResponseInterface
     {
         /**
          * @var $categorySources CategorySource[]
@@ -61,19 +61,61 @@ class InspectController
         }
         $messages = [];
         foreach ($categorySources as $categorySource) {
-            $messages[$categorySource->getName()] = [
-                'messages' => [],
-            ];
+            $messages[$categorySource->getName()] = [];
 
             try {
                 foreach ($locales as $locale) {
-                    $messages[$categorySource->getName()]['messages'][$locale] = $categorySource->getMessages($locale);
+                    $messages[$categorySource->getName()][$locale] = $categorySource->getMessages($locale);
                 }
             } catch (Throwable) {
             }
         }
 
         $response = VarDumper::create($messages)->asPrimitives(255);
+        return $this->responseFactory->createResponse($response);
+    }
+
+    public function putTranslation(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
+    {
+        /**
+         * @var $categorySources CategorySource[]
+         */
+        $categorySources = $container->get('tag@translation.categorySource');
+
+        $body = $request->getParsedBody();
+        $categoryName = $body['category'] ?? '';
+        $locale = $body['locale'] ?? '';
+        $translationId = $body['translation'] ?? '';
+        $newMessage = $body['message'] ?? '';
+
+        $categorySource = null;
+        foreach ($categorySources as $possibleCategorySource) {
+            if ($possibleCategorySource->getName() === $categoryName) {
+                $categorySource = $possibleCategorySource;
+            }
+        }
+        if ($categorySource === null) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid category name "%s". Only the following categories are available: "%s"',
+                    $categoryName,
+                    implode(
+                        '", "',
+                        array_map(fn (CategorySource $categorySource) => $categorySource->getName(), $categorySources)
+                    )
+                )
+            );
+        }
+        $messages = $categorySource->getMessages($locale);
+        $messages = array_replace_recursive($messages, [
+            $translationId => [
+                'message' => $newMessage,
+            ],
+        ]);
+        $categorySource->write($locale, $messages);
+
+        $result = [$locale => $messages];
+        $response = VarDumper::create($result)->asPrimitives(255);
         return $this->responseFactory->createResponse($response);
     }
 

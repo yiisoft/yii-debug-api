@@ -86,7 +86,10 @@ return [
                 ->action([InspectController::class, 'files'])
                 ->name('files'),
             Route::get('/translations')
-                ->action([InspectController::class, 'translations'])
-                ->name('translations'),
+                ->action([InspectController::class, 'getTranslations'])
+                ->name('getTranslations'),
+            Route::put('/translations')
+                ->action([InspectController::class, 'putTranslation'])
+                ->name('putTranslation'),
         ),
 ];
