@@ -8,5 +8,4 @@ use Yiisoft\ActiveRecord\ActiveRecord;
 
 class Common extends ActiveRecord
 {
-
 }
