@@ -6,6 +6,7 @@ namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use FilesystemIterator;
 use InvalidArgumentException;
+use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,10 +14,16 @@ use RecursiveDirectoryIterator;
 use ReflectionClass;
 use SplFileInfo;
 use Throwable;
+use Yiisoft\ActiveRecord\ActiveRecordFactory;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Schema\ColumnSchemaInterface;
+use Yiisoft\Db\Schema\TableSchemaInterface;
+use Yiisoft\Router\CurrentRoute;
 use Yiisoft\VarDumper\VarDumper;
+use Yiisoft\Yii\Debug\Api\Inspector\ActiveRecord\Common;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 
@@ -259,6 +266,85 @@ class InspectController
         ]);
     }
 
+    public function getTables(
+        ContainerInterface $container,
+        ActiveRecordFactory $arFactory,
+    ): ResponseInterface {
+        if ($container->has(ConnectionInterface::class)) {
+            $connection = $container->get(ConnectionInterface::class);
+            $r = $connection->getSchema();
+            /** @var TableSchemaInterface[] $tableSchemas */
+            $tableSchemas = $r->getTableSchemas();
+
+            $tables = [];
+            foreach ($tableSchemas as $schema) {
+                $activeQuery = $arFactory->createQueryTo(Common::class, $schema->getName());
+
+                /**
+                 * @var Common[] $records
+                 */
+                $records = $activeQuery->count();
+
+                $tables[] = [
+                    'table' => $schema->getName(),
+                    'primaryKeys' => $schema->getPrimaryKey(),
+                    'columns' => $this->serializeARColumnsSchemas($schema->getColumns()),
+                    'records' => $records,
+                ];
+            }
+
+            return $this->responseFactory->createResponse($tables);
+        }
+
+        throw new LogicException(sprintf(
+            'Inspecting database is not available. Configure "%s" service to be able to inspect database.',
+            ConnectionInterface::class,
+        ));
+    }
+
+    public function getTable(
+        ContainerInterface $container,
+        ActiveRecordFactory $arFactory,
+        CurrentRoute $currentRoute,
+    ): ResponseInterface {
+        $tableName = $currentRoute->getArgument('name');
+        if ($container->has(ConnectionInterface::class)) {
+            $connection = $container->get(ConnectionInterface::class);
+            $r = $connection->getSchema();
+            /** @var TableSchemaInterface[] $tableSchemas */
+            $schema = $r->getTableSchema($tableName);
+
+            $activeQuery = $arFactory->createQueryTo(Common::class, $schema->getName());
+
+            /**
+             * @var Common[] $records
+             */
+            $records = $activeQuery->all();
+
+            $data = [];
+            // TODO: add pagination
+            foreach ($records as $n => $record) {
+                foreach ($record->attributes() as $attribute) {
+                    $data[$n][$attribute] = $record->{$attribute};
+                }
+            }
+
+            $result = [
+                'table' => $schema->getName(),
+                'primaryKeys' => $schema->getPrimaryKey(),
+                'columns' => $this->serializeARColumnsSchemas($schema->getColumns()),
+                'records' => $data,
+            ];
+
+            return $this->responseFactory->createResponse($result);
+        }
+
+        throw new LogicException(sprintf(
+            'Inspecting database is not available. Configure "%s" service to be able to inspect database.',
+            ConnectionInterface::class,
+        ));
+    }
+
     private function removeBasePath(string $rootPath, string $path): string|array|null
     {
         return preg_replace(
@@ -307,5 +393,26 @@ class InspectController
             'type' => $file->getType(),
             'permissions' => substr(sprintf('%o', $file->getPerms()), -4),
         ];
+    }
+
+    /**
+     * @param ColumnSchemaInterface[] $columns
+     * @return array
+     */
+    private function serializeARColumnsSchemas(array $columns): array
+    {
+        $result = [];
+        foreach ($columns as $columnSchema) {
+            $result[] = [
+                'name' => $columnSchema->getName(),
+                'size' => $columnSchema->getSize(),
+                'type' => $columnSchema->getType(),
+                'dbType' => $columnSchema->getDbType(),
+                'defaultValue' => $columnSchema->getDefaultValue(),
+                'comment' => $columnSchema->getComment(),
+                'allowNull' => $columnSchema->isAllowNull(),
+            ];
+        }
+        return $result;
     }
 }
