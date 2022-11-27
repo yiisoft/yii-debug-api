@@ -397,8 +397,6 @@ class InspectController
 
     /**
      * @param ColumnSchemaInterface[] $columns
-     *
-     * @return array
      */
     private function serializeARColumnsSchemas(array $columns): array
     {
