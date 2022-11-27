@@ -20,9 +20,7 @@ use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
-use Yiisoft\Yii\Debug\Api\Inspector\Command\CodeceptionCommand;
-use Yiisoft\Yii\Debug\Api\Inspector\Command\PHPUnitCommand;
-use Yiisoft\Yii\Debug\Api\Inspector\Command\PsalmCommand;
+use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 
 class InspectController
 {
@@ -216,25 +214,85 @@ class InspectController
         ]);
     }
 
-    public function command(ServerRequestInterface $request, ContainerInterface $container): ResponseInterface
+    public function getCommands(ConfigInterface $config): ResponseInterface
     {
-        // TODO: would be great to recognise test engine automatically
-        $map = [
-            'test/phpunit' => PHPUnitCommand::class,
-            'test/codeception' => CodeceptionCommand::class,
-            'analyse/psalm' => PsalmCommand::class,
-        ];
+        $params = $config->get('params');
+        $commandMap = $params['yiisoft/yii-debug-api']['inspector']['commandMap'] ?? [];
 
-        $request = $request->getQueryParams();
-        $commandName = $request['command'] ?? 'test/codeception';
-
-        if (!array_key_exists($commandName, $map)) {
-            throw new InvalidArgumentException('Unknown command');
+        $result = [];
+        foreach ($commandMap as $groupName => $commands) {
+            foreach ($commands as $name => $command) {
+                if (!is_subclass_of($command, CommandInterface::class)) {
+                    continue;
+                }
+                $result[] = [
+                    'name' => $name,
+                    'title' => $command::getTitle(),
+                    'group' => $groupName,
+                    'description' => $command::getDescription(),
+                ];
+            }
         }
 
-        $result = $container->get($map[$commandName])->run();
-
         return $this->responseFactory->createResponse($result);
+    }
+
+    public function runCommand(
+        ServerRequestInterface $request,
+        ContainerInterface $container,
+        ConfigInterface $config
+    ): ResponseInterface {
+        $params = $config->get('params');
+        $commandMap = $params['yiisoft/yii-debug-api']['inspector']['commandMap'] ?? [];
+
+        /**
+         * @var array<string, class-string<CommandInterface>> $commandList
+         */
+        $commandList = [];
+        foreach ($commandMap as $commands) {
+            foreach ($commands as $name => $command) {
+                if (!is_subclass_of($command, CommandInterface::class)) {
+                    continue;
+                }
+                $commandList[$name] = $command;
+            }
+        }
+
+        $request = $request->getQueryParams();
+        $commandName = $request['command'] ?? null;
+
+        if ($commandName === null) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Command must not be null. Available commands: "%s".',
+                    implode('", "', $commandList)
+                )
+            );
+        }
+
+        if (!array_key_exists($commandName, $commandList)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unknown command "%s". Available commands: "%s".',
+                    $commandName,
+                    implode('", "', $commandList)
+                )
+            );
+        }
+
+        $commandClass = $commandList[$commandName];
+        /**
+         * @var $command CommandInterface
+         */
+        $command = $container->get($commandClass);
+
+        $result = $command->run();
+
+        return $this->responseFactory->createResponse([
+            'status' => $result->getStatus(),
+            'result' => $result->getResult(),
+            'error' => $result->getErrors(),
+        ]);
     }
 
     private function removeBasePath(string $rootPath, string $path): string|array|null
