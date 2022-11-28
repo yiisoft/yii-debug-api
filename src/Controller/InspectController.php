@@ -14,12 +14,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
+use RuntimeException;
 use SplFileInfo;
 use Throwable;
 use Yiisoft\ActiveRecord\ActiveRecordFactory;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Translator\CategorySource;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Schema\ColumnSchemaInterface;
 use Yiisoft\Db\Schema\TableSchemaInterface;
@@ -48,6 +50,82 @@ class InspectController
 
         $response = VarDumper::create($data)->asJson(false, 255);
         return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+    }
+
+    public function getTranslations(ContainerInterface $container): ResponseInterface
+    {
+        /**
+         * @var $categorySources CategorySource[]
+         */
+        $categorySources = $container->get('tag@translation.categorySource');
+
+        $params = ApplicationState::$params;
+
+        $locales = array_keys($params['locale']['locales']);
+        if ($locales === []) {
+            throw new RuntimeException(
+                'Unable to determine list of available locales. ' .
+                'Make sure that "$params[\'locale\'][\'locales\']" contains all available locales.'
+            );
+        }
+        $messages = [];
+        foreach ($categorySources as $categorySource) {
+            $messages[$categorySource->getName()] = [];
+
+            try {
+                foreach ($locales as $locale) {
+                    $messages[$categorySource->getName()][$locale] = $categorySource->getMessages($locale);
+                }
+            } catch (Throwable) {
+            }
+        }
+
+        $response = VarDumper::create($messages)->asPrimitives(255);
+        return $this->responseFactory->createResponse($response);
+    }
+
+    public function putTranslation(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
+    {
+        /**
+         * @var $categorySources CategorySource[]
+         */
+        $categorySources = $container->get('tag@translation.categorySource');
+
+        $body = $request->getParsedBody();
+        $categoryName = $body['category'] ?? '';
+        $locale = $body['locale'] ?? '';
+        $translationId = $body['translation'] ?? '';
+        $newMessage = $body['message'] ?? '';
+
+        $categorySource = null;
+        foreach ($categorySources as $possibleCategorySource) {
+            if ($possibleCategorySource->getName() === $categoryName) {
+                $categorySource = $possibleCategorySource;
+            }
+        }
+        if ($categorySource === null) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid category name "%s". Only the following categories are available: "%s"',
+                    $categoryName,
+                    implode(
+                        '", "',
+                        array_map(fn (CategorySource $categorySource) => $categorySource->getName(), $categorySources)
+                    )
+                )
+            );
+        }
+        $messages = $categorySource->getMessages($locale);
+        $messages = array_replace_recursive($messages, [
+            $translationId => [
+                'message' => $newMessage,
+            ],
+        ]);
+        $categorySource->write($locale, $messages);
+
+        $result = [$locale => $messages];
+        $response = VarDumper::create($result)->asPrimitives(255);
+        return $this->responseFactory->createResponse($response);
     }
 
     public function params(): ResponseInterface

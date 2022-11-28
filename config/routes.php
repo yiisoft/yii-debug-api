@@ -85,6 +85,12 @@ return [
             Route::get('/files')
                 ->action([InspectController::class, 'files'])
                 ->name('files'),
+            Route::get('/translations')
+                ->action([InspectController::class, 'getTranslations'])
+                ->name('getTranslations'),
+            Route::put('/translations')
+                ->action([InspectController::class, 'putTranslation'])
+                ->name('putTranslation'),
             Route::get('/table')
                 ->action([InspectController::class, 'getTables'])
                 ->name('getTables'),
