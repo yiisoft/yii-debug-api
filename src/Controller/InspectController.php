@@ -293,9 +293,8 @@ class InspectController
 
         if ($container->has(ConnectionInterface::class)) {
             $connection = $container->get(ConnectionInterface::class);
-            $r = $connection->getSchema();
             /** @var TableSchemaInterface[] $tableSchemas */
-            $tableSchemas = $r->getTableSchemas();
+            $tableSchemas = $connection->getSchema()->getTableSchemas();
 
             $tables = [];
             foreach ($tableSchemas as $schema) {
@@ -347,9 +346,8 @@ class InspectController
 
         if ($container->has(ConnectionInterface::class)) {
             $connection = $container->get(ConnectionInterface::class);
-            $r = $connection->getSchema();
             /** @var TableSchemaInterface[] $tableSchemas */
-            $schema = $r->getTableSchema($tableName);
+            $schema = $connection->getSchema()->getTableSchema($tableName);
 
             $activeQuery = $arFactory->createQueryTo(Common::class, $schema->getName());
 
