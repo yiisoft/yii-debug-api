@@ -8,7 +8,7 @@ class CommandResponse
 {
     public const STATUS_OK = 'ok';
     public const STATUS_ERROR = 'error';
-    public const STATUS_FAIL = 'error';
+    public const STATUS_FAIL = 'fail';
 
     public function __construct(
         private string $status,
