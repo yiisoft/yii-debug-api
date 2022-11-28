@@ -37,7 +37,7 @@ class CodeceptionCommand implements CommandInterface
         $params = [
             'vendor/bin/codecept',
             'run',
-//            '--silent',
+            '--silent',
             '-e',
             $extension,
             '--override',
