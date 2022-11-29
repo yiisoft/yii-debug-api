@@ -52,22 +52,24 @@ class CodeceptionCommand implements CommandInterface
             ->setTimeout(null)
             ->run();
 
-        if (!$process->isSuccessful()) {
+        $processOutput = json_decode(
+            file_get_contents($debugDirectory . DIRECTORY_SEPARATOR . CodeceptionJSONReporter::FILENAME),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+
+        if (!$process->getExitCode() > 1) {
             return new CommandResponse(
-                status: CommandResponse::STATUS_ERROR,
+                status: CommandResponse::STATUS_FAIL,
                 result: null,
-                errors: [$process->getErrorOutput()],
+                errors: array_filter([$processOutput, $process->getErrorOutput()]),
             );
         }
 
         return new CommandResponse(
-            status: CommandResponse::STATUS_OK,
-            result: json_decode(
-                file_get_contents($debugDirectory . DIRECTORY_SEPARATOR . CodeceptionJSONReporter::FILENAME),
-                true,
-                512,
-                JSON_THROW_ON_ERROR
-            )
+            status: $process->isSuccessful() ? CommandResponse::STATUS_OK : CommandResponse::STATUS_ERROR,
+            result: $processOutput
         );
     }
 }

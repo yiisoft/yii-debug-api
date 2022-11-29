@@ -7,7 +7,8 @@ namespace Yiisoft\Yii\Debug\Api\Inspector;
 class CommandResponse
 {
     public const STATUS_OK = 'ok';
-    public const STATUS_ERROR = 'ok';
+    public const STATUS_ERROR = 'error';
+    public const STATUS_FAIL = 'fail';
 
     public function __construct(
         private string $status,
