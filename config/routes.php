@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Psr\Http\Message\ResponseFactoryInterface;
+use Yiisoft\Csrf\CsrfMiddleware;
 use Yiisoft\DataResponse\Middleware\FormatDataResponseAsJson;
 use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
@@ -20,6 +21,7 @@ if (!(bool)($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
 return [
     Group::create('/debug/api')
         ->withCors(Cors::class)
+        ->disableMiddleware(CsrfMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
                 return new IpFilter(
@@ -51,6 +53,7 @@ return [
         ),
     Group::create('/inspect/api')
         ->withCors(Cors::class)
+        ->disableMiddleware(CsrfMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
                 return new IpFilter(
