@@ -10,6 +10,8 @@ use Codeception\Event\TestEvent;
 use Codeception\Events;
 use Codeception\Extension;
 use Codeception\Test\Descriptor;
+use ReflectionClass;
+use ReflectionObject;
 
 final class CodeceptionJSONReporter extends Extension
 {
@@ -36,6 +38,7 @@ final class CodeceptionJSONReporter extends Extension
         $this->data[] = [
             'file' => $this->getTestFilename($event),
             'test' => $this->getTestName($event),
+            'time' => $event->getTime(),
             'status' => 'ok',
             'stacktrace' => [],
         ];
@@ -46,6 +49,7 @@ final class CodeceptionJSONReporter extends Extension
         $this->data[] = [
             'file' => $this->getTestFilename($event),
             'test' => $this->getTestName($event),
+            'time' => $event->getTime(),
             'status' => 'fail',
             'stacktrace' => $event->getFail()->getTrace(),
         ];
@@ -56,6 +60,7 @@ final class CodeceptionJSONReporter extends Extension
         $this->data[] = [
             'file' => $this->getTestFilename($event),
             'test' => $this->getTestName($event),
+            'time' => $event->getTime(),
             'status' => 'error',
             'stacktrace' => $event->getFail()->getTrace(),
         ];
@@ -63,7 +68,10 @@ final class CodeceptionJSONReporter extends Extension
 
     public function all(PrintResultEvent $event): void
     {
-        file_put_contents($this->config['output-path'] . DIRECTORY_SEPARATOR . self::FILENAME, json_encode($this->data));
+        file_put_contents(
+            $this->config['output-path'] . DIRECTORY_SEPARATOR . self::FILENAME,
+            json_encode($this->data, JSON_THROW_ON_ERROR)
+        );
     }
 
     private function getTestName(TestEvent $event): string
@@ -73,6 +81,16 @@ final class CodeceptionJSONReporter extends Extension
 
     private function getTestFilename(TestEvent $event): string
     {
+        $test = new ReflectionObject($event->getTest());
+        if ($test->hasProperty('testClass') && $test->hasProperty('testMethod')) {
+            $class = $test->getProperty('testClass')->getValue($event->getTest());
+            $method = $test->getProperty('testMethod')->getValue($event->getTest());
+
+            $classReflection = new ReflectionClass($class);
+            $methodReflection = $classReflection->getMethod($method);
+
+            return $classReflection->getFileName() . ':' . $methodReflection->getStartLine();
+        }
         return Descriptor::getTestFileName($event->getTest());
     }
 }
