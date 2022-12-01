@@ -23,7 +23,6 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.0",
-        "ext-posix": "*",
         "codeception/codeception": "^5.0",
         "phpunit/phpunit": "^9.5",
         "psr/container": "^2.0",
