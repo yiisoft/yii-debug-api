@@ -17,6 +17,7 @@ use Throwable;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
@@ -277,6 +278,25 @@ class InspectController
         }
 
         return $this->responseFactory->createResponse($result);
+    }
+
+    public function routes(RouteCollectionInterface $routeCollection): ResponseInterface
+    {
+        $routes = [];
+        foreach ($routeCollection->getRoutes() as $route) {
+            $data = $route->__debugInfo();
+            $routes[] = [
+                'name' => $data['name'],
+                'hosts' => $data['hosts'],
+                'pattern' => $data['pattern'],
+                'methods' => $data['methods'],
+                'defaults' => $data['defaults'],
+                'override' => $data['override'],
+                'middlewares' => $data['middlewareDefinitions'],
+            ];
+        }
+        $response = VarDumper::create($routes)->asJson(false, 5);
+        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
     }
 
     public function runCommand(
