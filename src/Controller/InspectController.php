@@ -19,7 +19,6 @@ use Throwable;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
-use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
