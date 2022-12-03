@@ -24,8 +24,9 @@
     "require": {
         "php": "^8.0",
         "codeception/codeception": "^5.0",
-        "phpunit/phpunit": "^9.5",
+        "guzzlehttp/guzzle": "^7.5",
         "guzzlehttp/psr7": "^2.4",
+        "phpunit/phpunit": "^9.5",
         "psr/container": "^2.0",
         "psr/http-message": "^1.0",
         "psr/http-server-handler": "^1.0",
