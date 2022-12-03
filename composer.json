@@ -23,6 +23,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.0",
+        "guzzlehttp/psr7": "^2.4",
         "psr/container": "^2.0",
         "psr/http-message": "^1.0",
         "psr/http-server-middleware": "^1.0",
