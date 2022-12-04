@@ -88,11 +88,17 @@ return [
             Route::get('/files')
                 ->action([InspectController::class, 'files'])
                 ->name('files'),
+            Route::get('/routes')
+                ->action([InspectController::class, 'routes'])
+                ->name('routes'),
             Route::get('/translations')
                 ->action([InspectController::class, 'getTranslations'])
                 ->name('getTranslations'),
             Route::put('/translations')
                 ->action([InspectController::class, 'putTranslation'])
                 ->name('putTranslation'),
+            Route::put('/request')
+                ->action([InspectController::class, 'request'])
+                ->name('request'),
         ),
 ];
