@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
-use Cycle\Database\ColumnInterface;
-use Cycle\Database\DatabaseProviderInterface;
 use FilesystemIterator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Message;
@@ -19,20 +17,17 @@ use ReflectionClass;
 use RuntimeException;
 use SplFileInfo;
 use Throwable;
-use Yiisoft\ActiveRecord\ActiveRecordFactory;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Translator\CategorySource;
-use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Db\Schema\ColumnSchemaInterface;
-use Yiisoft\Db\Schema\TableSchemaInterface;
-use Yiisoft\Router\CurrentRoute;
 use Yiisoft\VarDumper\VarDumper;
-use Yiisoft\Yii\Debug\Api\Inspector\ActiveRecord\Common;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
+use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Collector\RequestCollector;
 
@@ -370,120 +365,22 @@ class InspectController
         ]);
     }
 
-    public function getTables(
-        ContainerInterface $container,
-        ActiveRecordFactory $arFactory,
-    ): ResponseInterface {
-        if ($container->has(DatabaseProviderInterface::class)) {
-            $databaseProvider = $container->get(DatabaseProviderInterface::class);
-            $database = $databaseProvider->database();
-            $tableSchemas = $database->getTables();
-
-            $tables = [];
-            foreach ($tableSchemas as $schema) {
-                $records = $database->select()->from($schema->getName())->count();
-                $tables[] = [
-                    'table' => $schema->getName(),
-                    'primaryKeys' => $schema->getPrimaryKeys(),
-                    'columns' => $this->serializeCycleColumnsSchemas($schema->getColumns()),
-                    'records' => $records,
-                ];
-            }
-
-            return $this->responseFactory->createResponse($tables);
-        }
-
-        if ($container->has(ConnectionInterface::class)) {
-            $connection = $container->get(ConnectionInterface::class);
-            /** @var TableSchemaInterface[] $tableSchemas */
-            $tableSchemas = $connection->getSchema()->getTableSchemas();
-
-            $tables = [];
-            foreach ($tableSchemas as $schema) {
-                $activeQuery = $arFactory->createQueryTo(Common::class, $schema->getName());
-
-                /**
-                 * @var Common[] $records
-                 */
-                $records = $activeQuery->count();
-
-                $tables[] = [
-                    'table' => $schema->getName(),
-                    'primaryKeys' => $schema->getPrimaryKey(),
-                    'columns' => $this->serializeARColumnsSchemas($schema->getColumns()),
-                    'records' => $records,
-                ];
-            }
-
-            return $this->responseFactory->createResponse($tables);
-        }
-
-        throw new LogicException(sprintf(
-            'Inspecting database is not available. Configure "%s" service to be able to inspect database.',
-            ConnectionInterface::class,
-        ));
+    public function getTables(SchemaProviderInterface $schemaProvider,): ResponseInterface
+    {
+        return $this->responseFactory->createResponse($schemaProvider->getTables());
     }
 
-    public function getTable(
-        ContainerInterface $container,
-        ActiveRecordFactory $arFactory,
-        CurrentRoute $currentRoute,
-    ): ResponseInterface {
+    public function getTable(SchemaProviderInterface $schemaProvider, CurrentRoute $currentRoute,): ResponseInterface
+    {
         $tableName = $currentRoute->getArgument('name');
 
-        if ($container->has(DatabaseProviderInterface::class)) {
-            $databaseProvider = $container->get(DatabaseProviderInterface::class);
-            $database = $databaseProvider->database();
-            $schema = $database->table($tableName);
-
-            $result = [
-                'table' => $schema->getName(),
-                'primaryKeys' => $schema->getPrimaryKeys(),
-                'columns' => $this->serializeCycleColumnsSchemas($schema->getColumns()),
-                'records' => $database->select()->from($tableName)->fetchAll(),
-            ];
-
-            return $this->responseFactory->createResponse($result);
-        }
-
-        if ($container->has(ConnectionInterface::class)) {
-            $connection = $container->get(ConnectionInterface::class);
-            /** @var TableSchemaInterface[] $tableSchemas */
-            $schema = $connection->getSchema()->getTableSchema($tableName);
-
-            $activeQuery = $arFactory->createQueryTo(Common::class, $schema->getName());
-
-            /**
-             * @var Common[] $records
-             */
-            $records = $activeQuery->all();
-
-            $data = [];
-            // TODO: add pagination
-            foreach ($records as $n => $record) {
-                foreach ($record->attributes() as $attribute) {
-                    $data[$n][$attribute] = $record->{$attribute};
-                }
-            }
-
-            $result = [
-                'table' => $schema->getName(),
-                'primaryKeys' => $schema->getPrimaryKey(),
-                'columns' => $this->serializeARColumnsSchemas($schema->getColumns()),
-                'records' => $data,
-            ];
-
-            return $this->responseFactory->createResponse($result);
-        }
-
-        throw new LogicException(sprintf(
-            'Inspecting database is not available. Configure "%s" service to be able to inspect database.',
-            ConnectionInterface::class,
-        ));
+        return $this->responseFactory->createResponse($schemaProvider->getTable($tableName));
     }
 
-    public function request(ServerRequestInterface $request, CollectorRepositoryInterface $collectorRepository): ResponseInterface
-    {
+    public function request(
+        ServerRequestInterface $request,
+        CollectorRepositoryInterface $collectorRepository
+    ): ResponseInterface {
         $request = $request->getQueryParams();
         $debugEntryId = $request['debugEntryId'] ?? null;
 
@@ -550,43 +447,5 @@ class InspectController
         ];
     }
 
-    /**
-     * @param ColumnSchemaInterface[] $columns
-     */
-    private function serializeARColumnsSchemas(array $columns): array
-    {
-        $result = [];
-        foreach ($columns as $columnSchema) {
-            $result[] = [
-                'name' => $columnSchema->getName(),
-                'size' => $columnSchema->getSize(),
-                'type' => $columnSchema->getType(),
-                'dbType' => $columnSchema->getDbType(),
-                'defaultValue' => $columnSchema->getDefaultValue(),
-                'comment' => $columnSchema->getComment(),
-                'allowNull' => $columnSchema->isAllowNull(),
-            ];
-        }
-        return $result;
-    }
 
-    /**
-     * @param ColumnInterface[] $columns
-     */
-    private function serializeCycleColumnsSchemas(array $columns): array
-    {
-        $result = [];
-        foreach ($columns as $columnSchema) {
-            $result[] = [
-                'name' => $columnSchema->getName(),
-                'size' => $columnSchema->getSize(),
-                'type' => $columnSchema->getInternalType(),
-                'dbType' => $columnSchema->getType(),
-                'defaultValue' => $columnSchema->getDefaultValue(),
-                'comment' => null, // unsupported for now
-                'allowNull' => $columnSchema->isNullable(),
-            ];
-        }
-        return $result;
-    }
 }
