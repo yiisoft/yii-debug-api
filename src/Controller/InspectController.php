@@ -8,7 +8,6 @@ use FilesystemIterator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Message;
 use InvalidArgumentException;
-use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,7 +19,6 @@ use Throwable;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
-use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Translator\CategorySource;
@@ -365,12 +363,12 @@ class InspectController
         ]);
     }
 
-    public function getTables(SchemaProviderInterface $schemaProvider,): ResponseInterface
+    public function getTables(SchemaProviderInterface $schemaProvider): ResponseInterface
     {
         return $this->responseFactory->createResponse($schemaProvider->getTables());
     }
 
-    public function getTable(SchemaProviderInterface $schemaProvider, CurrentRoute $currentRoute,): ResponseInterface
+    public function getTable(SchemaProviderInterface $schemaProvider, CurrentRoute $currentRoute): ResponseInterface
     {
         $tableName = $currentRoute->getArgument('name');
 
@@ -446,6 +444,4 @@ class InspectController
             'permissions' => substr(sprintf('%o', $file->getPerms()), -4),
         ];
     }
-
-
 }
