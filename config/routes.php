@@ -97,5 +97,8 @@ return [
             Route::put('/translations')
                 ->action([InspectController::class, 'putTranslation'])
                 ->name('putTranslation'),
+            Route::put('/request')
+                ->action([InspectController::class, 'request'])
+                ->name('request'),
         ),
 ];

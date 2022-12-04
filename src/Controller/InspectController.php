@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use FilesystemIterator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Message;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,6 +24,8 @@ use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
+use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Collector\RequestCollector;
 
 class InspectController
 {
@@ -355,6 +359,24 @@ class InspectController
             'result' => $result->getResult(),
             'error' => $result->getErrors(),
         ]);
+    }
+
+    public function request(ServerRequestInterface $request, CollectorRepositoryInterface $collectorRepository): ResponseInterface
+    {
+        $request = $request->getQueryParams();
+        $debugEntryId = $request['debugEntryId'] ?? null;
+
+        $data = $collectorRepository->getDetail($debugEntryId);
+        $rawRequest = $data[RequestCollector::class]['requestRaw'];
+
+        $request = Message::parseRequest($rawRequest);
+
+        $client = new Client();
+        $response = $client->send($request);
+
+        $result = VarDumper::create($response)->asPrimitives();
+
+        return $this->responseFactory->createResponse($result);
     }
 
     private function removeBasePath(string $rootPath, string $path): string|array|null
