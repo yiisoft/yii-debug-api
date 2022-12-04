@@ -7,6 +7,8 @@ namespace Yiisoft\Yii\Debug\Api\Controller;
 use Cycle\Database\ColumnInterface;
 use Cycle\Database\DatabaseProviderInterface;
 use FilesystemIterator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Message;
 use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerInterface;
@@ -21,6 +23,7 @@ use Yiisoft\ActiveRecord\ActiveRecordFactory;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Schema\ColumnSchemaInterface;
@@ -30,6 +33,8 @@ use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ActiveRecord\Common;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
+use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Collector\RequestCollector;
 
 class InspectController
 {
@@ -288,6 +293,25 @@ class InspectController
         return $this->responseFactory->createResponse($result);
     }
 
+    public function routes(RouteCollectionInterface $routeCollection): ResponseInterface
+    {
+        $routes = [];
+        foreach ($routeCollection->getRoutes() as $route) {
+            $data = $route->__debugInfo();
+            $routes[] = [
+                'name' => $data['name'],
+                'hosts' => $data['hosts'],
+                'pattern' => $data['pattern'],
+                'methods' => $data['methods'],
+                'defaults' => $data['defaults'],
+                'override' => $data['override'],
+                'middlewares' => $data['middlewareDefinitions'],
+            ];
+        }
+        $response = VarDumper::create($routes)->asJson(false, 5);
+        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+    }
+
     public function runCommand(
         ServerRequestInterface $request,
         ContainerInterface $container,
@@ -456,6 +480,24 @@ class InspectController
             'Inspecting database is not available. Configure "%s" service to be able to inspect database.',
             ConnectionInterface::class,
         ));
+    }
+
+    public function request(ServerRequestInterface $request, CollectorRepositoryInterface $collectorRepository): ResponseInterface
+    {
+        $request = $request->getQueryParams();
+        $debugEntryId = $request['debugEntryId'] ?? null;
+
+        $data = $collectorRepository->getDetail($debugEntryId);
+        $rawRequest = $data[RequestCollector::class]['requestRaw'];
+
+        $request = Message::parseRequest($rawRequest);
+
+        $client = new Client();
+        $response = $client->send($request);
+
+        $result = VarDumper::create($response)->asPrimitives();
+
+        return $this->responseFactory->createResponse($result);
     }
 
     private function removeBasePath(string $rootPath, string $path): string|array|null
