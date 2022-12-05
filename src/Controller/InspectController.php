@@ -19,11 +19,13 @@ use Throwable;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
+use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Collector\RequestCollector;
 
@@ -361,8 +363,22 @@ class InspectController
         ]);
     }
 
-    public function request(ServerRequestInterface $request, CollectorRepositoryInterface $collectorRepository): ResponseInterface
+    public function getTables(SchemaProviderInterface $schemaProvider): ResponseInterface
     {
+        return $this->responseFactory->createResponse($schemaProvider->getTables());
+    }
+
+    public function getTable(SchemaProviderInterface $schemaProvider, CurrentRoute $currentRoute): ResponseInterface
+    {
+        $tableName = $currentRoute->getArgument('name');
+
+        return $this->responseFactory->createResponse($schemaProvider->getTable($tableName));
+    }
+
+    public function request(
+        ServerRequestInterface $request,
+        CollectorRepositoryInterface $collectorRepository
+    ): ResponseInterface {
         $request = $request->getQueryParams();
         $debugEntryId = $request['debugEntryId'] ?? null;
 

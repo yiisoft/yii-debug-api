@@ -16,6 +16,10 @@
         "PHPUnit\\Framework\\Warning",
         "PHPUnit\\Runner\\BaseTestRunner",
         "PHPUnit\\TextUI\\ResultPrinter",
-        "PHPUnit\\Util\\TestDox\\NamePrettifier"
+        "PHPUnit\\Util\\TestDox\\NamePrettifier",
+        "Cycle\\Database\\DatabaseProviderInterface",
+        "Yiisoft\\ActiveRecord\\ActiveRecord",
+        "Yiisoft\\ActiveRecord\\ActiveRecordFactory",
+        "Yiisoft\\Db\\Connection\\ConnectionInterface"
     ]
 }
