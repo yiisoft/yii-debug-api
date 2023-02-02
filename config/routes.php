@@ -108,7 +108,6 @@ return [
                 ->action([InspectController::class, 'request'])
                 ->name('request'),
             Group::create('/git')
-                ->withCors(Cors::class)
                 ->namePrefix('/git')
                 ->routes(
                     Route::get('/summary')
@@ -120,6 +119,9 @@ return [
                     Route::post('/command')
                         ->action([GitController::class, 'command'])
                         ->name('command'),
+                    Route::get('/log')
+                        ->action([GitController::class, 'log'])
+                        ->name('log'),
                 )
         ),
 ];

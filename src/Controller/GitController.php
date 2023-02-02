@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
+use GitElephant\Objects\Commit;
 use GitElephant\Objects\Remote;
 use GitElephant\Repository;
 use InvalidArgumentException;
@@ -29,21 +30,29 @@ final class GitController
         $branch = $git->getMainBranch();
         $result = [
             'currentBranch' => $branch->getName(),
+            'sha' => $branch->getSha(),
             'remotes' => array_map(fn (Remote $repo) => [
                 'name' => $repo->getName(),
                 'branches' => array_keys($repo->getBranches()),
                 'url' => $repo->getFetchURL(),
             ], $git->getRemotes(false)),
             'branches' => $git->getBranches(true),
-            'lastCommit' => [
-                'ref' => $branch->getLastCommit()->getSha(true),
-                'message' => $branch->getLastCommit()->getMessage()->getShortMessage(),
-                'author' => [
-                    'name' => $branch->getLastCommit()->getAuthor()->getName(),
-                    'email' => $branch->getLastCommit()->getAuthor()->getEmail(),
-                ],
-            ],
+            'lastCommit' => $this->serializeCommit($branch->getLastCommit()),
             'status' => $git->getStatusOutput(),
+        ];
+        $response = VarDumper::create($result)->asJson(false, 255);
+        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+    }
+
+    public function log(): ResponseInterface
+    {
+        $git = $this->getGit();
+
+        $branch = $git->getMainBranch();
+        $result = [
+            'currentBranch' => $branch->getName(),
+            'sha' => $branch->getSha(),
+            'commits' => array_map($this->serializeCommit(...), $git->getLog(limit: 20)->toArray()),
         ];
         $response = VarDumper::create($result)->asJson(false, 255);
         return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
@@ -111,6 +120,18 @@ final class GitController
                 $projectPath,
             )
         );
+    }
+
+    private function serializeCommit(?Commit $commit): array
+    {
+        return $commit === null ? [] : [
+            'sha' => $commit->getSha(true),
+            'message' => $commit->getMessage()->getShortMessage(),
+            'author' => [
+                'name' => $commit->getAuthor()->getName(),
+                'email' => $commit->getAuthor()->getEmail(),
+            ],
+        ];
     }
 
 }
