@@ -63,6 +63,34 @@ final class GitController
         return $this->responseFactory->createResponse([]);
     }
 
+    public function command(ServerRequestInterface $request): ResponseInterface
+    {
+        $git = $this->getGit();
+        $availableCommands = ['pull', 'fetch'];
+
+        $command = $request->getQueryParams()['command'] ?? null;
+
+        if ($command === null) {
+            throw new InvalidArgumentException('Command should not be empty.');
+        }
+        if (!in_array($command, $availableCommands, true)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unknown command "%s". Available commands: "%s".',
+                    $command,
+                    implode('", "', $availableCommands),
+                )
+            );
+        }
+
+        if ($command === 'pull') {
+            $git->pull(rebase: false);
+        } elseif ($command === 'fetch') {
+            $git->fetch(tags: true);
+        }
+        return $this->responseFactory->createResponse([]);
+    }
+
     private function getGit(): Repository
     {
         $projectPath = $this->aliases->get('@root');
