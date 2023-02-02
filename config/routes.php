@@ -9,12 +9,13 @@ use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 use Yiisoft\Validator\ValidatorInterface;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
+use Yiisoft\Yii\Debug\Api\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Controller\InspectController;
 use Yiisoft\Yii\Debug\Api\Middleware\Cors;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
 use Yiisoft\Yii\Middleware\IpFilter;
 
-if (!(bool)($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
+if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
     return [];
 }
 
@@ -106,5 +107,15 @@ return [
             Route::put('/request')
                 ->action([InspectController::class, 'request'])
                 ->name('request'),
+            Group::create('/git')
+                ->namePrefix('/git')
+                ->routes(
+                    Route::get('/summary')
+                        ->action([GitController::class, 'summary'])
+                        ->name('summary'),
+                    Route::post('/checkout')
+                        ->action([GitController::class, 'checkout'])
+                        ->name('checkout'),
+                )
         ),
 ];
