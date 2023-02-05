@@ -122,6 +122,9 @@ return [
                     Route::get('/log')
                         ->action([GitController::class, 'log'])
                         ->name('log'),
-                )
+                ),
+            Route::get('/phpinfo')
+                ->action([InspectController::class, 'phpinfo'])
+                ->name('phpinfo'),
         ),
 ];

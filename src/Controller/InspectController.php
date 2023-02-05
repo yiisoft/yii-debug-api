@@ -263,6 +263,16 @@ class InspectController
         ]);
     }
 
+    public function phpinfo(): ResponseInterface
+    {
+        ob_start();
+        phpinfo();
+        $phpinfo = ob_get_contents();
+        ob_get_clean();
+
+        return $this->responseFactory->createResponse($phpinfo);
+    }
+
     public function getCommands(ConfigInterface $config): ResponseInterface
     {
         $params = $config->get('params');
