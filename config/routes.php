@@ -106,5 +106,8 @@ return [
             Route::put('/request')
                 ->action([InspectController::class, 'request'])
                 ->name('request'),
+            Route::get('/phpinfo')
+                ->action([InspectController::class, 'phpinfo'])
+                ->name('phpinfo'),
         ),
 ];
