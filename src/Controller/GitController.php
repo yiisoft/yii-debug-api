@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
-use GitElephant\Objects\Commit;
-use GitElephant\Objects\Remote;
-use GitElephant\Repository;
+use Gitonomy\Git\Commit;
+use Gitonomy\Git\Reference\Branch;
+use Gitonomy\Git\Repository;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,18 +27,22 @@ final class GitController
     {
         $git = $this->getGit();
 
-        $branch = $git->getMainBranch();
+        $references = $git->getReferences();
+        $name = trim($git->run('branch', ['--show-current']));
+        $branch = $references->getBranch($name);
+        $branches = $references->getBranches();
+        $remoteNames = explode("\n", trim($git->run('remote')));
+
         $result = [
             'currentBranch' => $branch->getName(),
-            'sha' => $branch->getSha(),
-            'remotes' => array_map(fn (Remote $repo) => [
-                'name' => $repo->getName(),
-                'branches' => array_keys($repo->getBranches()),
-                'url' => $repo->getFetchURL(),
-            ], $git->getRemotes(false)),
-            'branches' => $git->getBranches(true),
-            'lastCommit' => $this->serializeCommit($branch->getLastCommit()),
-            'status' => $git->getStatusOutput(),
+            'sha' => $branch->getCommitHash(),
+            'remotes' => array_map(fn (string $name) => [
+                'name' => $name,
+                'url' => trim($git->run('remote', ['get-url', $name])),
+            ], $remoteNames),
+            'branches' => array_map(fn (Branch $branch) => $branch->getName(), $branches),
+            'lastCommit' => $this->serializeCommit($branch->getCommit()),
+            'status' => explode("\n", $git->run('status')),
         ];
         $response = VarDumper::create($result)->asJson(false, 255);
         return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
@@ -48,11 +52,13 @@ final class GitController
     {
         $git = $this->getGit();
 
-        $branch = $git->getMainBranch();
+        $references = $git->getReferences(false);
+        $name = trim($git->run('branch', ['--show-current']));
+        $branch = $references->getBranch($name);
         $result = [
             'currentBranch' => $branch->getName(),
-            'sha' => $branch->getSha(),
-            'commits' => array_map($this->serializeCommit(...), $git->getLog(limit: 20)->toArray()),
+            'sha' => $branch->getCommitHash(),
+            'commits' => array_map([$this, 'serializeCommit'], $git->getLog(limit: 20)->getCommits()),
         ];
         $response = VarDumper::create($result)->asJson(false, 255);
         return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
@@ -68,7 +74,7 @@ final class GitController
             throw new InvalidArgumentException('Branch should not be empty.');
         }
 
-        $git->checkout($branch);
+        $git->getWorkingCopy()->checkout($branch);
         return $this->responseFactory->createResponse([]);
     }
 
@@ -93,9 +99,9 @@ final class GitController
         }
 
         if ($command === 'pull') {
-            $git->pull(rebase: false);
+            $git->run('pull', ['--rebase=false']);
         } elseif ($command === 'fetch') {
-            $git->fetch(tags: true);
+            $git->run('fetch', ['--tags']);
         }
         return $this->responseFactory->createResponse([]);
     }
@@ -107,7 +113,7 @@ final class GitController
         while ($projectPath !== '/') {
             try {
                 $git = new Repository($projectPath);
-                $git->getStatus();
+                $git->getWorkingCopy();
                 return $git;
             } catch (Throwable) {
                 $projectPath = dirname($projectPath);
@@ -125,11 +131,11 @@ final class GitController
     private function serializeCommit(?Commit $commit): array
     {
         return $commit === null ? [] : [
-            'sha' => $commit->getSha(true),
-            'message' => $commit->getMessage()->getShortMessage(),
+            'sha' => $commit->getShortHash(),
+            'message' => $commit->getSubjectMessage(),
             'author' => [
-                'name' => $commit->getAuthor()->getName(),
-                'email' => $commit->getAuthor()->getEmail(),
+                'name' => $commit->getAuthorName(),
+                'email' => $commit->getAuthorEmail(),
             ],
         ];
     }
