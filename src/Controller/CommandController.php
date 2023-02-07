@@ -124,7 +124,7 @@ class CommandController
         $result = [];
         $composerJsonPath = $aliases->get('@root/composer.json');
         if (file_exists($composerJsonPath)) {
-            $composerJsonCommands = json_decode(file_get_contents($composerJsonPath), true);
+            $composerJsonCommands = json_decode(file_get_contents($composerJsonPath), true, 512, JSON_THROW_ON_ERROR);
             if (is_array($composerJsonCommands) && isset($composerJsonCommands['scripts'])) {
                 $scripts = $composerJsonCommands['scripts'];
                 foreach ($scripts as $name => $script) {
