@@ -107,7 +107,7 @@ class CommandController
         $commandClass = $commandList[$commandName];
         if (is_string($commandClass) && $container->has($commandClass)) {
             $command = $container->get($commandClass);
-        }else{
+        } else {
             $command = new BashCommand($aliases, (array)$commandClass);
         }
         $result = $command->run();

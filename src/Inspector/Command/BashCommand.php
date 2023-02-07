@@ -14,8 +14,7 @@ final class BashCommand implements CommandInterface
     public function __construct(
         private Aliases $aliases,
         private array $command,
-    )
-    {
+    ) {
     }
 
     public static function getTitle(): string
