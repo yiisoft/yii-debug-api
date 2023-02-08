@@ -9,6 +9,7 @@ use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 use Yiisoft\Validator\ValidatorInterface;
 use Yiisoft\Yii\Debug\Api\Controller\CommandController;
+use Yiisoft\Yii\Debug\Api\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
 use Yiisoft\Yii\Debug\Api\Controller\InspectController;
 use Yiisoft\Yii\Debug\Api\Middleware\Cors;
@@ -113,6 +114,19 @@ return [
                     Route::post('[/]')
                         ->action([CommandController::class, 'run'])
                         ->name('/run'),
-                )
+                ),
+            Group::create('/composer')
+                ->namePrefix('composer')
+                ->routes(
+                    Route::get('[/]')
+                        ->action([ComposerController::class, 'index'])
+                        ->name('/index'),
+                    Route::get('/inspect')
+                        ->action([ComposerController::class, 'inspect'])
+                        ->name('/inspect'),
+                    Route::post('/require')
+                        ->action([ComposerController::class, 'require'])
+                        ->name('/require'),
+                ),
         ),
 ];
