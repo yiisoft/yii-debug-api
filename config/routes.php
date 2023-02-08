@@ -11,6 +11,7 @@ use Yiisoft\Validator\ValidatorInterface;
 use Yiisoft\Yii\Debug\Api\Controller\CommandController;
 use Yiisoft\Yii\Debug\Api\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
+use Yiisoft\Yii\Debug\Api\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Controller\InspectController;
 use Yiisoft\Yii\Debug\Api\Middleware\Cors;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
@@ -102,6 +103,22 @@ return [
             Route::put('/request')
                 ->action([InspectController::class, 'request'])
                 ->name('request'),
+            Group::create('/git')
+                ->namePrefix('/git')
+                ->routes(
+                    Route::get('/summary')
+                        ->action([GitController::class, 'summary'])
+                        ->name('summary'),
+                    Route::post('/checkout')
+                        ->action([GitController::class, 'checkout'])
+                        ->name('checkout'),
+                    Route::post('/command')
+                        ->action([GitController::class, 'command'])
+                        ->name('command'),
+                    Route::get('/log')
+                        ->action([GitController::class, 'log'])
+                        ->name('log'),
+                ),
             Route::get('/phpinfo')
                 ->action([InspectController::class, 'phpinfo'])
                 ->name('phpinfo'),
