@@ -33,9 +33,9 @@ final class ComposerController
             );
         }
         $result = [
-            'json' => json_decode(file_get_contents($composerJsonPath), true),
+            'json' => json_decode(file_get_contents($composerJsonPath), true, 512, JSON_THROW_ON_ERROR),
             'lock' => file_exists($composerLockPath)
-                ? json_decode(file_get_contents($composerLockPath), true)
+                ? json_decode(file_get_contents($composerLockPath), true, 512, JSON_THROW_ON_ERROR)
                 : null,
         ];
 
@@ -58,7 +58,7 @@ final class ComposerController
         return $this->responseFactory->createResponse([
             'status' => $result->getStatus(),
             'result' => $result->getStatus() === CommandResponse::STATUS_OK
-                ? json_decode($result->getResult(), true)
+                ? json_decode($result->getResult(), true, 512, JSON_THROW_ON_ERROR)
                 : null,
             'errors' => $result->getErrors(),
         ]);
@@ -89,7 +89,7 @@ final class ComposerController
         return $this->responseFactory->createResponse([
             'status' => $result->getStatus(),
             'result' => $result->getStatus() === CommandResponse::STATUS_OK
-                ? json_decode($result->getResult(), true)
+                ? json_decode($result->getResult(), true, 512, JSON_THROW_ON_ERROR)
                 : null,
             'errors' => $result->getErrors(),
         ]);
