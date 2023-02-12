@@ -78,9 +78,9 @@
         "config-plugin": {
             "bootstrap-web": "bootstrap-web.php",
             "params": "params.php",
-            "web": "web.php",
+            "di-web": "di-web.php",
             "routes": "routes.php",
-            "providers-web": "providers-web.php"
+            "di-providers-web": "di-providers-web.php"
         }
     },
     "scripts": {
