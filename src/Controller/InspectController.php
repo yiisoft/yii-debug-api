@@ -206,7 +206,7 @@ class InspectController
         return $this->responseFactory->createResponse($files);
     }
 
-    public function classes(ContainerInterface $container): ResponseInterface
+    public function classes(): ResponseInterface
     {
         // TODO: how to get params for console or other param groups?
         $classes = [];
@@ -228,7 +228,7 @@ class InspectController
         foreach ($inspected as $className) {
             $class = new ReflectionClass($className);
 
-            if ($class->isInternal()) {
+            if ($class->isInternal() || $class->isAbstract() || $class->isAnonymous()) {
                 continue;
             }
 
