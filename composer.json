@@ -33,7 +33,7 @@
         "symfony/process": "^5.4|^6.0",
         "yiisoft/aliases": "^2.0",
         "yiisoft/config": "^1.1",
-        "yiisoft/data-response": "^1.0",
+        "yiisoft/data-response": "^2.0",
         "yiisoft/di": "^1.0",
         "yiisoft/http": "^1.2",
         "yiisoft/router": "^2.0",
