@@ -97,7 +97,6 @@ final class ResponseDataWrapper implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $status = Status::OK;
         $data = [
             'id' => $this->currentRoute->getArgument('id'),
             'data' => null,
@@ -108,6 +107,10 @@ final class ResponseDataWrapper implements MiddlewareInterface
             /** @var DataResponse $response */
             $response = $handler->handle($request);
             $data['data'] = $response->getData();
+            $status = $response->getStatusCode();
+            if ($status >= 400) {
+                $data['success'] = false;
+            }
         } catch (NotFoundException $exception) {
             $data['success'] = false;
             $data['error'] = $exception->getMessage();
