@@ -145,7 +145,7 @@ class InspectController
             $destination = $reflection->getFileName();
             if ($destination === false) {
                 return $this->responseFactory->createResponse([
-                    'message' => sprintf('Cannot find source of class "%s".', $class)
+                    'message' => sprintf('Cannot find source of class "%s".', $class),
                 ], 404);
             }
             return $this->readFile($destination);
