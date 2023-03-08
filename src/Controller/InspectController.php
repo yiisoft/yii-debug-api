@@ -26,7 +26,7 @@ use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
-use Yiisoft\Yii\Debug\Collector\RequestCollector;
+use Yiisoft\Yii\Debug\Collector\Web\RequestCollector;
 
 class InspectController
 {
