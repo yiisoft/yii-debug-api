@@ -24,7 +24,6 @@ use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
-use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Collector\RequestCollector;
@@ -207,7 +206,7 @@ class InspectController
         return $this->responseFactory->createResponse($files);
     }
 
-    public function classes(ContainerInterface $container): ResponseInterface
+    public function classes(): ResponseInterface
     {
         // TODO: how to get params for console or other param groups?
         $classes = [];
@@ -229,7 +228,7 @@ class InspectController
         foreach ($inspected as $className) {
             $class = new ReflectionClass($className);
 
-            if ($class->isInternal()) {
+            if ($class->isInternal() || $class->isAbstract() || $class->isAnonymous()) {
                 continue;
             }
 
@@ -263,27 +262,14 @@ class InspectController
         ]);
     }
 
-    public function getCommands(ConfigInterface $config): ResponseInterface
+    public function phpinfo(): ResponseInterface
     {
-        $params = $config->get('params');
-        $commandMap = $params['yiisoft/yii-debug-api']['inspector']['commandMap'] ?? [];
+        ob_start();
+        phpinfo();
+        $phpinfo = ob_get_contents();
+        ob_get_clean();
 
-        $result = [];
-        foreach ($commandMap as $groupName => $commands) {
-            foreach ($commands as $name => $command) {
-                if (!is_subclass_of($command, CommandInterface::class)) {
-                    continue;
-                }
-                $result[] = [
-                    'name' => $name,
-                    'title' => $command::getTitle(),
-                    'group' => $groupName,
-                    'description' => $command::getDescription(),
-                ];
-            }
-        }
-
-        return $this->responseFactory->createResponse($result);
+        return $this->responseFactory->createResponse($phpinfo);
     }
 
     public function routes(RouteCollectionInterface $routeCollection): ResponseInterface
@@ -303,64 +289,6 @@ class InspectController
         }
         $response = VarDumper::create($routes)->asJson(false, 5);
         return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
-    }
-
-    public function runCommand(
-        ServerRequestInterface $request,
-        ContainerInterface $container,
-        ConfigInterface $config
-    ): ResponseInterface {
-        $params = $config->get('params');
-        $commandMap = $params['yiisoft/yii-debug-api']['inspector']['commandMap'] ?? [];
-
-        /**
-         * @var array<string, class-string<CommandInterface>> $commandList
-         */
-        $commandList = [];
-        foreach ($commandMap as $commands) {
-            foreach ($commands as $name => $command) {
-                if (!is_subclass_of($command, CommandInterface::class)) {
-                    continue;
-                }
-                $commandList[$name] = $command;
-            }
-        }
-
-        $request = $request->getQueryParams();
-        $commandName = $request['command'] ?? null;
-
-        if ($commandName === null) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Command must not be null. Available commands: "%s".',
-                    implode('", "', $commandList)
-                )
-            );
-        }
-
-        if (!array_key_exists($commandName, $commandList)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Unknown command "%s". Available commands: "%s".',
-                    $commandName,
-                    implode('", "', $commandList)
-                )
-            );
-        }
-
-        $commandClass = $commandList[$commandName];
-        /**
-         * @var $command CommandInterface
-         */
-        $command = $container->get($commandClass);
-
-        $result = $command->run();
-
-        return $this->responseFactory->createResponse([
-            'status' => $result->getStatus(),
-            'result' => $result->getResult(),
-            'error' => $result->getErrors(),
-        ]);
     }
 
     public function getTables(SchemaProviderInterface $schemaProvider): ResponseInterface
