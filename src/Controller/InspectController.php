@@ -18,6 +18,7 @@ use SplFileInfo;
 use Throwable;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
+use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Router\RouteCollectionInterface;
@@ -32,6 +33,7 @@ class InspectController
 {
     public function __construct(
         private DataResponseFactoryInterface $responseFactory,
+        private Aliases $aliases,
     ) {
     }
 
@@ -40,7 +42,7 @@ class InspectController
         $config = $container->get(ConfigInterface::class);
 
         $request = $request->getQueryParams();
-        $group = $request['group'] ?? 'web';
+        $group = $request['group'] ?? 'di';
 
         $data = $config->get($group);
         ksort($data);
@@ -133,38 +135,42 @@ class InspectController
         return $this->responseFactory->createResponse($params);
     }
 
-    public function files(Aliases $aliases, ServerRequestInterface $request): ResponseInterface
+    public function files(ServerRequestInterface $request): ResponseInterface
     {
         $request = $request->getQueryParams();
+        $class = $request['class'] ?? '';
+
+        if (!empty($class) && class_exists($class)) {
+            $reflection = new ReflectionClass($class);
+            $destination = $reflection->getFileName();
+            if ($destination === false) {
+                return $this->responseFactory->createResponse([
+                    'message' => sprintf('Cannot find source of class "%s".', $class),
+                ], 404);
+            }
+            return $this->readFile($destination);
+        }
+
         $path = $request['path'] ?? '';
 
-        $rootPath = $aliases->get('@root');
+        $rootPath = $this->aliases->get('@root');
 
         $destination = $this->removeBasePath($rootPath, $path);
 
-        if (!str_starts_with('/', $destination)) {
+        if (!str_starts_with($destination, '/')) {
             $destination = '/' . $destination;
         }
 
         $destination = realpath($rootPath . $destination);
 
-        if (!file_exists($destination)) {
-            throw new InvalidArgumentException(sprintf('Destination "%s" does not exist', $destination));
+        if ($destination === false) {
+            return $this->responseFactory->createResponse([
+                'message' => sprintf('Destination "%s" does not exist', $path),
+            ], 404);
         }
 
         if (!is_dir($destination)) {
-            $file = new SplFileInfo($destination);
-            return $this->responseFactory->createResponse(
-                array_merge(
-                    [
-                        'directory' => $this->removeBasePath($rootPath, dirname($destination)),
-                        'content' => file_get_contents($destination),
-                        'path' => $this->removeBasePath($rootPath, $destination),
-                        'absolutePath' => $destination,
-                    ],
-                    $this->serializeFileInfo($file)
-                )
-            );
+            return $this->readFile($destination);
         }
 
         /**
@@ -371,5 +377,22 @@ class InspectController
             'type' => $file->getType(),
             'permissions' => substr(sprintf('%o', $file->getPerms()), -4),
         ];
+    }
+
+    private function readFile(string $destination): DataResponse
+    {
+        $rootPath = $this->aliases->get('@root');
+        $file = new SplFileInfo($destination);
+        return $this->responseFactory->createResponse(
+            array_merge(
+                [
+                    'directory' => $this->removeBasePath($rootPath, dirname($destination)),
+                    'content' => file_get_contents($destination),
+                    'path' => $this->removeBasePath($rootPath, $destination),
+                    'absolutePath' => $destination,
+                ],
+                $this->serializeFileInfo($file)
+            )
+        );
     }
 }
