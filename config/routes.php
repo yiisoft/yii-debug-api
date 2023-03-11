@@ -8,6 +8,7 @@ use Yiisoft\DataResponse\Middleware\FormatDataResponseAsJson;
 use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 use Yiisoft\Validator\ValidatorInterface;
+use Yiisoft\Yii\Debug\Api\Controller\CacheController;
 use Yiisoft\Yii\Debug\Api\Controller\CommandController;
 use Yiisoft\Yii\Debug\Api\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
@@ -144,6 +145,19 @@ return [
                     Route::post('/require')
                         ->action([ComposerController::class, 'require'])
                         ->name('/require'),
+                ),
+            Group::create('/cache')
+                ->namePrefix('cache')
+                ->routes(
+                    Route::get('[/]')
+                        ->action([CacheController::class, 'view'])
+                        ->name('/view'),
+                    Route::delete('[/]')
+                        ->action([CacheController::class, 'delete'])
+                        ->name('/delete'),
+                    Route::post('/clear')
+                        ->action([CacheController::class, 'clear'])
+                        ->name('/clear'),
                 ),
         ),
 ];
