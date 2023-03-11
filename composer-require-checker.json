@@ -19,8 +19,8 @@
         "Yiisoft\\ActiveRecord\\ActiveRecord",
         "Yiisoft\\ActiveRecord\\ActiveRecordFactory",
         "Yiisoft\\Db\\Connection\\ConnectionInterface",
-        "Yiisoft\\Yii\\Debug\\Collector\\RequestCollector"
+        "Yiisoft\\Yii\\Debug\\Collector\\RequestCollector",
         "posix_getgrgid",
-        "posix_getpwuid",
+        "posix_getpwuid"
     ]
 }
