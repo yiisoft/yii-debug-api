@@ -23,7 +23,7 @@ class CacheController
         ServerRequestInterface $request,
         ContainerInterface $container,
     ): ResponseInterface {
-        $params = $request->getParsedBody();
+        $params = $request->getQueryParams();
         $key = $params['key'] ?? '';
 
         if ($key === '') {
@@ -54,7 +54,7 @@ class CacheController
         ServerRequestInterface $request,
         ContainerInterface $container,
     ): ResponseInterface {
-        $params = $request->getParsedBody();
+        $params = $request->getQueryParams();
         $key = $params['key'] ?? '';
 
         if ($key === '') {
@@ -80,15 +80,8 @@ class CacheController
     }
 
     public function clear(
-        ServerRequestInterface $request,
         ContainerInterface $container,
     ): ResponseInterface {
-        $params = $request->getParsedBody();
-        $key = $params['key'] ?? '';
-
-        if ($key === '') {
-            throw new RuntimeException('Cache key must not be empty.');
-        }
         if (!$container->has(CacheInterface::class)) {
             // TODO: fix message
             throw new RuntimeException(
