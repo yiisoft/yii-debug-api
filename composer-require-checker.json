@@ -1,13 +1,12 @@
 {
     "symbol-whitelist" : [
-        "Codeception\\Events",
         "Codeception\\Event\\FailEvent",
         "Codeception\\Event\\PrintResultEvent",
         "Codeception\\Event\\TestEvent",
+        "Codeception\\Events",
         "Codeception\\Extension",
         "Codeception\\Test\\Descriptor",
-        "posix_getgrgid",
-        "posix_getpwuid",
+        "Cycle\\Database\\DatabaseProviderInterface",
         "PHPUnit\\Framework\\AssertionFailedError",
         "PHPUnit\\Framework\\Test",
         "PHPUnit\\Framework\\TestCase",
@@ -17,9 +16,11 @@
         "PHPUnit\\Runner\\BaseTestRunner",
         "PHPUnit\\TextUI\\ResultPrinter",
         "PHPUnit\\Util\\TestDox\\NamePrettifier",
-        "Cycle\\Database\\DatabaseProviderInterface",
         "Yiisoft\\ActiveRecord\\ActiveRecord",
         "Yiisoft\\ActiveRecord\\ActiveRecordFactory",
-        "Yiisoft\\Db\\Connection\\ConnectionInterface"
+        "Yiisoft\\Db\\Connection\\ConnectionInterface",
+        "Yiisoft\\Yii\\Debug\\Collector\\RequestCollector"
+        "posix_getgrgid",
+        "posix_getpwuid",
     ]
 }
