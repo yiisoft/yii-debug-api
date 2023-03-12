@@ -11,6 +11,8 @@ use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Api\ViewProviderInterface;
+use Yiisoft\Yii\View\ViewRenderer;
 
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
@@ -133,7 +135,11 @@ final class DebugController
      *     )
      * )
      */
-    public function view(CurrentRoute $currentRoute, ServerRequestInterface $serverRequest): ResponseInterface
+    public function view(
+        CurrentRoute $currentRoute,
+        ServerRequestInterface $serverRequest,
+        ViewRenderer $viewRenderer,
+    ): ResponseInterface
     {
         $data = $this->collectorRepository->getDetail(
             $currentRoute->getArgument('id')
@@ -144,6 +150,13 @@ final class DebugController
             $data = $data[$collectorClass] ?? throw new NotFoundException(
                 sprintf("Requested collector doesn't exist: %s.", $collectorClass)
             );
+        }
+        if (is_subclass_of($collectorClass, ViewProviderInterface::class)) {
+            $viewDirectory = dirname($collectorClass::getView());
+            $viewPath = basename($collectorClass::getView());
+            return $viewRenderer
+                ->withViewPath($viewDirectory)
+                ->renderPartial($viewPath, ['data' => $data, 'collectorClass' => $collectorClass]);
         }
 
         return $this->responseFactory->createResponse($data);
