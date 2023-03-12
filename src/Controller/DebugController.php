@@ -139,8 +139,7 @@ final class DebugController
         CurrentRoute $currentRoute,
         ServerRequestInterface $serverRequest,
         ViewRenderer $viewRenderer,
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $data = $this->collectorRepository->getDetail(
             $currentRoute->getArgument('id')
         );
