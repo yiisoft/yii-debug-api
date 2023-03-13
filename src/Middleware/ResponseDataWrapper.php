@@ -22,7 +22,6 @@ use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
  *     allOf={
  *          @OA\Schema(ref="#/components/schemas/DebugResponse"),
  *          @OA\Schema(
- *
  *              @OA\Property(
  *                   description="ID",
  *                   title="ID",
@@ -54,13 +53,11 @@ use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
  *          )
  *     }
  * )
- *
  * @OA\Schema(
  *     schema="DebugNotFoundResponse",
  *     allOf={
  *          @OA\Schema(ref="#/components/schemas/DebugResponse"),
  *          @OA\Schema(
- *
  *              @OA\Property(
  *                   description="ID",
  *                   title="ID",
