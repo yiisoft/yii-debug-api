@@ -33,11 +33,14 @@ final class DebugController
      *     tags={"yii-debug-api"},
      *     path="/debug/api",
      *     description="List of requests processed",
+     *
      *     @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
@@ -56,28 +59,36 @@ final class DebugController
      *     tags={"yii-debug-api"},
      *     path="/debug/api/summary/{id}",
      *     description="Summary about a processed request identified by ID specified",
+     *
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
+     *
      *          @OA\Schema(type="string"),
      *          in="path",
      *          parameter="id",
      *          description="Request ID for getting the summary"
      *     ),
+     *
      *     @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
      *     ),
+     *
      *     @OA\Response(
      *          response="404",
      *          description="Not found",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
@@ -97,36 +108,46 @@ final class DebugController
      *     tags={"yii-debug-api"},
      *     path="/debug/api/view/{id}/?collector={collector}",
      *     description="Detail information about a processed request identified by ID",
+     *
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
+     *
      *          @OA\Schema(type="string"),
      *          in="path",
      *          parameter="id",
      *          description="Request ID for getting the detail information"
      *     ),
+     *
      *     @OA\Parameter(
      *          name="collector",
      *          allowEmptyValue=true,
+     *
      *          @OA\Schema(type="string"),
      *          in="query",
      *          parameter="collector",
      *          description="Collector for getting the detail information"
      *     ),
+     *
      *     @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
      *     ),
+     *
      *     @OA\Response(
      *          response="404",
      *          description="Not found",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
@@ -156,37 +177,47 @@ final class DebugController
      *     tags={"yii-debug-api"},
      *     path="/debug/api/dump/{id}/{collector}",
      *     description="Dump information about a processed request identified by ID",
+     *
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
+     *
      *          @OA\Schema(type="string"),
      *          in="path",
      *          parameter="id",
      *          description="Request ID for getting the dump information"
      *     ),
+     *
      *     @OA\Parameter(
      *          name="collector",
      *          allowEmptyValue=true,
      *          required=false,
+     *
      *          @OA\Schema(type="string"),
      *          in="path",
      *          parameter="collector",
      *          description="Collector for getting the dump information"
      *     ),
+     *
      *     @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
      *     ),
+     *
      *     @OA\Response(
      *          response="404",
      *          description="Not found",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
@@ -221,36 +252,46 @@ final class DebugController
      *     tags={"yii-debug-api"},
      *     path="/debug/api/object/{id}/{objectId}",
      *     description="Object information about a processed request identified by ID",
+     *
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
+     *
      *          @OA\Schema(type="string"),
      *          in="path",
      *          parameter="id",
      *          description="Request ID for getting the object information"
      *     ),
+     *
      *     @OA\Parameter(
      *          name="objectId",
      *          required=true,
+     *
      *          @OA\Schema(type="string"),
      *          in="path",
      *          parameter="objectId",
      *          description="ID for getting the object information"
      *     ),
+     *
      *     @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
      *     ),
+     *
      *     @OA\Response(
      *          response="404",
      *          description="Not found",
+     *
      *          @OA\JsonContent(
      *              allOf={
+     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
