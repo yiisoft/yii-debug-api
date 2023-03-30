@@ -15,7 +15,7 @@ final class CollectorRepository implements CollectorRepositoryInterface
 
     public function getSummary(?string $id = null): array
     {
-        $data = $this->loadData(StorageInterface::TYPE_INDEX, $id);
+        $data = $this->loadData(StorageInterface::TYPE_SUMMARY, $id);
         if ($id !== null) {
             return $data;
         }
