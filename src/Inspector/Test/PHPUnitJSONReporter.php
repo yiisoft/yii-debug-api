@@ -16,6 +16,9 @@ use PHPUnit\Util\TestDox\NamePrettifier;
 use ReflectionClass;
 use Throwable;
 
+/**
+ * @psalm-suppress InternalClass, InternalMethod
+ */
 class PHPUnitJSONReporter implements ResultPrinter
 {
     public const FILENAME = 'phpunit-report.json';

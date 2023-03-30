@@ -27,7 +27,7 @@ use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
-use Yiisoft\Yii\Debug\Collector\RequestCollector;
+use Yiisoft\Yii\Debug\Collector\Web\RequestCollector;
 
 class InspectController
 {
@@ -53,13 +53,12 @@ class InspectController
 
     public function getTranslations(ContainerInterface $container): ResponseInterface
     {
-        /**
-         * @var $categorySources CategorySource[]
-         */
+        /** @var CategorySource[] $categorySources */
         $categorySources = $container->get('tag@translation.categorySource');
 
         $params = ApplicationState::$params;
 
+        /** @var string[] $locales */
         $locales = array_keys($params['locale']['locales']);
         if ($locales === []) {
             throw new RuntimeException(
@@ -86,7 +85,7 @@ class InspectController
     public function putTranslation(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
     {
         /**
-         * @var $categorySources CategorySource[]
+         * @var CategorySource[] $categorySources
          */
         $categorySources = $container->get('tag@translation.categorySource');
 
@@ -173,9 +172,6 @@ class InspectController
             return $this->readFile($destination);
         }
 
-        /**
-         * @var $directoryIterator SplFileInfo[]
-         */
         $directoryIterator = new RecursiveDirectoryIterator(
             $destination,
             FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO
