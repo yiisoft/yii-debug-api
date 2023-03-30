@@ -47,8 +47,9 @@ class InspectController
         $data = $config->get($group);
         ksort($data);
 
-        $response = VarDumper::create($data)->asJson(false, 255);
-        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+        $response = VarDumper::create($data)->asPrimitives(255);
+
+        return $this->responseFactory->createResponse($response);
     }
 
     public function getTranslations(ContainerInterface $container): ResponseInterface
@@ -256,10 +257,10 @@ class InspectController
         }
 
         $variable = $container->get($className);
-        $result = VarDumper::create($variable)->asJson(false, 3);
+        $result = VarDumper::create($variable)->asPrimitives(3);
 
         return $this->responseFactory->createResponse([
-            'object' => json_decode($result, null, 512, JSON_THROW_ON_ERROR),
+            'object' => $result,
             'path' => $reflection->getFileName(),
         ]);
     }
@@ -289,8 +290,9 @@ class InspectController
                 'middlewares' => $data['middlewareDefinitions'],
             ];
         }
-        $response = VarDumper::create($routes)->asJson(false, 5);
-        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+        $response = VarDumper::create($routes)->asPrimitives(5);
+
+        return $this->responseFactory->createResponse($response);
     }
 
     public function getTables(SchemaProviderInterface $schemaProvider): ResponseInterface

@@ -44,8 +44,8 @@ final class GitController
             'lastCommit' => $this->serializeCommit($branch->getCommit()),
             'status' => explode("\n", $git->run('status')),
         ];
-        $response = VarDumper::create($result)->asJson(false, 255);
-        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+        $response = VarDumper::create($result)->asPrimitives(255);
+        return $this->responseFactory->createResponse($response);
     }
 
     public function log(): ResponseInterface
@@ -60,8 +60,8 @@ final class GitController
             'sha' => $branch->getCommitHash(),
             'commits' => array_map([$this, 'serializeCommit'], $git->getLog(limit: 20)->getCommits()),
         ];
-        $response = VarDumper::create($result)->asJson(false, 255);
-        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+        $response = VarDumper::create($result)->asPrimitives(255);
+        return $this->responseFactory->createResponse($response);
     }
 
     public function checkout(ServerRequestInterface $request): ResponseInterface

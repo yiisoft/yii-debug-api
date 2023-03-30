@@ -45,9 +45,9 @@ class CacheController
 
         $result = $cache->get($key);
 
-        $response = VarDumper::create($result)->asJson(false, 255);
+        $response = VarDumper::create($result)->asPrimitives(255);
 
-        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+        return $this->responseFactory->createResponse($response);
     }
 
     public function delete(
