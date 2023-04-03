@@ -27,7 +27,7 @@ use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
-use Yiisoft\Yii\Debug\Collector\RequestCollector;
+use Yiisoft\Yii\Debug\Collector\Web\RequestCollector;
 
 class InspectController
 {
@@ -47,19 +47,19 @@ class InspectController
         $data = $config->get($group);
         ksort($data);
 
-        $response = VarDumper::create($data)->asJson(false, 255);
-        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+        $response = VarDumper::create($data)->asPrimitives(255);
+
+        return $this->responseFactory->createResponse($response);
     }
 
     public function getTranslations(ContainerInterface $container): ResponseInterface
     {
-        /**
-         * @var $categorySources CategorySource[]
-         */
+        /** @var CategorySource[] $categorySources */
         $categorySources = $container->get('tag@translation.categorySource');
 
         $params = ApplicationState::$params;
 
+        /** @var string[] $locales */
         $locales = array_keys($params['locale']['locales']);
         if ($locales === []) {
             throw new RuntimeException(
@@ -86,7 +86,7 @@ class InspectController
     public function putTranslation(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
     {
         /**
-         * @var $categorySources CategorySource[]
+         * @var CategorySource[] $categorySources
          */
         $categorySources = $container->get('tag@translation.categorySource');
 
@@ -173,9 +173,6 @@ class InspectController
             return $this->readFile($destination);
         }
 
-        /**
-         * @var $directoryIterator SplFileInfo[]
-         */
         $directoryIterator = new RecursiveDirectoryIterator(
             $destination,
             FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO
@@ -260,10 +257,10 @@ class InspectController
         }
 
         $variable = $container->get($className);
-        $result = VarDumper::create($variable)->asJson(false, 3);
+        $result = VarDumper::create($variable)->asPrimitives(3);
 
         return $this->responseFactory->createResponse([
-            'object' => json_decode($result, null, 512, JSON_THROW_ON_ERROR),
+            'object' => $result,
             'path' => $reflection->getFileName(),
         ]);
     }
@@ -293,8 +290,9 @@ class InspectController
                 'middlewares' => $data['middlewareDefinitions'],
             ];
         }
-        $response = VarDumper::create($routes)->asJson(false, 5);
-        return $this->responseFactory->createResponse(json_decode($response, null, 512, JSON_THROW_ON_ERROR));
+        $response = VarDumper::create($routes)->asPrimitives(5);
+
+        return $this->responseFactory->createResponse($response);
     }
 
     public function getTables(SchemaProviderInterface $schemaProvider): ResponseInterface

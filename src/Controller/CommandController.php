@@ -14,6 +14,10 @@ use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\BashCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 
+use function array_key_exists;
+use function is_array;
+use function is_string;
+
 class CommandController
 {
     public function __construct(
@@ -64,9 +68,6 @@ class CommandController
         $params = $config->get('params');
         $commandMap = $params['yiisoft/yii-debug-api']['inspector']['commandMap'] ?? [];
 
-        /**
-         * @var array<string, class-string<CommandInterface>> $commandList
-         */
         $commandList = [];
         foreach ($commandMap as $commands) {
             foreach ($commands as $name => $command) {
@@ -89,7 +90,7 @@ class CommandController
             throw new InvalidArgumentException(
                 sprintf(
                     'Command must not be null. Available commands: "%s".',
-                    implode('", "', $commandList)
+                    implode('", "', array_keys($commandList))
                 )
             );
         }
@@ -99,7 +100,7 @@ class CommandController
                 sprintf(
                     'Unknown command "%s". Available commands: "%s".',
                     $commandName,
-                    implode('", "', $commandList)
+                    implode('", "', array_keys($commandList))
                 )
             );
         }
