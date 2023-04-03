@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use OpenApi\Annotations as OA;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Yiisoft\Assets\AssetManager;
+use Yiisoft\Assets\AssetPublisherInterface;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
+use Yiisoft\Yii\Debug\Api\HtmlViewProviderInterface;
+use Yiisoft\Yii\Debug\Api\ModuleFederationProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
-use Yiisoft\Yii\Debug\Api\ViewProviderInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 
 /**
@@ -159,7 +163,7 @@ final class DebugController
     public function view(
         CurrentRoute $currentRoute,
         ServerRequestInterface $serverRequest,
-        ViewRenderer $viewRenderer,
+        ContainerInterface $container,
     ): ResponseInterface {
         $data = $this->collectorRepository->getDetail(
             $currentRoute->getArgument('id')
@@ -171,12 +175,36 @@ final class DebugController
                 sprintf("Requested collector doesn't exist: %s.", $collectorClass)
             );
         }
-        if (is_subclass_of($collectorClass, ViewProviderInterface::class)) {
+        if (is_subclass_of($collectorClass, HtmlViewProviderInterface::class)) {
+            $viewRenderer = $container->get(ViewRenderer::class);
             $viewDirectory = dirname($collectorClass::getView());
             $viewPath = basename($collectorClass::getView());
+
             return $viewRenderer
                 ->withViewPath($viewDirectory)
                 ->renderPartial($viewPath, ['data' => $data, 'collectorClass' => $collectorClass]);
+        }
+        if (is_subclass_of($collectorClass, ModuleFederationProviderInterface::class)) {
+            $asset = $collectorClass::getAsset();
+            $module = $asset->getModule();
+            $scope = $asset->getScope();
+
+            $assetManager = $container->get(AssetManager::class);
+            $assetManager->register($asset::class);
+
+            $assetPublisher = $container->get(AssetPublisherInterface::class);
+            $assetPublisher->publish($asset);
+
+            $js = $assetManager->getJsFiles();
+
+            $urls = end($js);
+
+            return $this->responseFactory->createResponse([
+                '__isPanelRemote__' => true,
+                'url' => $urls[0],
+                'module' => $module,
+                'scope' => $scope,
+            ]);
         }
 
         return $this->responseFactory->createResponse($data);
