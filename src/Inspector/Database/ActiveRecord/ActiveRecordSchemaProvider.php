@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Inspector\ActiveRecord;
+namespace Yiisoft\Yii\Debug\Api\Inspector\Database\ActiveRecord;
 
 use Yiisoft\ActiveRecord\ActiveRecord;
 use Yiisoft\ActiveRecord\ActiveRecordFactory;
