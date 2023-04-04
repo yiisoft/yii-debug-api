@@ -204,6 +204,7 @@ final class DebugController
                 'url' => $urls[0],
                 'module' => $module,
                 'scope' => $scope,
+                'data' => $data,
             ]);
         }
 
