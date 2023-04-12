@@ -54,7 +54,7 @@
         "vimeo/psalm": "^4.30|^5.8",
         "yiisoft/active-record": "3.0.x-dev",
         "yiisoft/csrf": "^2.0",
-        "yiisoft/db": "9999999-dev",
+        "yiisoft/db": "^1.0",
         "yiisoft/psr-dummy-provider": "^1.0",
         "yiisoft/router-fastroute": "^3.0",
         "yiisoft/yii-cycle": "dev-master"
