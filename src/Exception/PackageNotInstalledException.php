@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Exception;
 
+use Exception;
+use Throwable;
 use Yiisoft\FriendlyException\FriendlyExceptionInterface;
 
-final class PackageNotInstalledException extends \Exception implements FriendlyExceptionInterface
+final class PackageNotInstalledException extends Exception implements FriendlyExceptionInterface
 {
     public function __construct(
         private string $packageName,

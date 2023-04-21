@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api;
 
-use Yiisoft\Assets\AssetBundle;
+if (!class_exists(\Yiisoft\Assets\AssetBundle::class)) {
+    class AssetBundle
+    {
+    }
+} else {
+    class_alias(\Yiisoft\Assets\AssetBundle::class, AssetBundle::class);
+}
 
 abstract class ModuleFederationAssetBundle extends AssetBundle
 {

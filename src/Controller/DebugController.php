@@ -335,8 +335,15 @@ final class DebugController
         $asset = $collectorClass::getAsset();
         $module = $asset->getModule();
         $scope = $asset->getScope();
-
-        if (!$container->has(AssetManager::class) || !$container->has(AssetPublisherInterface::class)) {
+        /**
+         * @psalm-suppress UndefinedClass
+         */
+        if (
+            !class_exists(AssetManager::class)
+            || !class_exists(AssetPublisherInterface::class)
+            || !$container->has(AssetManager::class)
+            || !$container->has(AssetPublisherInterface::class)
+        ) {
             throw new PackageNotInstalledException(
                 'yiisoft/assets',
                 sprintf(
@@ -346,10 +353,14 @@ final class DebugController
                 ),
             );
         }
-
+        /**
+         * @psalm-suppress UndefinedClass
+         */
         $assetManager = $container->get(AssetManager::class);
         $assetManager->register($asset::class);
-
+        /**
+         * @psalm-suppress UndefinedClass
+         */
         $assetPublisher = $container->get(AssetPublisherInterface::class);
         $assetPublisher->publish($asset);
 
@@ -371,7 +382,10 @@ final class DebugController
         string $collectorClass,
         mixed $data
     ): DataResponse {
-        if (!$container->has(ViewRenderer::class)) {
+        if (!class_exists(ViewRenderer::class) || !$container->has(ViewRenderer::class)) {
+            /**
+             * @psalm-suppress UndefinedClass
+             */
             throw new PackageNotInstalledException(
                 'yiisoft/yii-view',
                 sprintf(
