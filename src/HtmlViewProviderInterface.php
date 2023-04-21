@@ -12,11 +12,11 @@ interface HtmlViewProviderInterface extends CollectorInterface
      * Returns file path to the view file will be rendered when collector data is requested.
      * Example:
      * ```php
-     * public static function getView(): string
+     * public static function getViewPath(): string
      * {
      *     return '@views/debug/index';
      * }
      * ```
      */
-    public static function getView(): string;
+    public static function getViewPath(): string;
 }
