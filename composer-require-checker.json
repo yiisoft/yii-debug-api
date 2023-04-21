@@ -1,5 +1,9 @@
 {
     "symbol-whitelist" : [
+        "Yiisoft\\Assets\\AssetBundle",
+        "Yiisoft\\Assets\\AssetManager",
+        "Yiisoft\\Assets\\AssetPublisherInterface",
+        "Yiisoft\\Yii\\View\\ViewRenderer",
         "Codeception\\Event\\FailEvent",
         "Codeception\\Event\\PrintResultEvent",
         "Codeception\\Event\\TestEvent",

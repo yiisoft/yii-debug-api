@@ -36,6 +36,7 @@
         "yiisoft/config": "^1.1",
         "yiisoft/data-response": "^2.0",
         "yiisoft/di": "^1.0",
+        "yiisoft/friendly-exception": "^1.1",
         "yiisoft/http": "^1.2",
         "yiisoft/router": "^3.0",
         "yiisoft/translator": "^3.0",
@@ -58,6 +59,10 @@
         "yiisoft/psr-dummy-provider": "^1.0",
         "yiisoft/router-fastroute": "^3.0",
         "yiisoft/yii-cycle": "dev-master"
+    },
+    "suggest": {
+        "yiisoft/assets": "Support custom debug panels",
+        "yiisoft/yii-view": "Support custom debug panels"
     },
     "autoload": {
         "psr-4": {
