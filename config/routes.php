@@ -45,10 +45,10 @@ return [
             Route::get('/summary/{id}')
                 ->action([DebugController::class, 'summary'])
                 ->name('summary'),
-            Route::get('/view/{id}[/[{collector}]]')
+            Route::get('/view/{id}')
                 ->action([DebugController::class, 'view'])
                 ->name('view'),
-            Route::get('/dump/{id}[/[{collector}]]')
+            Route::get('/dump/{id}')
                 ->action([DebugController::class, 'dump'])
                 ->name('dump'),
             Route::get('/object/{id}/{objectId}')

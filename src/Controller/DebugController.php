@@ -5,12 +5,20 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use OpenApi\Annotations as OA;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Yiisoft\Assets\AssetManager;
+use Yiisoft\Assets\AssetPublisherInterface;
+use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
+use Yiisoft\Yii\Debug\Api\Exception\PackageNotInstalledException;
+use Yiisoft\Yii\Debug\Api\HtmlViewProviderInterface;
+use Yiisoft\Yii\Debug\Api\ModuleFederationProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\View\ViewRenderer;
 
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
@@ -154,8 +162,11 @@ final class DebugController
      *     )
      * )
      */
-    public function view(CurrentRoute $currentRoute, ServerRequestInterface $serverRequest): ResponseInterface
-    {
+    public function view(
+        CurrentRoute $currentRoute,
+        ServerRequestInterface $serverRequest,
+        ContainerInterface $container,
+    ): ResponseInterface {
         $data = $this->collectorRepository->getDetail(
             $currentRoute->getArgument('id')
         );
@@ -165,6 +176,12 @@ final class DebugController
             $data = $data[$collectorClass] ?? throw new NotFoundException(
                 sprintf("Requested collector doesn't exist: %s.", $collectorClass)
             );
+        }
+        if (is_subclass_of($collectorClass, HtmlViewProviderInterface::class)) {
+            return $this->createHtmlPanelResponse($container, $collectorClass, $data);
+        }
+        if (is_subclass_of($collectorClass, ModuleFederationProviderInterface::class)) {
+            return $this->createJsPanelResponse($container, $collectorClass, $data);
         }
 
         return $this->responseFactory->createResponse($data);
@@ -308,5 +325,81 @@ final class DebugController
         );
 
         return $this->responseFactory->createResponse($data);
+    }
+
+    private function createJsPanelResponse(
+        ContainerInterface $container,
+        string $collectorClass,
+        mixed $data
+    ): DataResponse {
+        $asset = $collectorClass::getAsset();
+        $module = $asset->getModule();
+        $scope = $asset->getScope();
+        /**
+         * @psalm-suppress UndefinedClass
+         */
+        if (
+            !class_exists(AssetManager::class)
+            || !class_exists(AssetPublisherInterface::class)
+            || !$container->has(AssetManager::class)
+            || !$container->has(AssetPublisherInterface::class)
+        ) {
+            throw new PackageNotInstalledException(
+                'yiisoft/assets',
+                sprintf(
+                    '"%s" or "%s" is not defined in the dependency container.',
+                    AssetManager::class,
+                    AssetPublisherInterface::class,
+                ),
+            );
+        }
+        /**
+         * @psalm-suppress UndefinedClass
+         */
+        $assetManager = $container->get(AssetManager::class);
+        $assetManager->register($asset::class);
+        /**
+         * @psalm-suppress UndefinedClass
+         */
+        $assetPublisher = $container->get(AssetPublisherInterface::class);
+        $assetPublisher->publish($asset);
+
+        $js = $assetManager->getJsFiles();
+
+        $urls = end($js);
+
+        return $this->responseFactory->createResponse([
+            '__isPanelRemote__' => true,
+            'url' => $urls[0],
+            'module' => $module,
+            'scope' => $scope,
+            'data' => $data,
+        ]);
+    }
+
+    private function createHtmlPanelResponse(
+        ContainerInterface $container,
+        string $collectorClass,
+        mixed $data
+    ): DataResponse {
+        if (!class_exists(ViewRenderer::class) || !$container->has(ViewRenderer::class)) {
+            /**
+             * @psalm-suppress UndefinedClass
+             */
+            throw new PackageNotInstalledException(
+                'yiisoft/yii-view',
+                sprintf(
+                    '"%s" is not defined in the dependency container.',
+                    ViewRenderer::class,
+                )
+            );
+        }
+        $viewRenderer = $container->get(ViewRenderer::class);
+        $viewDirectory = dirname($collectorClass::getView());
+        $viewPath = basename($collectorClass::getView());
+
+        return $viewRenderer
+            ->withViewPath($viewDirectory)
+            ->renderPartial($viewPath, ['data' => $data, 'collectorClass' => $collectorClass]);
     }
 }

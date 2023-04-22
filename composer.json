@@ -36,6 +36,7 @@
         "yiisoft/config": "^1.1",
         "yiisoft/data-response": "^2.0",
         "yiisoft/di": "^1.0",
+        "yiisoft/friendly-exception": "^1.1",
         "yiisoft/http": "^1.2",
         "yiisoft/router": "^3.0",
         "yiisoft/translator": "^3.0",
@@ -53,11 +54,17 @@
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.30|^5.8",
         "yiisoft/active-record": "3.0.x-dev",
+        "yiisoft/assets": "^4.0",
         "yiisoft/csrf": "^2.0",
         "yiisoft/db": "^1.0",
         "yiisoft/psr-dummy-provider": "^1.0",
         "yiisoft/router-fastroute": "^3.0",
-        "yiisoft/yii-cycle": "dev-master"
+        "yiisoft/yii-cycle": "dev-master",
+        "yiisoft/yii-view": "^6.0"
+    },
+    "suggest": {
+        "yiisoft/assets": "Support custom debug panels",
+        "yiisoft/yii-view": "Support custom debug panels"
     },
     "autoload": {
         "psr-4": {
