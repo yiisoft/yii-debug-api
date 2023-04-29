@@ -51,7 +51,7 @@ final class CollectorRepository implements CollectorRepositoryInterface
      */
     private function loadData(string $fileType, ?string $id = null): array
     {
-        $data = $this->storage->read($fileType);
+        $data = $this->storage->read($fileType, $id);
         if (!empty($id)) {
             if (!isset($data[$id])) {
                 throw new NotFoundException(sprintf('Unable to find debug data ID with "%s"', $id));
