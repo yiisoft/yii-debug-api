@@ -18,6 +18,7 @@ use Yiisoft\Yii\Debug\Api\Exception\PackageNotInstalledException;
 use Yiisoft\Yii\Debug\Api\HtmlViewProviderInterface;
 use Yiisoft\Yii\Debug\Api\ModuleFederationProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Storage\StorageInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 
 /**
@@ -325,6 +326,45 @@ final class DebugController
         );
 
         return $this->responseFactory->createResponse($data);
+    }
+
+    public function sse(StorageInterface $storage): ResponseInterface
+    {
+        header("Content-Type: text/event-stream");
+        header("Access-Control-Allow-Origin: *");
+
+        $changed = function() use ($storage){
+            $read = $storage->read(StorageInterface::TYPE_SUMMARY);
+            return md5(json_encode($read));
+        };
+        $hash = $changed();
+
+        while (1) {
+            $newHash = $changed();
+
+            $response = [
+                'changed' => $hash !== $newHash,
+            ];
+
+            echo sprintf(
+                "data: %s\n\n",
+                json_encode($response)
+            );
+
+            $hash = $newHash;
+
+            // flush the output buffer and send echoed messages to the browser
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            flush();
+
+            // break the loop if the client aborted the connection (closed the page)
+            if ( connection_aborted() ) break;
+
+            sleep(1);
+        }
+        //return $this->responseFactory->createResponse($data);
     }
 
     private function createJsPanelResponse(

@@ -53,7 +53,10 @@ return [
                 ->name('dump'),
             Route::get('/object/{id}/{objectId}')
                 ->action([DebugController::class, 'object'])
-                ->name('object')
+                ->name('object'),
+            Route::get('/sse')
+                ->action([DebugController::class, 'sse'])
+                ->name('sse'),
         ),
     Group::create('/inspect/api')
         ->withCors(Cors::class)
