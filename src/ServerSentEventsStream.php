@@ -9,13 +9,12 @@ use Psr\Http\Message\StreamInterface;
 
 final class ServerSentEventsStream implements StreamInterface
 {
-    public array $buffer=[];
+    public array $buffer = [];
     private bool $eof = false;
 
     public function __construct(
         private Closure $stream,
-    )
-    {
+    ) {
     }
 
     public function __toString()

@@ -246,9 +246,8 @@ final class DebugController
      *     )
      * )
      *
-     * @return ResponseInterface response.
      * @throws NotFoundException
-     *
+     * @return ResponseInterface response.
      */
     public function dump(CurrentRoute $currentRoute): ResponseInterface
     {
@@ -347,7 +346,7 @@ final class DebugController
             ->withHeader('Cache-Control', 'no-cache')
             ->withHeader('Connection', 'keep-alive')
             ->withBody(
-                new ServerSentEventsStream(function (array &$buffer) use ($storage, $compareFunction, &$hash) {
+                new ServerSentEventsStream(function (array &$buffer) use ($compareFunction, &$hash) {
                     $newHash = $compareFunction();
 
                     if ($hash !== $newHash) {
