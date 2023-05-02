@@ -6,6 +6,7 @@ namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use OpenApi\Annotations as OA;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Assets\AssetManager;
@@ -18,6 +19,7 @@ use Yiisoft\Yii\Debug\Api\Exception\PackageNotInstalledException;
 use Yiisoft\Yii\Debug\Api\HtmlViewProviderInterface;
 use Yiisoft\Yii\Debug\Api\ModuleFederationProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Api\ServerSentEventsStream;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 
@@ -31,8 +33,10 @@ use Yiisoft\Yii\View\ViewRenderer;
  */
 final class DebugController
 {
-    public function __construct(private DataResponseFactoryInterface $responseFactory, private CollectorRepositoryInterface $collectorRepository)
-    {
+    public function __construct(
+        private DataResponseFactoryInterface $responseFactory,
+        private CollectorRepositoryInterface $collectorRepository
+    ) {
     }
 
     /**
@@ -242,9 +246,9 @@ final class DebugController
      *     )
      * )
      *
+     * @return ResponseInterface response.
      * @throws NotFoundException
      *
-     * @return ResponseInterface response.
      */
     public function dump(CurrentRoute $currentRoute): ResponseInterface
     {
@@ -328,43 +332,43 @@ final class DebugController
         return $this->responseFactory->createResponse($data);
     }
 
-    public function sse(StorageInterface $storage): ResponseInterface
-    {
-        header("Content-Type: text/event-stream");
-        header("Access-Control-Allow-Origin: *");
-
-        $changed = function() use ($storage){
+    public function sse(
+        StorageInterface $storage,
+        ResponseFactoryInterface $responseFactory
+    ): ResponseInterface {
+        $compareFunction = function () use ($storage) {
             $read = $storage->read(StorageInterface::TYPE_SUMMARY);
             return md5(json_encode($read));
         };
-        $hash = $changed();
+        $hash = $compareFunction();
 
-        while (1) {
-            $newHash = $changed();
+        return $responseFactory->createResponse()
+            ->withHeader('Content-Type', 'text/event-stream')
+            ->withHeader('Cache-Control', 'no-cache')
+            ->withHeader('Connection', 'keep-alive')
+            ->withBody(
+                new ServerSentEventsStream(function (array &$buffer) use ($storage, $compareFunction, &$hash) {
+                    $newHash = $compareFunction();
 
-            $response = [
-                'changed' => $hash !== $newHash,
-            ];
+                    if ($hash !== $newHash) {
+                        $response = [
+                            'changed' => $hash !== $newHash,
+                        ];
 
-            echo sprintf(
-                "data: %s\n\n",
-                json_encode($response)
+                        $buffer[] = json_encode($response);
+                        $hash = $newHash;
+                    }
+
+                    // break the loop if the client aborted the connection (closed the page)
+                    if (connection_aborted()) {
+                        return false;
+                    }
+
+                    sleep(1);
+
+                    return true;
+                })
             );
-
-            $hash = $newHash;
-
-            // flush the output buffer and send echoed messages to the browser
-            while (ob_get_level() > 0) {
-                ob_end_flush();
-            }
-            flush();
-
-            // break the loop if the client aborted the connection (closed the page)
-            if ( connection_aborted() ) break;
-
-            sleep(1);
-        }
-        //return $this->responseFactory->createResponse($data);
     }
 
     private function createJsPanelResponse(
