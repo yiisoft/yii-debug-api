@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
+use Alexkart\CurlBuilder\Command;
 use FilesystemIterator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Message;
@@ -325,6 +326,36 @@ class InspectController
         $result = VarDumper::create($response)->asPrimitives();
 
         return $this->responseFactory->createResponse($result);
+    }
+
+    public function buildCurl(
+        ServerRequestInterface $request,
+        CollectorRepositoryInterface $collectorRepository
+    ): ResponseInterface {
+        $request = $request->getQueryParams();
+        $debugEntryId = $request['debugEntryId'] ?? null;
+
+
+        $data = $collectorRepository->getDetail($debugEntryId);
+        $rawRequest = $data[RequestCollector::class]['requestRaw'];
+
+        $request = Message::parseRequest($rawRequest);
+
+        try {
+            // https://github.com/alexkart/curl-builder/issues/7
+            $output = (new Command())
+                ->setRequest($request)
+                ->build();
+        } catch (Throwable $e) {
+            return $this->responseFactory->createResponse([
+                'command' => null,
+                'exception' => (string)$e,
+            ]);
+        }
+
+        return $this->responseFactory->createResponse([
+            'command' => $output,
+        ]);
     }
 
     private function removeBasePath(string $rootPath, string $path): string|array|null
