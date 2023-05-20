@@ -301,8 +301,7 @@ class InspectController
         ServerRequestInterface $request,
         UrlMatcherInterface $matcher,
         ServerRequestFactoryInterface $serverRequestFactory
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $queryParams = $request->getQueryParams();
         $path = $queryParams['route'] ?? null;
         if ($path === null) {
