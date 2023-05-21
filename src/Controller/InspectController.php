@@ -21,6 +21,7 @@ use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Http\Method;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Router\UrlMatcherInterface;
@@ -307,11 +308,18 @@ class InspectController
         if ($path === null) {
             return $this->responseFactory->createResponse([
                 'message' => 'Path is not specified.',
-            ], 400);
+            ], 422);
         }
+        $path = trim($path);
 
-        // TODO: parse from path
         $method = 'GET';
+        if (str_contains($path, ' ')) {
+            [$possibleMethod, $restPath] = explode(' ', $path, 2);
+            if (in_array($possibleMethod, Method::ALL, true)) {
+                $method = $possibleMethod;
+                $path = $restPath;
+            }
+        }
         $request = $serverRequestFactory->createServerRequest($method, $path);
 
         $result = $matcher->match($request);
