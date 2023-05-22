@@ -89,6 +89,9 @@ return [
             Route::get('/routes')
                 ->action([InspectController::class, 'routes'])
                 ->name('routes'),
+            Route::get('/route/check')
+                ->action([InspectController::class, 'checkRoute'])
+                ->name('route/check'),
             Route::get('/translations')
                 ->action([InspectController::class, 'getTranslations'])
                 ->name('getTranslations'),
