@@ -14,8 +14,8 @@ use Yiisoft\Yii\Debug\Api\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
 use Yiisoft\Yii\Debug\Api\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Controller\InspectController;
-use Yiisoft\Yii\Debug\Api\Middleware\Cors;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
+use Yiisoft\Yii\Middleware\CorsAllowAll;
 use Yiisoft\Yii\Middleware\IpFilter;
 
 if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
@@ -24,7 +24,7 @@ if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
 
 return [
     Group::create('/debug/api')
-        ->withCors(Cors::class)
+        ->withCors(CorsAllowAll::class)
         ->disableMiddleware(CsrfMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
