@@ -56,7 +56,7 @@ return [
                 ->name('object')
         ),
     Group::create('/inspect/api')
-        ->withCors(Cors::class)
+        ->withCors(CorsAllowAll::class)
         ->disableMiddleware(CsrfMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
