@@ -14,8 +14,8 @@ use Yiisoft\Yii\Debug\Api\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
 use Yiisoft\Yii\Debug\Api\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Controller\InspectController;
-use Yiisoft\Yii\Debug\Api\Middleware\Cors;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
+use Yiisoft\Yii\Middleware\CorsAllowAll;
 use Yiisoft\Yii\Middleware\IpFilter;
 
 if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
@@ -24,7 +24,7 @@ if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
 
 return [
     Group::create('/debug/api')
-        ->withCors(Cors::class)
+        ->withCors(CorsAllowAll::class)
         ->disableMiddleware(CsrfMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
@@ -45,10 +45,10 @@ return [
             Route::get('/summary/{id}')
                 ->action([DebugController::class, 'summary'])
                 ->name('summary'),
-            Route::get('/view/{id}[/[{collector}]]')
+            Route::get('/view/{id}')
                 ->action([DebugController::class, 'view'])
                 ->name('view'),
-            Route::get('/dump/{id}[/[{collector}]]')
+            Route::get('/dump/{id}')
                 ->action([DebugController::class, 'dump'])
                 ->name('dump'),
             Route::get('/object/{id}/{objectId}')
@@ -56,7 +56,7 @@ return [
                 ->name('object')
         ),
     Group::create('/inspect/api')
-        ->withCors(Cors::class)
+        ->withCors(CorsAllowAll::class)
         ->disableMiddleware(CsrfMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
@@ -89,6 +89,9 @@ return [
             Route::get('/routes')
                 ->action([InspectController::class, 'routes'])
                 ->name('routes'),
+            Route::get('/route/check')
+                ->action([InspectController::class, 'checkRoute'])
+                ->name('route/check'),
             Route::get('/translations')
                 ->action([InspectController::class, 'getTranslations'])
                 ->name('getTranslations'),
@@ -104,6 +107,9 @@ return [
             Route::put('/request')
                 ->action([InspectController::class, 'request'])
                 ->name('request'),
+            Route::post('/curl/build')
+                ->action([InspectController::class, 'buildCurl'])
+                ->name('curl/build'),
             Group::create('/git')
                 ->namePrefix('/git')
                 ->routes(
