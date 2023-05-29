@@ -107,6 +107,9 @@ return [
             Route::put('/request')
                 ->action([InspectController::class, 'request'])
                 ->name('request'),
+            Route::post('/curl/build')
+                ->action([InspectController::class, 'buildCurl'])
+                ->name('curl/build'),
             Group::create('/git')
                 ->namePrefix('/git')
                 ->routes(
