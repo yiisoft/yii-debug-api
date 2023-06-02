@@ -71,6 +71,9 @@ return [
         ->middleware(ResponseDataWrapper::class)
         ->namePrefix('inspect/api/')
         ->routes(
+            Route::get('/events')
+                ->action([InspectController::class, 'eventListeners'])
+                ->name('events'),
             Route::get('/params')
                 ->action([InspectController::class, 'params'])
                 ->name('params'),
