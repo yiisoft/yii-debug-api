@@ -388,7 +388,9 @@ class InspectController
         $config = $container->get(ConfigInterface::class);
 
         return $this->responseFactory->createResponse([
-            //'console' => $config->get('events'),
+            'common' => VarDumper::create($config->get('events'))->asPrimitives(),
+            // TODO: change events-web to events-web when it will be possible
+            'console' => [], //VarDumper::create($config->get('events-web'))->asPrimitives(),
             'web' => VarDumper::create($config->get('events-web'))->asPrimitives(),
         ]);
     }
