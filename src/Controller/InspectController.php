@@ -143,16 +143,25 @@ class InspectController
     {
         $request = $request->getQueryParams();
         $class = $request['class'] ?? '';
+        $method = $request['method'] ?? '';
 
         if (!empty($class) && class_exists($class)) {
             $reflection = new ReflectionClass($class);
             $destination = $reflection->getFileName();
+            if ($method !== '' && $reflection->hasMethod($method)) {
+                $reflectionMethod = $reflection->getMethod($method);
+                $startLine = $reflectionMethod->getStartLine();
+                $endLine = $reflectionMethod->getEndLine();
+            }
             if ($destination === false) {
                 return $this->responseFactory->createResponse([
                     'message' => sprintf('Cannot find source of class "%s".', $class),
                 ], 404);
             }
-            return $this->readFile($destination);
+            return $this->readFile($destination, [
+                'startLine' => $startLine ?? null,
+                'endLine' => $endLine ?? null,
+            ]);
         }
 
         $path = $request['path'] ?? '';
@@ -374,6 +383,18 @@ class InspectController
         return $this->responseFactory->createResponse($result);
     }
 
+    public function eventListeners(ContainerInterface $container)
+    {
+        $config = $container->get(ConfigInterface::class);
+
+        return $this->responseFactory->createResponse([
+            'common' => VarDumper::create($config->get('events'))->asPrimitives(),
+            // TODO: change events-web to events-web when it will be possible
+            'console' => [], //VarDumper::create($config->get('events-web'))->asPrimitives(),
+            'web' => VarDumper::create($config->get('events-web'))->asPrimitives(),
+        ]);
+    }
+
     public function buildCurl(
         ServerRequestInterface $request,
         CollectorRepositoryInterface $collectorRepository
@@ -388,7 +409,6 @@ class InspectController
         $request = Message::parseRequest($rawRequest);
 
         try {
-            // https://github.com/alexkart/curl-builder/issues/7
             $output = (new Command())
                 ->setRequest($request)
                 ->build();
@@ -454,12 +474,13 @@ class InspectController
         ];
     }
 
-    private function readFile(string $destination): DataResponse
+    private function readFile(string $destination, array $extra = []): DataResponse
     {
         $rootPath = $this->aliases->get('@root');
         $file = new SplFileInfo($destination);
         return $this->responseFactory->createResponse(
             array_merge(
+                $extra,
                 [
                     'directory' => $this->removeBasePath($rootPath, dirname($destination)),
                     'content' => file_get_contents($destination),
