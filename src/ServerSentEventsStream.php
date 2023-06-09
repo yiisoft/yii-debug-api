@@ -7,7 +7,7 @@ namespace Yiisoft\Yii\Debug\Api;
 use Closure;
 use Psr\Http\Message\StreamInterface;
 
-final class ServerSentEventsStream implements StreamInterface
+final class ServerSentEventsStream implements StreamInterface, \Stringable
 {
     public array $buffer = [];
     private bool $eof = false;
@@ -17,7 +17,7 @@ final class ServerSentEventsStream implements StreamInterface
     ) {
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return '';
     }

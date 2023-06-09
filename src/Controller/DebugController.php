@@ -337,7 +337,7 @@ final class DebugController
         // TODO implement OS signal handling
         $compareFunction = function () use ($storage) {
             $read = $storage->read(StorageInterface::TYPE_SUMMARY);
-            return md5(json_encode($read));
+            return md5(json_encode($read, JSON_THROW_ON_ERROR));
         };
         $hash = $compareFunction();
         $maxRetries = 10;
