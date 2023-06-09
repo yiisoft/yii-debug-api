@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
+use Alexkart\CurlBuilder\Command;
 use FilesystemIterator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Message;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
@@ -20,8 +22,10 @@ use Yiisoft\Aliases\Aliases;
 use Yiisoft\Config\ConfigInterface;
 use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Http\Method;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Router\RouteCollectionInterface;
+use Yiisoft\Router\UrlMatcherInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
@@ -139,16 +143,25 @@ class InspectController
     {
         $request = $request->getQueryParams();
         $class = $request['class'] ?? '';
+        $method = $request['method'] ?? '';
 
         if (!empty($class) && class_exists($class)) {
             $reflection = new ReflectionClass($class);
             $destination = $reflection->getFileName();
+            if ($method !== '' && $reflection->hasMethod($method)) {
+                $reflectionMethod = $reflection->getMethod($method);
+                $startLine = $reflectionMethod->getStartLine();
+                $endLine = $reflectionMethod->getEndLine();
+            }
             if ($destination === false) {
                 return $this->responseFactory->createResponse([
                     'message' => sprintf('Cannot find source of class "%s".', $class),
                 ], 404);
             }
-            return $this->readFile($destination);
+            return $this->readFile($destination, [
+                'startLine' => $startLine ?? null,
+                'endLine' => $endLine ?? null,
+            ]);
         }
 
         $path = $request['path'] ?? '';
@@ -295,6 +308,49 @@ class InspectController
         return $this->responseFactory->createResponse($response);
     }
 
+    public function checkRoute(
+        ServerRequestInterface $request,
+        UrlMatcherInterface $matcher,
+        ServerRequestFactoryInterface $serverRequestFactory
+    ): ResponseInterface {
+        $queryParams = $request->getQueryParams();
+        $path = $queryParams['route'] ?? null;
+        if ($path === null) {
+            return $this->responseFactory->createResponse([
+                'message' => 'Path is not specified.',
+            ], 422);
+        }
+        $path = trim($path);
+
+        $method = 'GET';
+        if (str_contains($path, ' ')) {
+            [$possibleMethod, $restPath] = explode(' ', $path, 2);
+            if (in_array($possibleMethod, Method::ALL, true)) {
+                $method = $possibleMethod;
+                $path = $restPath;
+            }
+        }
+        $request = $serverRequestFactory->createServerRequest($method, $path);
+
+        $result = $matcher->match($request);
+        if (!$result->isSuccess()) {
+            return $this->responseFactory->createResponse([
+                'result' => false,
+            ]);
+        }
+
+        $route = $result->route();
+        $reflection = new \ReflectionObject($route);
+        $property = $reflection->getProperty('middlewareDefinitions');
+        $middlewareDefinitions = $property->getValue($route);
+        $action = end($middlewareDefinitions);
+
+        return $this->responseFactory->createResponse([
+            'result' => true,
+            'action' => $action,
+        ]);
+    }
+
     public function getTables(SchemaProviderInterface $schemaProvider): ResponseInterface
     {
         return $this->responseFactory->createResponse($schemaProvider->getTables());
@@ -325,6 +381,47 @@ class InspectController
         $result = VarDumper::create($response)->asPrimitives();
 
         return $this->responseFactory->createResponse($result);
+    }
+
+    public function eventListeners(ContainerInterface $container)
+    {
+        $config = $container->get(ConfigInterface::class);
+
+        return $this->responseFactory->createResponse([
+            'common' => VarDumper::create($config->get('events'))->asPrimitives(),
+            // TODO: change events-web to events-web when it will be possible
+            'console' => [], //VarDumper::create($config->get('events-web'))->asPrimitives(),
+            'web' => VarDumper::create($config->get('events-web'))->asPrimitives(),
+        ]);
+    }
+
+    public function buildCurl(
+        ServerRequestInterface $request,
+        CollectorRepositoryInterface $collectorRepository
+    ): ResponseInterface {
+        $request = $request->getQueryParams();
+        $debugEntryId = $request['debugEntryId'] ?? null;
+
+
+        $data = $collectorRepository->getDetail($debugEntryId);
+        $rawRequest = $data[RequestCollector::class]['requestRaw'];
+
+        $request = Message::parseRequest($rawRequest);
+
+        try {
+            $output = (new Command())
+                ->setRequest($request)
+                ->build();
+        } catch (Throwable $e) {
+            return $this->responseFactory->createResponse([
+                'command' => null,
+                'exception' => (string)$e,
+            ]);
+        }
+
+        return $this->responseFactory->createResponse([
+            'command' => $output,
+        ]);
     }
 
     private function removeBasePath(string $rootPath, string $path): string|array|null
@@ -377,12 +474,13 @@ class InspectController
         ];
     }
 
-    private function readFile(string $destination): DataResponse
+    private function readFile(string $destination, array $extra = []): DataResponse
     {
         $rootPath = $this->aliases->get('@root');
         $file = new SplFileInfo($destination);
         return $this->responseFactory->createResponse(
             array_merge(
+                $extra,
                 [
                     'directory' => $this->removeBasePath($rootPath, dirname($destination)),
                     'content' => file_get_contents($destination),
