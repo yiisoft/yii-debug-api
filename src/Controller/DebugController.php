@@ -335,23 +335,32 @@ final class DebugController
         StorageInterface $storage,
         ResponseFactoryInterface $responseFactory
     ): ResponseInterface {
+        // TODO implement OS signal handling
         $compareFunction = function () use ($storage) {
             $read = $storage->read(StorageInterface::TYPE_SUMMARY);
             return md5(json_encode($read));
         };
         $hash = $compareFunction();
+        $maxRetries = 10;
+        $retries = 0;
 
         return $responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/event-stream')
             ->withHeader('Cache-Control', 'no-cache')
             ->withHeader('Connection', 'keep-alive')
             ->withBody(
-                new ServerSentEventsStream(function (array &$buffer) use ($compareFunction, &$hash) {
+                new ServerSentEventsStream(function (array &$buffer) use (
+                    $compareFunction,
+                    &$hash,
+                    &$retries,
+                    $maxRetries
+                ) {
                     $newHash = $compareFunction();
 
                     if ($hash !== $newHash) {
                         $response = [
-                            'changed' => $hash !== $newHash,
+                            'type' => 'debug-updated',
+                            'payload' => []
                         ];
 
                         $buffer[] = json_encode($response);
@@ -360,6 +369,9 @@ final class DebugController
 
                     // break the loop if the client aborted the connection (closed the page)
                     if (connection_aborted()) {
+                        return false;
+                    }
+                    if ($retries++ > $maxRetries) {
                         return false;
                     }
 
