@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
-use OpenApi\Annotations as OA;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -331,7 +330,7 @@ final class DebugController
         return $this->responseFactory->createResponse($data);
     }
 
-    public function sse(
+    public function eventStream(
         StorageInterface $storage,
         ResponseFactoryInterface $responseFactory
     ): ResponseInterface {

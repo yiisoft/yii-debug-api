@@ -54,9 +54,9 @@ return [
             Route::get('/object/{id}/{objectId}')
                 ->action([DebugController::class, 'object'])
                 ->name('object'),
-            Route::get('/sse')
-                ->action([DebugController::class, 'sse'])
-                ->name('sse'),
+            Route::get('/event-stream')
+                ->action([DebugController::class, 'eventStream'])
+                ->name('event-stream'),
         ),
     Group::create('/inspect/api')
         ->withCors(CorsAllowAll::class)
