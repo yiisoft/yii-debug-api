@@ -359,7 +359,7 @@ final class DebugController
                     if ($hash !== $newHash) {
                         $response = [
                             'type' => 'debug-updated',
-                            'payload' => []
+                            'payload' => [],
                         ];
 
                         $buffer[] = json_encode($response);
