@@ -81,11 +81,8 @@ class InspectController
 
             try {
                 foreach ($locales as $locale) {
-                    if (!isset($messages[$categoryName][$locale])) {
-                        $messages[$categoryName][$locale] = [];
-                    }
                     $messages[$categoryName][$locale] = array_merge(
-                        $messages[$categoryName][$locale],
+                        $messages[$categoryName][$locale] ?? [],
                         $categorySource->getMessages($locale)
                     );
                 }
