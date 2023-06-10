@@ -73,17 +73,19 @@ class InspectController
         }
         $messages = [];
         foreach ($categorySources as $categorySource) {
-            if (!isset($messages[$categorySource->getName()])) {
-                $messages[$categorySource->getName()] = [];
+            $categoryName = $categorySource->getName();
+
+            if (!isset($messages[$categoryName])) {
+                $messages[$categoryName] = [];
             }
 
             try {
                 foreach ($locales as $locale) {
-                    if (!isset($messages[$categorySource->getName()][$locale])) {
-                        $messages[$categorySource->getName()][$locale] = [];
+                    if (!isset($messages[$categoryName][$locale])) {
+                        $messages[$categoryName][$locale] = [];
                     }
-                    $messages[$categorySource->getName()][$locale] = array_merge(
-                        $messages[$categorySource->getName()][$locale],
+                    $messages[$categoryName][$locale] = array_merge(
+                        $messages[$categoryName][$locale],
                         $categorySource->getMessages($locale)
                     );
                 }
