@@ -17,11 +17,6 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
     ) {
     }
 
-    public function __toString(): string
-    {
-        return '';
-    }
-
     public function close(): void
     {
         $this->eof = true;
@@ -37,12 +32,12 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         return null;
     }
 
-    public function tell()
+    public function tell(): int
     {
-        // TODO: Implement tell() method.
+        return 0;
     }
 
-    public function eof()
+    public function eof(): bool
     {
         return $this->eof;
     }
@@ -52,12 +47,12 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         return false;
     }
 
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         throw new \RuntimeException('Stream is not seekable');
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         throw new \RuntimeException('Stream is not seekable');
     }
@@ -67,7 +62,7 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         return false;
     }
 
-    public function write($string)
+    public function write($string): void
     {
         throw new \RuntimeException('Stream is not writable');
     }
@@ -77,7 +72,10 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         return true;
     }
 
-    public function read($length): string
+    /**
+     * TODO: support length reading
+     */
+    public function read(int $length): string
     {
         $continue = ($this->stream)($this->buffer);
 
@@ -94,13 +92,18 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         return $output;
     }
 
-    public function getContents()
+    public function getContents(): string
     {
-        // TODO: Implement getContents() method.
+        return $this->read(1024);
     }
 
     public function getMetadata($key = null): array
     {
         return [];
+    }
+
+    public function __toString(): string
+    {
+        return $this->getContents();
     }
 }
