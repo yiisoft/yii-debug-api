@@ -92,9 +92,9 @@ final class ComposerController
             'result' => !is_string($result->getResult())
                 ? null
                 : (
-                $result->getStatus() === CommandResponse::STATUS_OK
-                    ? json_decode($result->getResult(), true, 512, JSON_THROW_ON_ERROR)
-                    : $result->getResult()
+                    $result->getStatus() === CommandResponse::STATUS_OK
+                        ? json_decode($result->getResult(), true, 512, JSON_THROW_ON_ERROR)
+                        : $result->getResult()
                 ),
             'errors' => $result->getErrors(),
         ]);
