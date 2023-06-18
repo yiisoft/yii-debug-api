@@ -114,13 +114,12 @@ final class DebugController
     public function summary(
         CurrentRoute $currentRoute,
         ServerRequestInterface $serverRequest,
-        Synchronizer$synchronizer,
-    ): ResponseInterface
-    {
+        Synchronizer $synchronizer,
+    ): ResponseInterface {
         $id = $currentRoute->getArgument('id');
         $timeout = max(0, (int)($serverRequest->getQueryParams()['timeout'] ?? 0));
 
-        $data = $synchronizer->execute(Debugger::SAVING_MUTEX_NAME . $id, fn ()=> $this->collectorRepository->getSummary($id), $timeout);
+        $data = $synchronizer->execute(Debugger::SAVING_MUTEX_NAME . $id, fn () => $this->collectorRepository->getSummary($id), $timeout);
         return $this->responseFactory->createResponse($data);
     }
 
