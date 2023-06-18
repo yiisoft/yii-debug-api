@@ -66,7 +66,7 @@ final class ComposerController
 
     public function require(ServerRequestInterface $request, Aliases $aliases): ResponseInterface
     {
-        $parsedBody = \json_decode($request->getBody()->getContents(), true);
+        $parsedBody = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $package = $parsedBody['package'] ?? null;
         $version = $parsedBody['version'] ?? null;
         $isDev = $parsedBody['isDev'] ?? false;

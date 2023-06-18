@@ -68,7 +68,7 @@ final class GitController
     {
         $git = $this->getGit();
 
-        $parsedBody = \json_decode($request->getBody()->getContents(), true);
+        $parsedBody = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $branch = $parsedBody['branch'] ?? null;
 
         if ($branch === null) {
