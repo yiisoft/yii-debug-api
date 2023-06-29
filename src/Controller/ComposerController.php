@@ -66,6 +66,7 @@ final class ComposerController
 
     public function require(ServerRequestInterface $request, Aliases $aliases): ResponseInterface
     {
+        // Request factory may be unable to parse JSON so don't rely on getParsedBody().
         $parsedBody = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $package = $parsedBody['package'] ?? null;
         $version = $parsedBody['version'] ?? null;
