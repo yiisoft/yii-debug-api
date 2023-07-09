@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
-use OpenApi\Annotations as OA;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,12 +11,14 @@ use Yiisoft\Assets\AssetManager;
 use Yiisoft\Assets\AssetPublisherInterface;
 use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Mutex\Synchronizer;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
 use Yiisoft\Yii\Debug\Api\Exception\PackageNotInstalledException;
 use Yiisoft\Yii\Debug\Api\HtmlViewProviderInterface;
 use Yiisoft\Yii\Debug\Api\ModuleFederationProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Debugger;
 use Yiisoft\Yii\View\ViewRenderer;
 
 /**
@@ -48,7 +49,6 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
@@ -78,13 +78,22 @@ final class DebugController
      *          description="Request ID for getting the summary"
      *     ),
      *
+     *     @OA\Parameter(
+     *          name="timeout",
+     *          required=false,
+     *
+     *          @OA\Schema(type="integer"),
+     *          in="query",
+     *          parameter="timeout",
+     *          description="Timeout to wait for the debug entry saving. 0 means do not wait."
+     *     ),
+     *
      *     @OA\Response(
      *          response="200",
      *          description="Success",
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
@@ -96,16 +105,21 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
      *     )
      * )
      */
-    public function summary(CurrentRoute $currentRoute): ResponseInterface
-    {
-        $data = $this->collectorRepository->getSummary($currentRoute->getArgument('id'));
+    public function summary(
+        CurrentRoute $currentRoute,
+        ServerRequestInterface $serverRequest,
+        Synchronizer $synchronizer,
+    ): ResponseInterface {
+        $id = $currentRoute->getArgument('id');
+        $timeout = max(0, (int)($serverRequest->getQueryParams()['timeout'] ?? 0));
+
+        $data = $synchronizer->execute(Debugger::SAVING_MUTEX_NAME . $id, fn () => $this->collectorRepository->getSummary($id), $timeout);
         return $this->responseFactory->createResponse($data);
     }
 
@@ -143,7 +157,6 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
@@ -155,7 +168,6 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
@@ -167,9 +179,8 @@ final class DebugController
         ServerRequestInterface $serverRequest,
         ContainerInterface $container,
     ): ResponseInterface {
-        $data = $this->collectorRepository->getDetail(
-            $currentRoute->getArgument('id')
-        );
+        $id = $currentRoute->getArgument('id');
+        $data = $this->collectorRepository->getDetail($id);
 
         $collectorClass = $serverRequest->getQueryParams()['collector'] ?? null;
         if ($collectorClass !== null) {
@@ -222,7 +233,6 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
@@ -234,7 +244,6 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
@@ -247,16 +256,12 @@ final class DebugController
      */
     public function dump(CurrentRoute $currentRoute): ResponseInterface
     {
-        $data = $this->collectorRepository->getDumpObject(
-            $currentRoute->getArgument('id')
-        );
+        $id = $currentRoute->getArgument('id');
+        $data = $this->collectorRepository->getDumpObject($id);
 
-        if ($currentRoute->getArgument('collector') !== null) {
-            if (isset($data[$currentRoute->getArgument('collector')])) {
-                $data = $data[$currentRoute->getArgument('collector')];
-            } else {
-                throw new NotFoundException('Requested collector doesn\'t exists.');
-            }
+        $collector = $currentRoute->getArgument('collector');
+        if ($collector !== null) {
+            $data = $data[$collector] ?? throw new NotFoundException('Requested collector does not exist.');
         }
 
         return $this->responseFactory->createResponse($data);
@@ -296,7 +301,6 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugSuccessResponse")
      *              }
      *          )
@@ -308,7 +312,6 @@ final class DebugController
      *
      *          @OA\JsonContent(
      *              allOf={
-     *
      *                  @OA\Schema(ref="#/components/schemas/DebugNotFoundResponse")
      *              }
      *          )
@@ -319,10 +322,10 @@ final class DebugController
      */
     public function object(CurrentRoute $currentRoute): ResponseInterface
     {
-        $data = $this->collectorRepository->getObject(
-            $currentRoute->getArgument('id'),
-            $currentRoute->getArgument('objectId')
-        );
+        $id = $currentRoute->getArgument('id');
+        $objectId = $currentRoute->getArgument('objectId');
+
+        $data = $this->collectorRepository->getObject($id, $objectId);
 
         return $this->responseFactory->createResponse($data);
     }
