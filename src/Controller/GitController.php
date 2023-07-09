@@ -68,7 +68,8 @@ final class GitController
     {
         $git = $this->getGit();
 
-        $branch = $request->getParsedBody()['branch'] ?? null;
+        $parsedBody = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $branch = $parsedBody['branch'] ?? null;
 
         if ($branch === null) {
             throw new InvalidArgumentException('Branch should not be empty.');

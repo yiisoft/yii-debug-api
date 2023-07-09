@@ -64,9 +64,11 @@ final class ComposerController
 
     public function require(ServerRequestInterface $request, Aliases $aliases): ResponseInterface
     {
-        $package = $request->getParsedBody()['package'] ?? null;
-        $version = $request->getParsedBody()['version'] ?? null;
-        $isDev = $request->getParsedBody()['isDev'] ?? false;
+        // Request factory may be unable to parse JSON so don't rely on getParsedBody().
+        $parsedBody = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $package = $parsedBody['package'] ?? null;
+        $version = $parsedBody['version'] ?? null;
+        $isDev = $parsedBody['isDev'] ?? false;
         if ($package === null) {
             throw new InvalidArgumentException(
                 'Query parameter "package" should not be empty.'
@@ -84,9 +86,13 @@ final class ComposerController
 
         return $this->responseFactory->createResponse([
             'status' => $result->getStatus(),
-            'result' => $result->getStatus() === CommandResponse::STATUS_OK
-                ? json_decode($result->getResult(), true, 512, JSON_THROW_ON_ERROR)
-                : null,
+            'result' => !is_string($result->getResult())
+                ? null
+                : (
+                    $result->getStatus() === CommandResponse::STATUS_OK
+                        ? json_decode($result->getResult(), true, 512, JSON_THROW_ON_ERROR)
+                        : $result->getResult()
+                ),
             'errors' => $result->getErrors(),
         ]);
     }

@@ -73,11 +73,18 @@ class InspectController
         }
         $messages = [];
         foreach ($categorySources as $categorySource) {
-            $messages[$categorySource->getName()] = [];
+            $categoryName = $categorySource->getName();
+
+            if (!isset($messages[$categoryName])) {
+                $messages[$categoryName] = [];
+            }
 
             try {
                 foreach ($locales as $locale) {
-                    $messages[$categorySource->getName()][$locale] = $categorySource->getMessages($locale);
+                    $messages[$categoryName][$locale] = array_merge(
+                        $messages[$categoryName][$locale] ?? [],
+                        $categorySource->getMessages($locale)
+                    );
                 }
             } catch (Throwable) {
             }
@@ -94,7 +101,7 @@ class InspectController
          */
         $categorySources = $container->get('tag@translation.categorySource');
 
-        $body = $request->getParsedBody();
+        $body = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $categoryName = $body['category'] ?? '';
         $locale = $body['locale'] ?? '';
         $translationId = $body['translation'] ?? '';
