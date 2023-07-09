@@ -47,9 +47,7 @@ final class ComposerController
         $package = $request->getQueryParams()['package'] ?? null;
         if ($package === null) {
             throw new InvalidArgumentException(
-                sprintf(
-                    'Query parameter "package" should not be empty.'
-                )
+                'Query parameter "package" should not be empty.'
             );
         }
         $command = new BashCommand($aliases, ['composer', 'show', $package, '--all', '--format=json']);
@@ -71,9 +69,7 @@ final class ComposerController
         $isDev = $request->getParsedBody()['isDev'] ?? false;
         if ($package === null) {
             throw new InvalidArgumentException(
-                sprintf(
-                    'Query parameter "package" should not be empty.'
-                )
+                'Query parameter "package" should not be empty.'
             );
         }
         $packageWithVersion = sprintf('%s:%s', $package, $version ?? '*');
