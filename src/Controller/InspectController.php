@@ -101,7 +101,7 @@ class InspectController
          */
         $categorySources = $container->get('tag@translation.categorySource');
 
-        $body = $request->getParsedBody();
+        $body = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $categoryName = $body['category'] ?? '';
         $locale = $body['locale'] ?? '';
         $translationId = $body['translation'] ?? '';

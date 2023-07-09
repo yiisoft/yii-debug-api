@@ -50,7 +50,7 @@ final class BashCommand implements CommandInterface
 
         return new CommandResponse(
             status: $process->isSuccessful() ? CommandResponse::STATUS_OK : CommandResponse::STATUS_ERROR,
-            result: $processOutput
+            result: $processOutput . $process->getErrorOutput()
         );
     }
 }
