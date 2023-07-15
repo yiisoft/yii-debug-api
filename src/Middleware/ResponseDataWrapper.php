@@ -107,7 +107,6 @@ final class ResponseDataWrapper implements MiddlewareInterface
             'success' => true,
         ];
         try {
-            /** @var DataResponse $response */
             $response = $handler->handle($request);
             if (!$response instanceof DataResponse) {
                 return $response;
