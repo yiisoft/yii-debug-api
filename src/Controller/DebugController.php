@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Controller;
 
-use OpenApi\Annotations as OA;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Assets\AssetManager;
@@ -18,6 +18,8 @@ use Yiisoft\Yii\Debug\Api\Exception\PackageNotInstalledException;
 use Yiisoft\Yii\Debug\Api\HtmlViewProviderInterface;
 use Yiisoft\Yii\Debug\Api\ModuleFederationProviderInterface;
 use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Api\ServerSentEventsStream;
+use Yiisoft\Yii\Debug\Storage\StorageInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 
 /**
@@ -30,8 +32,10 @@ use Yiisoft\Yii\View\ViewRenderer;
  */
 final class DebugController
 {
-    public function __construct(private DataResponseFactoryInterface $responseFactory, private CollectorRepositoryInterface $collectorRepository)
-    {
+    public function __construct(
+        private DataResponseFactoryInterface $responseFactory,
+        private CollectorRepositoryInterface $collectorRepository
+    ) {
     }
 
     /**
@@ -242,7 +246,6 @@ final class DebugController
      * )
      *
      * @throws NotFoundException
-     *
      * @return ResponseInterface response.
      */
     public function dump(CurrentRoute $currentRoute): ResponseInterface
@@ -325,6 +328,57 @@ final class DebugController
         );
 
         return $this->responseFactory->createResponse($data);
+    }
+
+    public function eventStream(
+        StorageInterface $storage,
+        ResponseFactoryInterface $responseFactory
+    ): ResponseInterface {
+        // TODO implement OS signal handling
+        $compareFunction = function () use ($storage) {
+            $read = $storage->read(StorageInterface::TYPE_SUMMARY, null);
+            return md5(json_encode($read, JSON_THROW_ON_ERROR));
+        };
+        $hash = $compareFunction();
+        $maxRetries = 10;
+        $retries = 0;
+
+        return $responseFactory->createResponse()
+            ->withHeader('Content-Type', 'text/event-stream')
+            ->withHeader('Cache-Control', 'no-cache')
+            ->withHeader('Connection', 'keep-alive')
+            ->withBody(
+                new ServerSentEventsStream(function (array &$buffer) use (
+                    $compareFunction,
+                    &$hash,
+                    &$retries,
+                    $maxRetries
+                ) {
+                    $newHash = $compareFunction();
+
+                    if ($hash !== $newHash) {
+                        $response = [
+                            'type' => 'debug-updated',
+                            'payload' => [],
+                        ];
+
+                        $buffer[] = json_encode($response);
+                        $hash = $newHash;
+                    }
+
+                    // break the loop if the client aborted the connection (closed the page)
+                    if (connection_aborted()) {
+                        return false;
+                    }
+                    if ($retries++ > $maxRetries) {
+                        return false;
+                    }
+
+                    sleep(1);
+
+                    return true;
+                })
+            );
     }
 
     private function createJsPanelResponse(
