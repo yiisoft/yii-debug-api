@@ -12,5 +12,8 @@ interface CollectorRepositoryInterface
 
     public function getDumpObject(string $id): array;
 
-    public function getObject(string $id, string $objectId);
+    /**
+     * @return array<string, mixed>|null Returns a list with object class and it's value or null
+     */
+    public function getObject(string $id, string $objectId):array|null;
 }

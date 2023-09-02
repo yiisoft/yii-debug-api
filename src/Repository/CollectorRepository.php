@@ -33,13 +33,13 @@ final class CollectorRepository implements CollectorRepositoryInterface
         return $this->loadData(StorageInterface::TYPE_OBJECTS, $id);
     }
 
-    public function getObject(string $id, string $objectId)
+    public function getObject(string $id, string $objectId): array|null
     {
         $dump = $this->loadData(StorageInterface::TYPE_OBJECTS, $id);
 
         foreach ($dump as $name => $value) {
-            if (strrpos($name, "#$objectId") !== false) {
-                return $value;
+            if (($pos = strrpos($name, "#$objectId")) !== false) {
+                return [substr($name, 0, $pos), $value];
             }
         }
 
