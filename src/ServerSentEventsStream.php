@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api;
 
 use Closure;
+use Generator;
 use Psr\Http\Message\StreamInterface;
 
 final class ServerSentEventsStream implements StreamInterface, \Stringable
 {
-    public array $buffer = [];
     private bool $eof = false;
 
+    /**
+     * @param Closure(): Generator $stream
+     */
     public function __construct(
         private Closure $stream,
     ) {
@@ -77,24 +80,20 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
      */
     public function read(int $length): string
     {
-        $continue = ($this->stream)($this->buffer);
+        foreach (($this->stream)($this) as $message) {
+            if (empty($message)) {
+                break;
+            }
 
-        if (!$continue) {
-            $this->eof = true;
+            return sprintf("data: %s\n\n", $message);
         }
-
-        $output = '';
-        foreach ($this->buffer as $key => $value) {
-            unset($this->buffer[$key]);
-            $output .= sprintf("data: %s\n", $value);
-        }
-        $output .= "\n";
-        return $output;
+        $this->eof = true;
+        return '';
     }
 
     public function getContents(): string
     {
-        return $this->read(1024);
+        return $this->read(8_388_608); // 8MB
     }
 
     public function getMetadata($key = null): array

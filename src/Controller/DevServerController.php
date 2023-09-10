@@ -6,64 +6,45 @@ namespace Yiisoft\Yii\Debug\Api\Controller;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use Yiisoft\Aliases\Aliases;
-use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Http\Header;
 use Yiisoft\Yii\Debug\Api\ServerSentEventsStream;
 use Yiisoft\Yii\Debug\DevServer\Connection;
 
 final class DevServerController
 {
-    public function __construct(
-        private DataResponseFactoryInterface $responseFactory,
-        private Aliases $aliases,
-    ) {
-    }
-
     public function stream(
         ResponseFactoryInterface $responseFactory
     ): ResponseInterface {
-        $maxRetries = 1;
-        $retries = 0;
-
         if (\function_exists('pcntl_signal')) {
             \pcntl_signal(\SIGINT, static function (): void {
                 exit(1);
             });
         }
 
+        $socket = Connection::create();
+        $socket->bind();
+
         return $responseFactory->createResponse()
-            ->withHeader('Content-Type', 'text/event-stream')
-            ->withHeader('Cache-Control', 'no-cache')
-            ->withHeader('Connection', 'keep-alive')
+            ->withHeader(Header::CONTENT_TYPE, 'text/event-stream')
+            ->withHeader(Header::CACHE_CONTROL, 'no-cache')
+            ->withHeader(Header::CONNECTION, 'keep-alive')
             ->withBody(
-                new ServerSentEventsStream(function (array &$buffer) use (
-                    &$hash,
-                    &$retries,
-                    $maxRetries,
-                ) {
-                    $socket = Connection::create();
-                    $socket->bind();
-                    $messages = $socket->read(
-                        fn (string $data) => $data,
-                        fn () => yield 0x001,
-                    );
-                    foreach ($messages as $message) {
-                        if ($message === 0x001) {
-                            return true;
+                new ServerSentEventsStream(function () use ($socket) {
+                    foreach ($socket->read() as $message) {
+                        switch ($message[0]) {
+                            case Connection::TYPE_ERROR:
+                                return '';
+                            default:
+                                /**
+                                 * Break the loop if the client aborted the connection (closed the page)
+                                 */
+                                if (connection_aborted()) {
+                                    return $message[1];
+                                }
+                                yield $message[1];
                         }
-                        $buffer[] = $message;
-
-                        // break the loop if the client aborted the connection (closed the page)
-                        if (connection_aborted()) {
-                            return true;
-                        }
-                        if ($retries++ >= $maxRetries) {
-                            return true;
-                        }
-
-                        sleep(1);
-                        return true;
                     }
+                    return '';
                 })
             );
     }
