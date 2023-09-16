@@ -8,9 +8,9 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Yiisoft\Http\Header;
 use Yiisoft\Yii\Debug\Api\ServerSentEventsStream;
-use Yiisoft\Yii\Debug\DevServer\Connection;
+use Yiisoft\Yii\Debug\DebugServer\Connection;
 
-final class DevServerController
+final class DebugServerController
 {
     public function stream(
         ResponseFactoryInterface $responseFactory

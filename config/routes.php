@@ -12,7 +12,7 @@ use Yiisoft\Yii\Debug\Api\Controller\CacheController;
 use Yiisoft\Yii\Debug\Api\Controller\CommandController;
 use Yiisoft\Yii\Debug\Api\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Controller\DebugController;
-use Yiisoft\Yii\Debug\Api\Controller\DevServerController;
+use Yiisoft\Yii\Debug\Api\Controller\DebugServerController;
 use Yiisoft\Yii\Debug\Api\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Controller\InspectController;
 use Yiisoft\Yii\Debug\Api\Middleware\ResponseDataWrapper;
@@ -59,7 +59,7 @@ return [
                 ->action([DebugController::class, 'eventStream'])
                 ->name('event-stream'),
             Route::get('/dev')
-                ->action([DevServerController::class, 'stream'])
+                ->action([DebugServerController::class, 'stream'])
                 ->name('stream'),
         ),
     Group::create('/inspect/api')
