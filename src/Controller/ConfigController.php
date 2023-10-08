@@ -36,9 +36,10 @@ final class ConfigController
         }
 
         $content = require $mergePlanPath;
+        $rootAlias = $aliases->get('@root');
 
         $result = [
-            'path' => $mergePlanPath,
+            'path' => substr($mergePlanPath, strlen($rootAlias) + 1),
             'data' => $content,
         ];
 
