@@ -24,7 +24,7 @@ final class ConfigController
             'yii-config-merge-plan',
         ]);
         $output = $command->run()->getResult();
-        $mergePlanPath = substr($output, 0, strpos($output, "Xdebug: [Step Debug]") ?: -1);
+        $mergePlanPath = substr($output, 0, strpos($output, 'Xdebug: [Step Debug]') ?: -1);
 
         if (!file_exists($mergePlanPath)) {
             throw new Exception(
