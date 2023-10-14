@@ -26,6 +26,7 @@ use Yiisoft\Http\Method;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Router\UrlMatcherInterface;
+use Yiisoft\Session\SessionInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
@@ -399,6 +400,19 @@ class InspectController
             // TODO: change events-web to events-web when it will be possible
             'console' => [], //VarDumper::create($config->get('events-web'))->asPrimitives(),
             'web' => VarDumper::create($config->get('events-web'))->asPrimitives(),
+        ]);
+    }
+
+    public function session(ContainerInterface $container): ResponseInterface
+    {
+        $session = $container->get(SessionInterface::class);
+        $data = $session->all();
+
+        return $this->responseFactory->createResponse([
+            'id' => $session->getId(),
+            'name' => $session->getName(),
+            'cookieParameters' => $session->getCookieParameters(),
+            'data' => $data,
         ]);
     }
 

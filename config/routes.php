@@ -77,6 +77,9 @@ return [
             Route::get('/events')
                 ->action([InspectController::class, 'eventListeners'])
                 ->name('events'),
+            Route::get('/session')
+                ->action([InspectController::class, 'session'])
+                ->name('session'),
             Route::get('/params')
                 ->action([InspectController::class, 'params'])
                 ->name('params'),
