@@ -77,6 +77,9 @@ return [
             Route::get('/events')
                 ->action([InspectController::class, 'eventListeners'])
                 ->name('events'),
+            Route::get('/session')
+                ->action([InspectController::class, 'session'])
+                ->name('session'),
             Route::get('/params')
                 ->action([InspectController::class, 'params'])
                 ->name('params'),
@@ -116,6 +119,9 @@ return [
             Route::post('/curl/build')
                 ->action([InspectController::class, 'buildCurl'])
                 ->name('curl/build'),
+            Route::get('/config/merge-plan')
+                ->action([\Yiisoft\Yii\Debug\Api\Controller\ConfigController::class, 'read'])
+                ->name('config/merge-plan'),
             Group::create('/git')
                 ->namePrefix('/git')
                 ->routes(
