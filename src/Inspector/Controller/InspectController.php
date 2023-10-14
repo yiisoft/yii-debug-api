@@ -33,8 +33,6 @@ use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Collector\Web\RequestCollector;
 
-use function Yiisoft\Yii\Debug\Api\Controller\sort;
-
 class InspectController
 {
     public function __construct(
