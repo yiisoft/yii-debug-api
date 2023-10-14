@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Repository;
+namespace Yiisoft\Yii\Debug\Api\Debug\Repository;
 
 interface CollectorRepositoryInterface
 {

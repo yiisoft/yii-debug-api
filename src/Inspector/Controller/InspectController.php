@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Controller;
+namespace Yiisoft\Yii\Debug\Api\Inspector\Controller;
 
 use Alexkart\CurlBuilder\Command;
 use FilesystemIterator;
@@ -28,10 +28,12 @@ use Yiisoft\Router\RouteCollectionInterface;
 use Yiisoft\Router\UrlMatcherInterface;
 use Yiisoft\Translator\CategorySource;
 use Yiisoft\VarDumper\VarDumper;
+use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
-use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Collector\Web\RequestCollector;
+
+use function Yiisoft\Yii\Debug\Api\Controller\sort;
 
 class InspectController
 {
