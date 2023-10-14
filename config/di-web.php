@@ -5,11 +5,11 @@ declare(strict_types=1);
 use Cycle\Database\DatabaseProviderInterface;
 use Psr\Container\ContainerInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepository;
+use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\ActiveRecord\ActiveRecordSchemaProvider;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\Cycle\CycleSchemaProvider;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
-use Yiisoft\Yii\Debug\Api\Repository\CollectorRepository;
-use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
 /**

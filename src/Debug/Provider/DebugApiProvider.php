@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Provider;
+namespace Yiisoft\Yii\Debug\Api\Debug\Provider;
 
 use Psr\Container\ContainerInterface;
 use Yiisoft\Di\ServiceProviderInterface;
-use Yiisoft\Yii\Debug\Api\Middleware\DebugHeaders;
 use Yiisoft\Router\RouteCollectorInterface;
+use Yiisoft\Yii\Debug\Api\Debug\Middleware\DebugHeaders;
 
 final class DebugApiProvider implements ServiceProviderInterface
 {

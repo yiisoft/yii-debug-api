@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Exception;
+namespace Yiisoft\Yii\Debug\Api\Debug\Exception;
 
 use Exception;
 use Throwable;
