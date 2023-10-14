@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Middleware;
+namespace Yiisoft\Yii\Debug\Api\Debug\Middleware;
 
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface;
@@ -13,7 +13,7 @@ use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Http\Status;
 use Yiisoft\Router\CurrentRoute;
-use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
+use Yiisoft\Yii\Debug\Api\Debug\Exception\NotFoundException;
 
 /**
  * @OA\Schema(schema="DebugResponse", description="Yii Debug Api response")

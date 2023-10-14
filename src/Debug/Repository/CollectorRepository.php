@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Repository;
+namespace Yiisoft\Yii\Debug\Api\Debug\Repository;
 
-use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
+use Yiisoft\Yii\Debug\Api\Debug\Exception\NotFoundException;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
 final class CollectorRepository implements CollectorRepositoryInterface

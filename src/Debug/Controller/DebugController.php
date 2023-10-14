@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Controller;
+namespace Yiisoft\Yii\Debug\Api\Debug\Controller;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -13,11 +13,11 @@ use Yiisoft\Assets\AssetPublisherInterface;
 use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
-use Yiisoft\Yii\Debug\Api\Exception\NotFoundException;
-use Yiisoft\Yii\Debug\Api\Exception\PackageNotInstalledException;
-use Yiisoft\Yii\Debug\Api\HtmlViewProviderInterface;
-use Yiisoft\Yii\Debug\Api\ModuleFederationProviderInterface;
-use Yiisoft\Yii\Debug\Api\Repository\CollectorRepositoryInterface;
+use Yiisoft\Yii\Debug\Api\Debug\Exception\NotFoundException;
+use Yiisoft\Yii\Debug\Api\Debug\Exception\PackageNotInstalledException;
+use Yiisoft\Yii\Debug\Api\Debug\HtmlViewProviderInterface;
+use Yiisoft\Yii\Debug\Api\Debug\ModuleFederationProviderInterface;
+use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\ServerSentEventsStream;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 use Yiisoft\Yii\View\ViewRenderer;
