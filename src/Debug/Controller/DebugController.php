@@ -327,7 +327,10 @@ final class DebugController
             $currentRoute->getArgument('objectId')
         );
 
-        return $this->responseFactory->createResponse($data);
+        return $this->responseFactory->createResponse([
+            'class' => $data[0],
+            'value' => $data[1],
+        ]);
     }
 
     public function eventStream(
