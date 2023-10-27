@@ -28,6 +28,12 @@ final class DbSchemaProviderTest extends TestCase
         $this->assertSame('test3', $table['table']);
         $this->assertSame(['id'], $table['primaryKeys']);
         $this->assertCount(4, $table['columns']);
+
+        // check six record
+        $this->assertEquals(6, $table['records'][5]['id']);
+        $this->assertSame('test6', $table['records'][5]['product']);
+        $this->assertEquals(6.6, $table['records'][5]['price']);
+        $this->assertEquals(0, $table['records'][5]['status']);
     }
 
     public function testGetTables(): void
