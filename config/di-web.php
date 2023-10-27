@@ -7,8 +7,8 @@ use Psr\Container\ContainerInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepository;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
-use Yiisoft\Yii\Debug\Api\Inspector\Database\ActiveRecord\ActiveRecordSchemaProvider;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\Cycle\CycleSchemaProvider;
+use Yiisoft\Yii\Debug\Api\Inspector\Database\Db\DbSchemaProvider;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
@@ -24,7 +24,7 @@ return [
         }
 
         if ($container->has(ConnectionInterface::class)) {
-            return $container->get(ActiveRecordSchemaProvider::class);
+            return $container->get(DbSchemaProvider::class);
         }
 
         throw new LogicException(
