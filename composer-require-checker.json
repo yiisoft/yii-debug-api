@@ -23,6 +23,7 @@
         "Yiisoft\\ActiveRecord\\ActiveRecord",
         "Yiisoft\\ActiveRecord\\ActiveRecordFactory",
         "Yiisoft\\Db\\Connection\\ConnectionInterface",
+        "Yiisoft\\Db\\Query\\Query",
         "Yiisoft\\Yii\\Debug\\Collector\\RequestCollector",
         "posix_getgrgid",
         "posix_getpwuid"
