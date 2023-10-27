@@ -104,7 +104,7 @@ final class DbSchemaProviderTest extends TestCase
             'test',
             [
                 'id',
-                'email'
+                'email',
             ],
             [
                 [1, 'test1'],
