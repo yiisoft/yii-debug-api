@@ -18,13 +18,13 @@ This extension provides an API for [Yii Debug](https://github.com/yiisoft/yii-de
 
 ## Requirements
 
-- PHP 7.4 or higher.
+- PHP 8.1 or higher.
 
 ## Installation
 
 Add the package to your application:
 
-```
+```shell
 composer require yiisoft/yii-debug-api
 ```
 
