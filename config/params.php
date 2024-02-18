@@ -37,8 +37,8 @@ return [
     ],
     'yiisoft/yii-swagger' => [
         'annotation-paths' => [
-            dirname(__DIR__) . '/src/Controller',
-            dirname(__DIR__) . '/src/Middleware',
+            dirname(__DIR__) . '/src/Debug/Controller',
+            dirname(__DIR__) . '/src/Debug/Middleware',
         ],
     ],
 ];
