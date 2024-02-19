@@ -15,29 +15,29 @@ use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Debug\Exception\NotFoundException;
 use OpenApi\Attributes as OA;
 
-#[OA\Schema(schema: "DebugResponse", description: "Yii Debug Api response")]
+#[OA\Schema(schema: 'DebugResponse', description: 'Yii Debug Api response')]
 #[OA\Schema(
-    schema: "DebugSuccessResponse",
+    schema: 'DebugSuccessResponse',
     allOf: [
-        new OA\Schema(ref:"#/components/schemas/DebugResponse"),
+        new OA\Schema(ref:'#/components/schemas/DebugResponse'),
         new OA\Schema(properties: [
-            new OA\Property(property: "id",title: "ID",description: "ID", format: "string"),
-            new OA\Property(property: "data",title: "Data",description: "Data", format: "object", nullable: true),
-            new OA\Property(property: "error",title: "Error",description: "Error", format: "string", nullable: true, example: null),
-            new OA\Property(property: "success",title: "Success",description: "Success", format: "boolean",example: true),
-        ])
+            new OA\Property(property: 'id', title: 'ID', description: 'ID', format: 'string'),
+            new OA\Property(property: 'data', title: 'Data', description: 'Data', format: 'object', nullable: true),
+            new OA\Property(property: 'error', title: 'Error', description: 'Error', format: 'string', nullable: true, example: null),
+            new OA\Property(property: 'success', title: 'Success', description: 'Success', format: 'boolean', example: true),
+        ]),
     ]
 )]
 #[OA\Schema(
-    schema: "DebugNotFoundResponse",
+    schema: 'DebugNotFoundResponse',
     allOf: [
-        new OA\Schema(ref:"#/components/schemas/DebugResponse"),
+        new OA\Schema(ref:'#/components/schemas/DebugResponse'),
         new OA\Schema(properties: [
-            new OA\Property(property: "id",title: "ID",description: "ID", format: "string"),
-            new OA\Property(property: "data",title: "Data",description: "Data", format: "object", nullable: true, example: null),
-            new OA\Property(property: "error",title: "Error",description: "Error", format: "string"),
-            new OA\Property(property: "success",title: "Success",description: "Success", format: "boolean",example: false),
-        ])
+            new OA\Property(property: 'id', title: 'ID', description: 'ID', format: 'string'),
+            new OA\Property(property: 'data', title: 'Data', description: 'Data', format: 'object', nullable: true, example: null),
+            new OA\Property(property: 'error', title: 'Error', description: 'Error', format: 'string'),
+            new OA\Property(property: 'success', title: 'Success', description: 'Success', format: 'boolean', example: false),
+        ]),
     ]
 )]
 final class ResponseDataWrapper implements MiddlewareInterface
