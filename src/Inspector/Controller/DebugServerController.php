@@ -16,7 +16,7 @@ final class DebugServerController
         ResponseFactoryInterface $responseFactory
     ): ResponseInterface {
         if (\function_exists('pcntl_signal')) {
-            \pcntl_signal(\SIGINT, static function (): void {
+            \pcntl_signal(\SIGINT, static function (): never {
                 exit(1);
             });
         }
