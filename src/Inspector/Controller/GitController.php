@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Controller;
+namespace Yiisoft\Yii\Debug\Api\Inspector\Controller;
 
 use Gitonomy\Git\Commit;
 use Gitonomy\Git\Reference\Branch;
@@ -58,7 +58,7 @@ final class GitController
         $result = [
             'currentBranch' => $branch->getName(),
             'sha' => $branch->getCommitHash(),
-            'commits' => array_map([$this, 'serializeCommit'], $git->getLog(limit: 20)->getCommits()),
+            'commits' => array_map($this->serializeCommit(...), $git->getLog(limit: 20)->getCommits()),
         ];
         $response = VarDumper::create($result)->asPrimitives(255);
         return $this->responseFactory->createResponse($response);

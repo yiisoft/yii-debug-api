@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api;
+namespace Yiisoft\Yii\Debug\Api\Debug;
 
 use Yiisoft\Yii\Debug\Collector\CollectorInterface;
 
