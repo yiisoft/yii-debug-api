@@ -97,5 +97,4 @@ final class CollectorRepositoryTest extends TestCase
     {
         return new MemoryStorage($idGenerator);
     }
-
 }

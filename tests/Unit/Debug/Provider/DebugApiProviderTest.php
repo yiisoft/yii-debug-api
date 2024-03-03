@@ -33,5 +33,4 @@ final class DebugApiProviderTest extends TestCase
 
         $this->assertSame($routeCollector, $routeCollectorDecorator($routeCollector));
     }
-
 }

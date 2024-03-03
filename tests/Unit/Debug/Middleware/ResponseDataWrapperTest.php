@@ -125,8 +125,7 @@ final class ResponseDataWrapperTest extends TestCase
     {
         $factory = $this->createDataResponseFactory();
         $currentRoute = new CurrentRoute();
-        $middleware = new ResponseDataWrapper($factory, $currentRoute);
-        return $middleware;
+        return new ResponseDataWrapper($factory, $currentRoute);
     }
 
     private function createDataResponseFactory(): DataResponseFactory
@@ -136,5 +135,4 @@ final class ResponseDataWrapperTest extends TestCase
             new StreamFactory(),
         );
     }
-
 }

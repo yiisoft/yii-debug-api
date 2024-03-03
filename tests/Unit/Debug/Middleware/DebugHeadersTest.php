@@ -33,12 +33,11 @@ final class DebugHeadersTest extends TestCase
 
     protected function createRequestHandler(): RequestHandlerInterface
     {
-        return new class implements RequestHandlerInterface {
+        return new class () implements RequestHandlerInterface {
             public function handle($request): ResponseInterface
             {
                 return new Response(200);
             }
         };
     }
-
 }
