@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Debug\Api\Tests\Inspector\Database;
+namespace Yiisoft\Yii\Debug\Api\Tests\Unit\Inspector\Database;
 
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Cache\NullCache;
