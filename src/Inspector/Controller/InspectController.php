@@ -307,7 +307,7 @@ class InspectController
                 'methods' => $data['methods'],
                 'defaults' => $data['defaults'],
                 'override' => $data['override'],
-                'middlewares' => $data['middlewareDefinitions'],
+                'middlewares' => $data['middlewareDefinitions'] ?? [],
             ];
         }
         $response = VarDumper::create($routes)->asPrimitives(5);
