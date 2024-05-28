@@ -35,7 +35,7 @@ final class BashCommandTest extends TestCase
         $response = $command->run();
 
         $this->assertSame(CommandResponse::STATUS_ERROR, $response->getStatus());
-        $this->assertSame('failed' . PHP_EOL, $response->getResult());
+        $this->assertSame('failed', $response->getResult());
         $this->assertSame([], $response->getErrors());
     }
 }
