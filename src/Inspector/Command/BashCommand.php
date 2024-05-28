@@ -38,7 +38,7 @@ final class BashCommand implements CommandInterface
             ->setTimeout(null)
             ->run();
 
-        $processOutput = $process->getOutput();
+        $processOutput = rtrim($process->getOutput(), PHP_EOL);
 
         if (!$process->getExitCode() > 1) {
             return new CommandResponse(
