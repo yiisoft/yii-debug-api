@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Cycle\Database\DatabaseProviderInterface;
 use Psr\Container\ContainerInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Yii\Debug\Api\Debug\Middleware\DebugFallbackHandler;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepository;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\Cycle\CycleSchemaProvider;
@@ -34,4 +35,9 @@ return [
             )
         );
     },
+    DebugFallbackHandler::class => [
+        '__construct()' => [
+            'middlewareDefinitions' => $params['yiisoft/yii-debug-api']['fallbackHandler']['middlewares'],
+        ],
+    ],
 ];

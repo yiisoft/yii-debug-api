@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Codeception\Extension;
+use Yiisoft\Yii\Debug\Api\Debug\Middleware\DebugHeaders;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\CodeceptionCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\PHPUnitCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\PsalmCommand;
@@ -34,6 +35,11 @@ return [
                 ],
             ],
         ],
+        'fallbackHandler' => [
+            'middlewares' => [
+                DebugHeaders::class,
+            ],
+        ]
     ],
     'yiisoft/yii-swagger' => [
         'annotation-paths' => [
