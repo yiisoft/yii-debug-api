@@ -24,10 +24,7 @@ final class DebugApiProvider implements ServiceProviderInterface
     public function getExtensions(): array
     {
         return [
-            RouteCollectorInterface::class => static function (
-                ContainerInterface $container,
-                RouteCollectorInterface $routeCollector
-            ) {
+            RouteCollectorInterface::class => static function (RouteCollectorInterface $routeCollector) {
                 $routeCollector->prependMiddleware(DebugHeaders::class);
                 return $routeCollector;
             },
