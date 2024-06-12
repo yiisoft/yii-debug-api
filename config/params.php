@@ -39,7 +39,7 @@ return [
             'middlewares' => [
                 DebugHeaders::class,
             ],
-        ]
+        ],
     ],
     'yiisoft/yii-swagger' => [
         'annotation-paths' => [
