@@ -7,8 +7,8 @@ namespace Yiisoft\Yii\Debug\Api\Debug\Provider;
 use Psr\Container\ContainerInterface;
 use Yiisoft\Di\ServiceProviderInterface;
 use Yiisoft\Router\RouteCollectorInterface;
-use Yiisoft\Yii\Debug\Api\Debug\Http\DebugHttpApplicationWrapper;
-use Yiisoft\Yii\Debug\Api\Debug\Middleware\DebugHeaders;
+use Yiisoft\Yii\Debug\Api\Debug\Http\HttpApplicationWrapper;
+use Yiisoft\Yii\Debug\Api\Debug\Http\RouteCollectorWrapper;
 use Yiisoft\Yii\Http\Application;
 
 final class DebugApiProvider implements ServiceProviderInterface
@@ -24,12 +24,20 @@ final class DebugApiProvider implements ServiceProviderInterface
     public function getExtensions(): array
     {
         return [
-            RouteCollectorInterface::class => static function (ContainerInterface $container, RouteCollectorInterface $routeCollector) {
-                $routeCollector->prependMiddleware(DebugHeaders::class);
+            RouteCollectorInterface::class => static function (
+                ContainerInterface $container,
+                RouteCollectorInterface $routeCollector
+            ) {
+                /**
+                 * Register debug middlewares twice because a `Subfolder` middleware may rewrite base URL
+                 */
+                $routerCollectionWrapper = $container->get(RouteCollectorWrapper::class);
+                $routerCollectionWrapper->wrap($routeCollector);
+
                 return $routeCollector;
             },
             Application::class => static function (ContainerInterface $container, Application $application) {
-                $applicationWrapper = $container->get(DebugHttpApplicationWrapper::class);
+                $applicationWrapper = $container->get(HttpApplicationWrapper::class);
                 $applicationWrapper->wrap($application);
 
                 return $application;

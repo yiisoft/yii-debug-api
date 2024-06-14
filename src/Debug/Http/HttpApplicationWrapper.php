@@ -9,7 +9,7 @@ use Yiisoft\Middleware\Dispatcher\MiddlewareDispatcher;
 use Yiisoft\Yii\Debug\Api\Debug\Middleware\MiddlewareDispatcherMiddleware;
 use Yiisoft\Yii\Http\Application;
 
-final readonly class DebugHttpApplicationWrapper
+final readonly class HttpApplicationWrapper
 {
     public function __construct(
         private MiddlewareDispatcher $middlewareDispatcher,
