@@ -51,6 +51,7 @@
         "yiisoft/di": "^1.0",
         "yiisoft/friendly-exception": "^1.1",
         "yiisoft/http": "^1.2",
+        "yiisoft/middleware-dispatcher": "^5.2",
         "yiisoft/router": "^3.0",
         "yiisoft/translator": "^3.0",
         "yiisoft/var-dumper": "^1.4",
