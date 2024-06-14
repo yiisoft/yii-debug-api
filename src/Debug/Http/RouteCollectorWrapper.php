@@ -6,7 +6,7 @@ namespace Yiisoft\Yii\Debug\Api\Debug\Http;
 
 use Yiisoft\Router\RouteCollectorInterface;
 
-final readonly class RouteCollectorWrapper
+final class RouteCollectorWrapper
 {
     public function __construct(
         private array $middlewareDefinitions,
