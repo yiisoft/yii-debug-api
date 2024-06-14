@@ -27,17 +27,15 @@ return [
         'enabled' => true,
         'allowedIPs' => ['127.0.0.1', '::1'],
         'allowedHosts' => [],
+        'middlewares' => [
+            DebugHeaders::class,
+        ],
         'inspector' => [
             'commandMap' => [
                 'tests' => $testCommands,
                 'analyse' => [
                     PsalmCommand::COMMAND_NAME => PsalmCommand::class,
                 ],
-            ],
-        ],
-        'fallbackHandler' => [
-            'middlewares' => [
-                DebugHeaders::class,
             ],
         ],
     ],
