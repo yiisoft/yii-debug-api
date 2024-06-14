@@ -7,6 +7,7 @@ namespace Yiisoft\Yii\Debug\Api\Tests\Unit\Debug\Provider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Yiisoft\Router\RouteCollectorInterface;
+use Yiisoft\Yii\Debug\Api\Debug\Http\RouteCollectorWrapper;
 use Yiisoft\Yii\Debug\Api\Debug\Middleware\DebugHeaders;
 use Yiisoft\Yii\Debug\Api\Debug\Provider\DebugApiProvider;
 
@@ -26,11 +27,18 @@ final class DebugApiProviderTest extends TestCase
         $routeCollectorDecorator = $extensions[RouteCollectorInterface::class];
         $this->assertIsCallable($routeCollectorDecorator);
 
+        $middlewares = [DebugHeaders::class];
+
         $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())
+            ->method('get')
+            ->with(RouteCollectorWrapper::class)
+            ->willReturn(new RouteCollectorWrapper($middlewares));
+
         $routeCollector = $this->createMock(RouteCollectorInterface::class);
         $routeCollector->expects($this->once())
             ->method('prependMiddleware')
-            ->with(DebugHeaders::class)
+            ->with(...$middlewares)
             ->willReturn($routeCollector);
 
         $this->assertSame($routeCollector, $routeCollectorDecorator($container, $routeCollector));
