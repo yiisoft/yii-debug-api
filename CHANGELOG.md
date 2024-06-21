@@ -1,4 +1,4 @@
-# Yii debug API Change Log
+# Yii Debug API Change Log
 
 ## 1.0.0 under development
 
