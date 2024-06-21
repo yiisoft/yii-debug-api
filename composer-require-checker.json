@@ -4,6 +4,7 @@
         "Yiisoft\\Assets\\AssetManager",
         "Yiisoft\\Assets\\AssetPublisherInterface",
         "Yiisoft\\Yii\\View\\ViewRenderer",
+        "Yiisoft\\Yii\\Http\\Application",
         "Codeception\\Event\\FailEvent",
         "Codeception\\Event\\PrintResultEvent",
         "Codeception\\Event\\TestEvent",

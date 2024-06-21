@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Cycle\Database\DatabaseProviderInterface;
 use Psr\Container\ContainerInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Yii\Debug\Api\Debug\Http\HttpApplicationWrapper;
+use Yiisoft\Yii\Debug\Api\Debug\Http\RouteCollectorWrapper;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepository;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\Cycle\CycleSchemaProvider;
@@ -34,4 +36,14 @@ return [
             )
         );
     },
+    HttpApplicationWrapper::class => [
+        '__construct()' => [
+            'middlewareDefinitions' => $params['yiisoft/yii-debug-api']['middlewares'],
+        ],
+    ],
+    RouteCollectorWrapper::class => [
+        '__construct()' => [
+            'middlewareDefinitions' => $params['yiisoft/yii-debug-api']['middlewares'],
+        ],
+    ],
 ];
