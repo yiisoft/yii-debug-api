@@ -55,7 +55,7 @@
         "yiisoft/router": "^3.0",
         "yiisoft/translator": "^3.0",
         "yiisoft/var-dumper": "^1.4",
-        "yiisoft/yii-debug": "^3.0@dev",
+        "yiisoft/yii-debug": "dev-master",
         "yiisoft/yii-middleware": "^1.0",
         "zircote/swagger-php": "^4.0"
     },
