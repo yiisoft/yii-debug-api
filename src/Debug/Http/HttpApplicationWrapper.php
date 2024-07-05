@@ -29,7 +29,7 @@ final class HttpApplicationWrapper
             $application->dispatcher = $middlewareDispatcher->withMiddlewares([
                 ...$middlewareDefinitions,
                 ['class' => MiddlewareDispatcherMiddleware::class, '$middlewareDispatcher' => $application->dispatcher],
-            ]);;
+            ]);
         }, null, $application);
 
         $closure($application);
