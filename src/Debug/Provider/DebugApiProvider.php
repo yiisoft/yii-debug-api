@@ -21,6 +21,9 @@ final class DebugApiProvider implements ServiceProviderInterface
         return [];
     }
 
+    /**
+     * @psalm-suppress UndefinedClass
+     */
     public function getExtensions(): array
     {
         $extensions = [
@@ -37,14 +40,11 @@ final class DebugApiProvider implements ServiceProviderInterface
                 return $routeCollector;
             },
         ];
-        /**
-         * @psalm-suppress UndefinedClass
-         */
         if (class_exists(Application::class)) {
             $extensions[Application::class] = static function (
                 ContainerInterface $container,
                 Application $application
-            ) {
+            ): Application {
                 $applicationWrapper = $container->get(HttpApplicationWrapper::class);
                 $applicationWrapper->wrap($application);
 
