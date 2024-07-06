@@ -16,6 +16,7 @@ use Yiisoft\Yii\Debug\Api\Inspector\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\DebugServerController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\InspectController;
+use Yiisoft\Yii\Debug\Api\Inspector\Controller\OpcacheController;
 use Yiisoft\Yii\Middleware\CorsAllowAll;
 use Yiisoft\Yii\Middleware\IpFilter;
 
@@ -174,6 +175,13 @@ return [
                     Route::post('/clear')
                         ->action([CacheController::class, 'clear'])
                         ->name('/clear'),
+                ),
+            Group::create('/opcache')
+                ->namePrefix('opcache')
+                ->routes(
+                    Route::get('[/]')
+                        ->action([OpcacheController::class, 'index'])
+                        ->name('/index'),
                 ),
         ),
 ];

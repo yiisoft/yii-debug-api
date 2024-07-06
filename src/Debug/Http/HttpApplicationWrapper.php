@@ -9,7 +9,7 @@ use Yiisoft\Middleware\Dispatcher\MiddlewareDispatcher;
 use Yiisoft\Yii\Debug\Api\Debug\Middleware\MiddlewareDispatcherMiddleware;
 use Yiisoft\Yii\Http\Application;
 
-final readonly class HttpApplicationWrapper
+final class HttpApplicationWrapper
 {
     public function __construct(
         private MiddlewareDispatcher $middlewareDispatcher,
@@ -17,20 +17,25 @@ final readonly class HttpApplicationWrapper
     ) {
     }
 
+    /**
+     * @psalm-suppress UndefinedClass
+     */
     public function wrap(Application $application): void
     {
         $middlewareDispatcher = $this->middlewareDispatcher;
         $middlewareDefinitions = $this->middlewareDefinitions;
 
-        $closure = Closure::bind(static function (Application $application) use (
-            $middlewareDispatcher,
-            $middlewareDefinitions,
-        ) {
-            $application->dispatcher = $middlewareDispatcher->withMiddlewares([
+        $closure = Closure::bind(
+            /**
+             * @psalm-suppress UndefinedClass
+             */
+            static fn (Application $application) => $application->dispatcher = $middlewareDispatcher->withMiddlewares([
                 ...$middlewareDefinitions,
                 ['class' => MiddlewareDispatcherMiddleware::class, '$middlewareDispatcher' => $application->dispatcher],
-            ]);;
-        }, null, $application);
+            ]),
+            null,
+            $application
+        );
 
         $closure($application);
     }

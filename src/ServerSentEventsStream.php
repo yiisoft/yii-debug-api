@@ -30,9 +30,9 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         $this->eof = true;
     }
 
-    public function getSize()
+    public function getSize(): int
     {
-        return null;
+        return 0;
     }
 
     public function tell(): int
@@ -65,7 +65,7 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         return false;
     }
 
-    public function write($string): void
+    public function write($string): int
     {
         throw new \RuntimeException('Stream is not writable');
     }
