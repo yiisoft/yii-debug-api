@@ -27,9 +27,9 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
         $this->eof = true;
     }
 
-    public function getSize()
+    public function getSize(): int
     {
-        return null;
+        return 0;
     }
 
     public function tell(): int
