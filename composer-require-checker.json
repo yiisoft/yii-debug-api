@@ -26,7 +26,10 @@
         "Yiisoft\\Db\\Connection\\ConnectionInterface",
         "Yiisoft\\Db\\Query\\Query",
         "Yiisoft\\Yii\\Debug\\Collector\\RequestCollector",
+        "Yiisoft\\Yii\\Http\\Application",
         "posix_getgrgid",
-        "posix_getpwuid"
+        "posix_getpwuid",
+        "opcache_get_status",
+        "opcache_get_configuration"
     ]
 }
