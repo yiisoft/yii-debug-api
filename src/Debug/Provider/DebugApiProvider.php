@@ -23,7 +23,7 @@ final class DebugApiProvider implements ServiceProviderInterface
 
     public function getExtensions(): array
     {
-        return [
+        $extensions = [
             RouteCollectorInterface::class => static function (
                 ContainerInterface $container,
                 RouteCollectorInterface $routeCollector
@@ -36,12 +36,18 @@ final class DebugApiProvider implements ServiceProviderInterface
 
                 return $routeCollector;
             },
-            Application::class => static function (ContainerInterface $container, Application $application) {
+        ];
+        if (class_exists(Application::class)) {
+            $extensions[Application::class] = static function (
+                ContainerInterface $container,
+                Application $application
+            ) {
                 $applicationWrapper = $container->get(HttpApplicationWrapper::class);
                 $applicationWrapper->wrap($application);
 
                 return $application;
-            },
-        ];
+            };
+        }
+        return $extensions;
     }
 }
