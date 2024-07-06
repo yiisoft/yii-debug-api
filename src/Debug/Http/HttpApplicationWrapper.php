@@ -17,6 +17,9 @@ final class HttpApplicationWrapper
     ) {
     }
 
+    /**
+     * @psalm-suppress UndefinedClass
+     */
     public function wrap(Application $application): void
     {
         $middlewareDispatcher = $this->middlewareDispatcher;

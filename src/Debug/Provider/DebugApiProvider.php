@@ -37,6 +37,9 @@ final class DebugApiProvider implements ServiceProviderInterface
                 return $routeCollector;
             },
         ];
+        /**
+         * @psalm-suppress UndefinedClass
+         */
         if (class_exists(Application::class)) {
             $extensions[Application::class] = static function (
                 ContainerInterface $container,
