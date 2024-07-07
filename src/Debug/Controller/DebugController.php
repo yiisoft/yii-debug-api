@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Debug\Controller;
 
+use OpenApi\Attributes as OA;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -12,6 +13,7 @@ use Yiisoft\Assets\AssetManager;
 use Yiisoft\Assets\AssetPublisherInterface;
 use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\Http\Header;
 use Yiisoft\Router\CurrentRoute;
 use Yiisoft\Yii\Debug\Api\Debug\Exception\NotFoundException;
 use Yiisoft\Yii\Debug\Api\Debug\Exception\PackageNotInstalledException;
@@ -21,7 +23,6 @@ use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\ServerSentEventsStream;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
 use Yiisoft\Yii\View\ViewRenderer;
-use OpenApi\Attributes as OA;
 
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
@@ -323,9 +324,9 @@ final class DebugController
         $retries = 0;
 
         return $responseFactory->createResponse()
-            ->withHeader('Content-Type', 'text/event-stream')
-            ->withHeader('Cache-Control', 'no-cache')
-            ->withHeader('Connection', 'keep-alive')
+            ->withHeader(Header::CONTENT_TYPE, 'text/event-stream')
+            ->withHeader(Header::CACHE_CONTROL, 'no-cache')
+            ->withHeader(Header::CONNECTION, 'keep-alive')
             ->withBody(
                 new ServerSentEventsStream(function (array &$buffer) use (
                     $compareFunction,
