@@ -34,13 +34,16 @@ final class DebugServerController
                         switch ($message[0]) {
                             case Connection::TYPE_ERROR:
                                 return '';
-                            default:
+                            case Connection::TYPE_RELEASE:
                                 /**
                                  * Break the loop if the client aborted the connection (closed the page)
                                  */
                                 if (connection_aborted()) {
-                                    return $message[1];
+                                    return '';
                                 }
+                                break;
+                            case Connection::TYPE_RESULT:
+
                                 yield $message[1];
                         }
                     }
