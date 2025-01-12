@@ -9,92 +9,74 @@ use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepository;
 use Yiisoft\Yii\Debug\Api\Tests\Support\StubCollector;
 use Yiisoft\Yii\Debug\DebuggerIdGenerator;
 use Yiisoft\Yii\Debug\Storage\MemoryStorage;
-use Yiisoft\Yii\Debug\Storage\StorageInterface;
 
 final class CollectorRepositoryTest extends TestCase
 {
     public function testSummary(): void
     {
-        $idGenerator = new DebuggerIdGenerator();
-        $stubCollector = new StubCollector(['key' => 'value']);
-
-        $storage = $this->createStorage($idGenerator);
+        $storage = new MemoryStorage();
         $repository = new CollectorRepository($storage);
 
-        $this->assertIsArray($repository->getSummary());
-        $this->assertEquals([
-            [
-                'id' => $idGenerator->getId(),
-                'collectors' => [],
-            ],
-        ], $repository->getSummary());
+        $this->assertSame([], $repository->getSummary());
 
-        $storage->addCollector($stubCollector);
+        $storage->write('testId', ['stub' => ['key' => 'value']], [], ['total' => 7]);
 
-        $this->assertIsArray($repository->getSummary());
-        $this->assertEquals([
+        $this->assertSame(
             [
-                'id' => $idGenerator->getId(),
-                'collectors' => [$stubCollector->getName()],
+                ['total' => 7],
             ],
-        ], $repository->getSummary());
+            $repository->getSummary()
+        );
     }
 
     public function testDetail(): void
     {
-        $idGenerator = new DebuggerIdGenerator();
-        $stubCollector = new StubCollector(['key' => 'value']);
-
-        $storage = $this->createStorage($idGenerator);
-        $storage->addCollector($stubCollector);
+        $storage = new MemoryStorage();
+        $storage->write('testId', ['stub' => ['key' => 'value']], [], ['total' => 7]);
 
         $repository = new CollectorRepository($storage);
 
-        $this->assertIsArray($repository->getDetail($idGenerator->getId()));
-        $this->assertEquals([
-            $stubCollector->getName() => $stubCollector->getCollected(),
-        ], $repository->getDetail($idGenerator->getId()));
+        $this->assertSame(
+            ['stub' => ['key' => 'value']],
+            $repository->getDetail('testId')
+        );
     }
 
     public function testDumpObject(): void
     {
-        $idGenerator = new DebuggerIdGenerator();
-        $stubCollector = new StubCollector(['key' => 'value']);
-
-        $storage = $this->createStorage($idGenerator);
-        $storage->addCollector($stubCollector);
+        $storage = new MemoryStorage();
+        $storage->write('testId', ['stub' => ['key' => 'value']], ['object' => []], ['total' => 7]);
 
         $repository = new CollectorRepository($storage);
 
-        $this->assertIsArray($repository->getDumpObject($idGenerator->getId()));
-        $this->assertEquals([
-            'key' => 'value',
-        ], $repository->getDumpObject($idGenerator->getId()));
+        $this->assertSame(
+            ['object' => []],
+            $repository->getDumpObject('testId')
+        );
     }
 
     public function testObject(): void
     {
-        $idGenerator = new DebuggerIdGenerator();
+        $storage = new MemoryStorage();
 
         $objectId = '123';
-        $stubCollector = new StubCollector([
-            'stdClass#' . $objectId => 'value',
-        ]);
-
-        $storage = $this->createStorage($idGenerator);
-        $storage->addCollector($stubCollector);
+        $storage->write(
+            'testId',
+            ['stub' => ['key' => 'value']],
+            ['stdClass#' . $objectId => 'value'],
+            ['total' => 7],
+        );
 
         $repository = new CollectorRepository($storage);
 
-        $this->assertIsArray($repository->getObject($idGenerator->getId(), $objectId));
-        $this->assertEquals([
-            'stdClass',
-            'value',
-        ], $repository->getObject($idGenerator->getId(), $objectId));
-    }
-
-    private function createStorage(DebuggerIdGenerator $idGenerator): StorageInterface
-    {
-        return new MemoryStorage($idGenerator);
+        $object = $repository->getObject('testId', $objectId);
+        $this->assertIsArray($object);
+        $this->assertSame(
+            [
+                'stdClass',
+                'value',
+            ],
+            $object
+        );
     }
 }
