@@ -17,9 +17,6 @@ final class HttpApplicationWrapper
     ) {
     }
 
-    /**
-     * @psalm-suppress UndefinedClass
-     */
     public function wrap(Application $application): void
     {
         $middlewareDispatcher = $this->middlewareDispatcher;
@@ -27,7 +24,7 @@ final class HttpApplicationWrapper
 
         $closure = Closure::bind(
             /**
-             * @psalm-suppress UndefinedClass
+             * @psalm-suppress InaccessibleProperty
              */
             static fn (Application $application) => $application->dispatcher = $middlewareDispatcher->withMiddlewares([
                 ...$middlewareDefinitions,
