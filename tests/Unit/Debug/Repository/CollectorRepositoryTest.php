@@ -6,8 +6,6 @@ namespace Yiisoft\Yii\Debug\Api\Tests\Unit\Debug\Repository;
 
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepository;
-use Yiisoft\Yii\Debug\Api\Tests\Support\StubCollector;
-use Yiisoft\Yii\Debug\DebuggerIdGenerator;
 use Yiisoft\Yii\Debug\Storage\MemoryStorage;
 
 final class CollectorRepositoryTest extends TestCase
