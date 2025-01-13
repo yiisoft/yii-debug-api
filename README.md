@@ -9,8 +9,7 @@
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii-debug-api/v)](https://packagist.org/packages/yiisoft/yii-debug-api)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii-debug-api/downloads)](https://packagist.org/packages/yiisoft/yii-debug-api)
 [![Build status](https://github.com/yiisoft/yii-debug-api/actions/workflows/build.yml/badge.svg)](https://github.com/yiisoft/yii-debug-api/actions/workflows/build.yml)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/yii-debug-api/?branch=master)
+[![Code Coverage](https://codecov.io/gh/yiisoft/yii-debug-api/branch/master/graph/badge.svg)](https://codecov.io/gh/yiisoft/yii-debug-api)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Fyii-debug-api%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/yii-debug-api/master)
 [![static analysis](https://github.com/yiisoft/yii-debug-api/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/yii-debug-api/actions?query=workflow%3A%22static+analysis%22)
 
