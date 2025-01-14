@@ -9,9 +9,11 @@ use HttpSoft\Message\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use stdClass;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\Debug\Api\Debug\Middleware\DebugHeaders;
-use Yiisoft\Yii\Debug\DebuggerIdGenerator;
+use Yiisoft\Yii\Debug\Debugger;
+use Yiisoft\Yii\Debug\Storage\MemoryStorage;
 
 final class DebugHeadersTest extends TestCase
 {
@@ -21,10 +23,12 @@ final class DebugHeadersTest extends TestCase
         $urlGenerator->method('generate')->willReturnCallback(
             fn (string $route, array $parameters) => $route . '?' . http_build_query($parameters)
         );
-        $idGenerator = new DebuggerIdGenerator();
-        $expectedId = $idGenerator->getId();
 
-        $middleware = new DebugHeaders($idGenerator, $urlGenerator);
+        $debugger = new Debugger(new MemoryStorage(), []);
+        $debugger->startup(new stdClass());
+        $expectedId = $debugger->getId();
+
+        $middleware = new DebugHeaders($debugger, $urlGenerator);
         $response = $middleware->process(new ServerRequest(), $this->createRequestHandler());
 
         $this->assertSame($expectedId, $response->getHeaderLine('X-Debug-Id'));
