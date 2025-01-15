@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Yiisoft\Router\UrlGeneratorInterface;
-use Yiisoft\Yii\Debug\DebuggerIdGenerator;
+use Yiisoft\Yii\Debug\Debugger;
 
 /**
  * Adds debug headers to response. Information from these headers may be used to request information about
@@ -17,17 +17,24 @@ use Yiisoft\Yii\Debug\DebuggerIdGenerator;
  */
 final class DebugHeaders implements MiddlewareInterface
 {
-    public function __construct(private DebuggerIdGenerator $idGenerator, private UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        private Debugger $debugger,
+        private UrlGeneratorInterface $urlGenerator,
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
-        $link = $this->urlGenerator->generate('debug/api/view', ['id' => $this->idGenerator->getId()]);
+
+        if (!$this->debugger->isActive()) {
+            return $response;
+        }
+
+        $link = $this->urlGenerator->generate('debug/api/view', ['id' => $this->debugger->getId()]);
 
         return $response
-            ->withHeader('X-Debug-Id', $this->idGenerator->getId())
+            ->withHeader('X-Debug-Id', $this->debugger->getId())
             ->withHeader('X-Debug-Link', $link);
     }
 }
