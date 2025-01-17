@@ -13,6 +13,7 @@ use Yiisoft\Yii\Debug\Api\Debug\Middleware\ResponseDataWrapper;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\CacheController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\CommandController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\ComposerController;
+use Yiisoft\Yii\Debug\Api\Inspector\Controller\DebugServerController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\InspectController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\OpcacheController;
@@ -58,6 +59,9 @@ return [
             Route::get('/event-stream')
                 ->action([DebugController::class, 'eventStream'])
                 ->name('event-stream'),
+            Route::get('/dev')
+                ->action([DebugServerController::class, 'stream'])
+                ->name('stream'),
         ),
     Group::create('/inspect/api')
         ->withCors(CorsAllowAll::class)
