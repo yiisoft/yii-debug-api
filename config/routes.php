@@ -117,6 +117,9 @@ return [
             Route::post('/curl/build')
                 ->action([InspectController::class, 'buildCurl'])
                 ->name('curl/build'),
+            Route::get('/config/merge-plan')
+                ->action([\Yiisoft\Yii\Debug\Api\Controller\ConfigController::class, 'read'])
+                ->name('config/merge-plan'),
             Group::create('/git')
                 ->namePrefix('/git')
                 ->routes(
