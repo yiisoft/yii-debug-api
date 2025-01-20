@@ -28,7 +28,7 @@ final class DebugHeadersTest extends TestCase
         $debugger->startup(new stdClass());
         $expectedId = $debugger->getId();
 
-        $middleware = new DebugHeaders($debugger, $urlGenerator);
+        $middleware = new DebugHeaders($urlGenerator, $debugger);
         $response = $middleware->process(new ServerRequest(), $this->createRequestHandler());
 
         $this->assertSame($expectedId, $response->getHeaderLine('X-Debug-Id'));
