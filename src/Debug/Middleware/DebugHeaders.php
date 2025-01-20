@@ -18,8 +18,8 @@ use Yiisoft\Yii\Debug\Debugger;
 final class DebugHeaders implements MiddlewareInterface
 {
     public function __construct(
-        private Debugger $debugger,
         private UrlGeneratorInterface $urlGenerator,
+        private ?Debugger $debugger = null,
     ) {
     }
 
@@ -27,7 +27,7 @@ final class DebugHeaders implements MiddlewareInterface
     {
         $response = $handler->handle($request);
 
-        if (!$this->debugger->isActive()) {
+        if ($this->debugger === null || !$this->debugger->isActive()) {
             return $response;
         }
 
