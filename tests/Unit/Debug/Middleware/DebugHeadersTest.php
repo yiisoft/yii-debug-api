@@ -25,7 +25,7 @@ final class DebugHeadersTest extends TestCase
         );
 
         $debugger = new Debugger(new MemoryStorage(), []);
-        $debugger->startup(new stdClass());
+        $debugger->start(new stdClass());
         $expectedId = $debugger->getId();
 
         $middleware = new DebugHeaders($urlGenerator, $debugger);
