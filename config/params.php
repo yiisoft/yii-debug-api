@@ -9,7 +9,7 @@ use Yiisoft\Yii\Debug\Api\Inspector\Command\PHPUnitCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\PsalmCommand;
 
 $testCommands = [];
-if (class_exists(\PHPUnit\Framework\Test::class)) {
+if (class_exists(PHPUnit\Framework\Test::class)) {
     $testCommands[PHPUnitCommand::COMMAND_NAME] = PHPUnitCommand::class;
 }
 if (class_exists(Extension::class)) {
