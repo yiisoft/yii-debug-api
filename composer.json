@@ -76,6 +76,7 @@
         "yiisoft/router-fastroute": "^3.0",
         "yiisoft/test-support": "^3.0",
         "yiisoft/yii-cycle": "dev-master",
+        "yiisoft/yii-http": "^1.0",
         "yiisoft/yii-view": "^6.0"
     },
     "suggest": {
