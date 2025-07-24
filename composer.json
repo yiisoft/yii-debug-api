@@ -65,7 +65,7 @@
         "maglnet/composer-require-checker": "^4.2",
         "phpunit/phpunit": "^10.5",
         "rector/rector": "^2.1.1",
-        "roave/infection-static-analysis-plugin": "^1.38",
+        "roave/infection-static-analysis-plugin": "^1.30",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^6.12",
         "yiisoft/active-record": "dev-master",
