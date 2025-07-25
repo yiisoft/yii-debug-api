@@ -10,6 +10,9 @@ use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandResponse;
 use Yiisoft\Yii\Debug\Api\Inspector\Test\PHPUnitJSONReporter;
 
+/**
+ * @psalm-suppress MissingDependency
+ */
 class PHPUnitCommand implements CommandInterface
 {
     public const COMMAND_NAME = 'test/phpunit';

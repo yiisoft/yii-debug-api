@@ -3,8 +3,9 @@
 declare(strict_types=1);
 
 use Psr\Http\Message\ResponseFactoryInterface;
-use Yiisoft\Csrf\CsrfMiddleware;
+use Yiisoft\Csrf\CsrfTokenMiddleware;
 use Yiisoft\DataResponse\Middleware\FormatDataResponseAsJson;
+use Yiisoft\HttpMiddleware\CorsAllowAllMiddleware;
 use Yiisoft\Router\Group;
 use Yiisoft\Router\Route;
 use Yiisoft\Validator\ValidatorInterface;
@@ -16,7 +17,6 @@ use Yiisoft\Yii\Debug\Api\Inspector\Controller\ComposerController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\GitController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\InspectController;
 use Yiisoft\Yii\Debug\Api\Inspector\Controller\OpcacheController;
-use Yiisoft\Yii\Middleware\CorsAllowAll;
 use Yiisoft\Yii\Middleware\IpFilter;
 
 if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
@@ -25,8 +25,8 @@ if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
 
 return [
     Group::create('/debug/api')
-        ->withCors(CorsAllowAll::class)
-        ->disableMiddleware(CsrfMiddleware::class)
+        ->withCors(CorsAllowAllMiddleware::class)
+        ->disableMiddleware(CsrfTokenMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
                 return new IpFilter(
@@ -60,8 +60,8 @@ return [
                 ->name('event-stream'),
         ),
     Group::create('/inspect/api')
-        ->withCors(CorsAllowAll::class)
-        ->disableMiddleware(CsrfMiddleware::class)
+        ->withCors(CorsAllowAllMiddleware::class)
+        ->disableMiddleware(CsrfTokenMiddleware::class)
         ->middleware(
             static function (ResponseFactoryInterface $responseFactory, ValidatorInterface $validator) use ($params) {
                 return new IpFilter(

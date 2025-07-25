@@ -3,7 +3,7 @@
         "Yiisoft\\Assets\\AssetBundle",
         "Yiisoft\\Assets\\AssetManager",
         "Yiisoft\\Assets\\AssetPublisherInterface",
-        "Yiisoft\\Yii\\View\\ViewRenderer",
+        "Yiisoft\\Yii\\View\\Renderer\\ViewRenderer",
         "Yiisoft\\Yii\\Http\\Application",
         "Codeception\\Event\\FailEvent",
         "Codeception\\Event\\PrintResultEvent",
