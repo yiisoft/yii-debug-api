@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Debug\Controller;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Assets\AssetManager;
 use Yiisoft\Assets\AssetPublisherInterface;
+use Yiisoft\Assets\Exception\InvalidConfigException;
 use Yiisoft\DataResponse\DataResponse;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Router\CurrentRoute;
@@ -20,7 +23,7 @@ use Yiisoft\Yii\Debug\Api\Debug\ModuleFederationProviderInterface;
 use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\ServerSentEventsStream;
 use Yiisoft\Yii\Debug\Storage\StorageInterface;
-use Yiisoft\Yii\View\ViewRenderer;
+use Yiisoft\Yii\View\Renderer\ViewRenderer;
 use OpenApi\Attributes as OA;
 
 /**
@@ -314,7 +317,7 @@ final class DebugController
         ResponseFactoryInterface $responseFactory
     ): ResponseInterface {
         // TODO implement OS signal handling
-        $compareFunction = function () use ($storage) {
+        $compareFunction = static function () use ($storage) {
             $read = $storage->read(StorageInterface::TYPE_SUMMARY, null);
             return md5(json_encode($read, JSON_THROW_ON_ERROR));
         };
@@ -360,6 +363,17 @@ final class DebugController
             );
     }
 
+    /**
+     * @param ContainerInterface $container
+     * @param class-string $collectorClass
+     * @param mixed $data
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws PackageNotInstalledException
+     * @throws InvalidConfigException
+     * @return DataResponse
+     */
     private function createJsPanelResponse(
         ContainerInterface $container,
         string $collectorClass,
@@ -410,6 +424,16 @@ final class DebugController
         ]);
     }
 
+    /**
+     * @param ContainerInterface $container
+     * @param class-string $collectorClass
+     * @param mixed $data
+     *
+     * @throws PackageNotInstalledException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @return DataResponse
+     */
     private function createHtmlPanelResponse(
         ContainerInterface $container,
         string $collectorClass,
