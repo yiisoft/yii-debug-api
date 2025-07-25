@@ -17,7 +17,7 @@ use ReflectionClass;
 use Throwable;
 
 /**
- * @psalm-suppress InternalClass, InternalMethod
+ * @psalm-suppress InternalClass, InternalMethod, UndefinedClass
  */
 class PHPUnitJSONReporter implements ResultPrinter
 {
