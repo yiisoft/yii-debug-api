@@ -2,12 +2,13 @@
 
 <phpunit bootstrap="vendor/autoload.php"
   colors="true"
-  verbose="true"
   failOnRisky="true"
   failOnWarning="true"
-  convertErrorsToExceptions="true"
-  convertNoticesToExceptions="true"
-  convertWarningsToExceptions="true"
+  failOnDeprecation="true"
+ failOnNotice="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+  beStrictAboutCoverageMetadata="true"
+  beStrictAboutOutputDuringTests="true"
   stopOnFailure="false"
   executionOrder="random"
   resolveDependencies="true">
@@ -21,9 +22,9 @@
     </testsuite>
   </testsuites>
 
-  <coverage>
+  <source>
     <include>
       <directory>./src</directory>
     </include>
-  </coverage>
+  </source>
 </phpunit>

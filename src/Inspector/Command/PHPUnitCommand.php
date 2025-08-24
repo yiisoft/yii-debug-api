@@ -39,9 +39,9 @@ class PHPUnitCommand implements CommandInterface
         $extension = PHPUnitJSONReporter::class;
         $params = [
             'vendor/bin/phpunit',
-            '--printer',
+            '--extension',
             $extension,
-            '-vvv',
+            '--no-coverage -vvv',
         ];
 
         $process = new Process($params);

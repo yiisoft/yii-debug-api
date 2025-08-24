@@ -4,35 +4,53 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Debug\Api\Inspector\Test;
 
-use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\TestResult;
-use PHPUnit\Framework\TestSuite;
-use PHPUnit\Framework\Warning;
-use PHPUnit\Runner\BaseTestRunner;
-use PHPUnit\TextUI\ResultPrinter;
-use PHPUnit\Util\TestDox\NamePrettifier;
-use ReflectionClass;
-use Throwable;
+use PHPUnit\Event\Event;
+use PHPUnit\Event\Test\ConsideredRisky;
+use PHPUnit\Event\Test\Errored;
+use PHPUnit\Event\Test\ErrorTriggered;
+use PHPUnit\Event\Test\Failed;
+use PHPUnit\Event\Test\Finished;
+use PHPUnit\Event\Test\MarkedIncomplete;
+use PHPUnit\Event\Test\NoticeTriggered;
+use PHPUnit\Event\Test\Passed;
+use PHPUnit\Event\Test\PhpNoticeTriggered;
+use PHPUnit\Event\Test\PhpunitErrorTriggered;
+use PHPUnit\Event\Test\PhpunitNoticeTriggered;
+use PHPUnit\Event\Test\PhpunitWarningTriggered;
+use PHPUnit\Event\Test\PhpWarningTriggered;
+use PHPUnit\Event\Test\Skipped;
+use PHPUnit\Event\Test\WarningTriggered;
+use PHPUnit\Runner\Extension\Extension;
+use PHPUnit\Runner\Extension\Facade;
+use PHPUnit\Runner\Extension\ParameterCollection;
+use PHPUnit\TextUI\Configuration\Configuration;
 
-/**
- * @psalm-suppress InternalClass, InternalMethod, UndefinedClass
- */
-class PHPUnitJSONReporter implements ResultPrinter
+class PHPUnitJSONReporter implements Extension
 {
     public const FILENAME = 'phpunit-report.json';
     public const ENVIRONMENT_VARIABLE_DIRECTORY_NAME = 'REPORTER_OUTPUT_PATH';
 
     private array $data = [];
-    private NamePrettifier $prettifier;
 
     public function __construct()
     {
-        $this->prettifier = new NamePrettifier();
     }
 
-    public function printResult(TestResult $result): void
+    public function bootstrap(
+        Configuration $configuration,
+        Facade $facade,
+        ParameterCollection $parameters
+    ): void
+    {
+        $facade->registerTracer(new PHPUnitTracer($this));
+    }
+
+    public function __destruct()
+    {
+        $this->saveResult();
+    }
+
+    public function saveResult(): void
     {
         $path = getenv(self::ENVIRONMENT_VARIABLE_DIRECTORY_NAME) ?: getcwd();
         ksort($this->data);
@@ -43,96 +61,78 @@ class PHPUnitJSONReporter implements ResultPrinter
         );
     }
 
-    public function write(string $buffer): void
+    public function logPassed(Passed|Finished $event): void
     {
-        $this->data = [];
-    }
-
-    public function addError(Test $test, Throwable $t, float $time): void
-    {
-        $this->logErroredTest($test, $t);
-    }
-
-    public function addWarning(Test $test, Warning $e, float $time): void
-    {
-        $this->logErroredTest($test, $e);
-    }
-
-    public function addFailure(Test $test, AssertionFailedError $e, float $time): void
-    {
-        $this->logErroredTest($test, $e);
-    }
-
-    public function addIncompleteTest(Test $test, Throwable $t, float $time): void
-    {
-        $this->logErroredTest($test, $t);
-    }
-
-    public function addRiskyTest(Test $test, Throwable $t, float $time): void
-    {
-        $this->logErroredTest($test, $t);
-    }
-
-    public function addSkippedTest(Test $test, Throwable $t, float $time): void
-    {
-        $this->logErroredTest($test, $t);
-    }
-
-    public function startTestSuite(TestSuite $suite): void
-    {
-    }
-
-    public function endTestSuite(TestSuite $suite): void
-    {
-    }
-
-    public function startTest(Test $test): void
-    {
-    }
-
-    public function endTest(Test $test, float $time): void
-    {
-        if (!$test instanceof TestCase) {
+        $parsedName = $event->test()->id();
+        if (array_key_exists($parsedName, $this->data)) {
             return;
         }
-        if ($test->getStatus() !== BaseTestRunner::STATUS_PASSED) {
-            return;
-        }
-
-        $parsedName = $this->parseName($test);
 
         $this->data[$parsedName] = [
-            'file' => $this->parseFilename($test),
+            'file' => $event->test()->file(),
             'test' => $parsedName,
+            'time' => $event->telemetryInfo()->durationSincePrevious()->asFloat(),
             'status' => 'ok',
             'stacktrace' => [],
         ];
     }
 
-    private function parseName(Test $test): string
+    public function logErrored(Failed|MarkedIncomplete|Errored $event): void
     {
-        if ($test instanceof TestCase) {
-            return $test::class . '::' . $test->getName(true);
+        $parsedName = $event->test()->id();
+        if (array_key_exists($parsedName, $this->data)) {
+            return;
         }
-        return $this->prettifier->prettifyTestClass($test::class);
-    }
-
-    private function parseFilename(Test $test): string
-    {
-        $reflection = new ReflectionClass($test);
-
-        return $reflection->getFileName();
-    }
-
-    private function logErroredTest(Test $test, Throwable $t): void
-    {
-        $parsedName = $this->parseName($test);
 
         $this->data[$parsedName] = [
-            'file' => $this->parseFilename($test),
+            'file' => $event->test()->file(),
             'test' => $parsedName,
-            'status' => $t->getMessage(),
-            'stacktrace' => $t->getTrace(),
+            'time' => $event->telemetryInfo()->durationSincePrevious()->asFloat(),
+            'status' => $event->throwable()->message(),
+            'stacktrace' => $event->throwable()->stackTrace(),
         ];
+    }
+
+    public function logMessage(WarningTriggered|PhpWarningTriggered|PhpunitWarningTriggered|NoticeTriggered|PhpNoticeTriggered|PhpunitNoticeTriggered|ErrorTriggered|PhpunitErrorTriggered|Skipped|ConsideredRisky $event): void
+    {
+        $parsedName = $event->test()->id();
+        if (array_key_exists($parsedName, $this->data)) {
+            return;
+        }
+
+        $this->data[$parsedName] = [
+            'file' => $event->test()->file(),
+            'test' => $parsedName,
+            'time' => $event->telemetryInfo()->durationSincePrevious()->asFloat(),
+            'status' => $event->message(),
+            'stacktrace' => [],
+        ];
+    }
+
+    public function log(Event $event)
+    {
+        if ($event instanceof Passed
+            || $event instanceof Finished
+        ) {
+            $this->logPassed($event);
+        } elseif ($event instanceof Failed
+            || $event instanceof Errored
+            || $event instanceof MarkedIncomplete
+        ) {
+            $this->logErrored($event);
+        } elseif (
+            $event instanceof WarningTriggered
+            || $event instanceof PhpWarningTriggered
+            || $event instanceof PhpunitWarningTriggered
+            || $event instanceof NoticeTriggered
+            || $event instanceof PhpNoticeTriggered
+            || $event instanceof PhpunitNoticeTriggered
+            || $event instanceof ErrorTriggered
+            || $event instanceof PhpunitErrorTriggered
+            || $event instanceof Skipped
+            || $event instanceof ConsideredRisky
+        ) {
+            $this->logMessage($event);
+        }
     }
 }

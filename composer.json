@@ -63,16 +63,16 @@
     "require-dev": {
         "codeception/codeception": "^5.0",
         "maglnet/composer-require-checker": "^4.2",
-        "phpunit/phpunit": "^10.5",
+        "phpunit/phpunit": "10 - 12",
         "rector/rector": "^2.1.1",
         "roave/infection-static-analysis-plugin": "^1.30",
         "spatie/phpunit-watcher": "^1.23",
-        "vimeo/psalm": "^5.15 || ^6.12",
+        "vimeo/psalm": "^5.22 || ^6.12",
         "yiisoft/active-record": "dev-master",
         "yiisoft/assets": "^5.1",
         "yiisoft/csrf": "^2.0",
-        "yiisoft/db": "1.2 as dev-master",
-        "yiisoft/db-sqlite": "^1.0",
+        "yiisoft/db": "dev-master as 2.0.0",
+        "yiisoft/db-sqlite": "dev-master as 2.0.0",
         "yiisoft/psr-dummy-provider": "^1.0",
         "yiisoft/router-fastroute": "^4.0",
         "yiisoft/test-support": "^3.0",
@@ -110,7 +110,7 @@
         }
     },
     "scripts": {
-        "test": "phpunit --testdox --no-interaction",
+        "test": "phpunit --testdox",
         "test-watch": "phpunit-watcher watch"
     },
     "config": {
