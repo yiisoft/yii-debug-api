@@ -40,8 +40,7 @@ class PHPUnitJSONReporter implements Extension
         Configuration $configuration,
         Facade $facade,
         ParameterCollection $parameters
-    ): void
-    {
+    ): void {
         $facade->registerTracer(new PHPUnitTracer($this));
     }
 

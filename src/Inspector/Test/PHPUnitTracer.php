@@ -19,6 +19,5 @@ class PHPUnitTracer implements Tracer
     public function trace(Event $event): void
     {
         $this->reporter->log($event);
-
     }
 }
