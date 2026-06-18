@@ -8,7 +8,7 @@ jobs:
         name: Roave BC Check
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@master
+            - uses: actions/checkout@ab62d6b3b0e0cff6c9724ec5a395bedb41c639a2
             - name: fetch tags
               run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
             - name: Roave BC Check
