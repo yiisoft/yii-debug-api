@@ -7,11 +7,7 @@ namespace Yiisoft\Yii\Debug\Api\Inspector\Test;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\TestResult;
 use PHPUnit\Framework\TestSuite;
-use PHPUnit\Framework\Warning;
-use PHPUnit\Runner\BaseTestRunner;
-use PHPUnit\TextUI\ResultPrinter;
 use PHPUnit\Util\TestDox\NamePrettifier;
 use ReflectionClass;
 use Throwable;
@@ -19,7 +15,7 @@ use Throwable;
 /**
  * @psalm-suppress InternalClass, InternalMethod, UndefinedClass
  */
-class PHPUnitJSONReporter implements ResultPrinter
+class PHPUnitJSONReporter
 {
     public const FILENAME = 'phpunit-report.json';
     public const ENVIRONMENT_VARIABLE_DIRECTORY_NAME = 'REPORTER_OUTPUT_PATH';
@@ -32,7 +28,7 @@ class PHPUnitJSONReporter implements ResultPrinter
         $this->prettifier = new NamePrettifier();
     }
 
-    public function printResult(TestResult $result): void
+    public function printResult(mixed $result): void
     {
         $path = getenv(self::ENVIRONMENT_VARIABLE_DIRECTORY_NAME) ?: getcwd();
         ksort($this->data);
@@ -53,7 +49,7 @@ class PHPUnitJSONReporter implements ResultPrinter
         $this->logErroredTest($test, $t);
     }
 
-    public function addWarning(Test $test, Warning $e, float $time): void
+    public function addWarning(Test $test, Throwable $e, float $time): void
     {
         $this->logErroredTest($test, $e);
     }
@@ -95,7 +91,7 @@ class PHPUnitJSONReporter implements ResultPrinter
         if (!$test instanceof TestCase) {
             return;
         }
-        if ($test->getStatus() !== BaseTestRunner::STATUS_PASSED) {
+        if (!$test->status()->isSuccess()) {
             return;
         }
 
@@ -112,7 +108,7 @@ class PHPUnitJSONReporter implements ResultPrinter
     private function parseName(Test $test): string
     {
         if ($test instanceof TestCase) {
-            return $test::class . '::' . $test->getName(true);
+            return $test::class . '::' . $test->name();
         }
         return $this->prettifier->prettifyTestClass($test::class);
     }
