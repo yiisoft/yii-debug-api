@@ -89,7 +89,12 @@ final class CodeceptionJSONReporter extends Extension
             $classReflection = new ReflectionClass($class);
             $methodReflection = $classReflection->getMethod($method);
 
-            return $classReflection->getFileName() . ':' . $methodReflection->getStartLine();
+            $fileName = $classReflection->getFileName();
+            $startLine = $methodReflection->getStartLine();
+
+            if ($fileName !== false && $startLine !== false) {
+                return $fileName . ':' . $startLine;
+            }
         }
         return Descriptor::getTestFileName($event->getTest());
     }

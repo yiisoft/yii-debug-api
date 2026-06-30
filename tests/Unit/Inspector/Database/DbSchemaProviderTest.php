@@ -106,7 +106,7 @@ final class DbSchemaProviderTest extends TestCase
         )->execute();
 
         // insert data
-        $db->createCommand()->batchInsert(
+        $db->createCommand()->insertBatch(
             'test',
             [
                 'id',
@@ -119,7 +119,7 @@ final class DbSchemaProviderTest extends TestCase
             ],
         )->execute();
 
-        $db->createCommand()->batchInsert(
+        $db->createCommand()->insertBatch(
             'test2',
             [
                 'id',
@@ -132,7 +132,7 @@ final class DbSchemaProviderTest extends TestCase
             ],
         )->execute();
 
-        $db->createCommand()->batchInsert(
+        $db->createCommand()->insertBatch(
             'test3',
             [
                 'id',
