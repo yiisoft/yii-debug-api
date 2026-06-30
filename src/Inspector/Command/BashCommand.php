@@ -40,7 +40,7 @@ final class BashCommand implements CommandInterface
 
         $processOutput = rtrim($process->getOutput());
 
-        if ($process->getExitCode() === null) {
+        if (!$process->getExitCode() > 1) {
             return new CommandResponse(
                 status: CommandResponse::STATUS_FAIL,
                 result: null,

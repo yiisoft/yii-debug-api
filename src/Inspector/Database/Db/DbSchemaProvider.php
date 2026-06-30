@@ -6,7 +6,7 @@ namespace Yiisoft\Yii\Debug\Api\Inspector\Database\Db;
 
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Query\Query;
-use Yiisoft\Db\Schema\Column\ColumnInterface;
+use Yiisoft\Db\Schema\ColumnSchemaInterface;
 use Yiisoft\Db\Schema\TableSchemaInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 
@@ -57,14 +57,12 @@ class DbSchemaProvider implements SchemaProviderInterface
     }
 
     /**
-     * @param ColumnInterface[] $columns
+     * @param ColumnSchemaInterface[] $columns
      */
     private function serializeARColumnsSchemas(array $columns): array
     {
         $result = [];
         foreach ($columns as $columnSchema) {
-            $isNotNull = $columnSchema->isNotNull();
-
             $result[] = [
                 'name' => $columnSchema->getName(),
                 'size' => $columnSchema->getSize(),
@@ -72,7 +70,7 @@ class DbSchemaProvider implements SchemaProviderInterface
                 'dbType' => $columnSchema->getDbType(),
                 'defaultValue' => $columnSchema->getDefaultValue(),
                 'comment' => $columnSchema->getComment(),
-                'allowNull' => $isNotNull === null ? null : !$isNotNull,
+                'allowNull' => $columnSchema->isAllowNull(),
             ];
         }
         return $result;

@@ -7,10 +7,6 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
-    <issueHandlers>
-        <MissingOverrideAttribute errorLevel="suppress" />
-    </issueHandlers>
-
     <projectFiles>
         <directory name="src" />
         <ignoreFiles>

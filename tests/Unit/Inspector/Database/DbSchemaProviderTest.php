@@ -106,34 +106,40 @@ final class DbSchemaProviderTest extends TestCase
         )->execute();
 
         // insert data
-        $db->createCommand()->insertBatch(
+        $db->createCommand()->batchInsert(
             'test',
+            [
+                'id',
+                'email',
+            ],
             [
                 [1, 'test1'],
                 [2, 'test2'],
                 [3, 'test3'],
             ],
-            [
-                'id',
-                'email',
-            ],
         )->execute();
 
-        $db->createCommand()->insertBatch(
+        $db->createCommand()->batchInsert(
             'test2',
-            [
-                [1, 'test1', 1],
-                [2, 'test2', 0],
-            ],
             [
                 'id',
                 'name',
                 'flag',
             ],
+            [
+                [1, 'test1', 1],
+                [2, 'test2', 0],
+            ],
         )->execute();
 
-        $db->createCommand()->insertBatch(
+        $db->createCommand()->batchInsert(
             'test3',
+            [
+                'id',
+                'product',
+                'price',
+                'status',
+            ],
             [
                 [1, 'test1', 1.1, 1],
                 [2, 'test2', 2.2, 0],
@@ -145,12 +151,6 @@ final class DbSchemaProviderTest extends TestCase
                 [8, 'test8', 8.8, 0],
                 [9, 'test9', 9.9, 1],
                 [10, 'test10', 10.10, 0],
-            ],
-            [
-                'id',
-                'product',
-                'price',
-                'status',
             ],
         )->execute();
     }
