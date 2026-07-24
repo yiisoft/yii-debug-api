@@ -39,9 +39,9 @@ class PHPUnitCommand implements CommandInterface
         $extension = PHPUnitJSONReporter::class;
         $params = [
             'vendor/bin/phpunit',
-            '--printer',
+            '--extension',
             $extension,
-            '-vvv',
+            '--no-coverage -vvv',
         ];
 
         $process = new Process($params);
@@ -59,7 +59,7 @@ class PHPUnitCommand implements CommandInterface
             JSON_THROW_ON_ERROR
         );
 
-        if (!$process->getExitCode() > 1) {
+        if ($process->getExitCode() > 1) {
             return new CommandResponse(
                 status: CommandResponse::STATUS_FAIL,
                 result: null,
