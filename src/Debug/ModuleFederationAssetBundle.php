@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Debug\Api\Debug;
 
 if (!class_exists(\Yiisoft\Assets\AssetBundle::class)) {
-    class AssetBundle
-    {
-    }
+    class AssetBundle {}
 } else {
     class_alias(\Yiisoft\Assets\AssetBundle::class, AssetBundle::class);
 }

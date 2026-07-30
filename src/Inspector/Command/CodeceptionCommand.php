@@ -10,13 +10,14 @@ use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandResponse;
 use Yiisoft\Yii\Debug\Api\Inspector\Test\CodeceptionJSONReporter;
 
+use const DIRECTORY_SEPARATOR;
+use const JSON_THROW_ON_ERROR;
+
 class CodeceptionCommand implements CommandInterface
 {
     public const COMMAND_NAME = 'test/codeception';
 
-    public function __construct(private Aliases $aliases)
-    {
-    }
+    public function __construct(private Aliases $aliases) {}
 
     public static function getTitle(): string
     {
@@ -56,7 +57,7 @@ class CodeceptionCommand implements CommandInterface
             file_get_contents($debugDirectory . DIRECTORY_SEPARATOR . CodeceptionJSONReporter::FILENAME),
             true,
             512,
-            JSON_THROW_ON_ERROR
+            JSON_THROW_ON_ERROR,
         );
 
         if (!$process->getExitCode() > 1) {
@@ -69,7 +70,7 @@ class CodeceptionCommand implements CommandInterface
 
         return new CommandResponse(
             status: $process->isSuccessful() ? CommandResponse::STATUS_OK : CommandResponse::STATUS_ERROR,
-            result: $processOutput
+            result: $processOutput,
         );
     }
 }

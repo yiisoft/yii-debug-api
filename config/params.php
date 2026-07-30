@@ -7,9 +7,10 @@ use Yiisoft\Yii\Debug\Api\Debug\Middleware\DebugHeaders;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\CodeceptionCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\PHPUnitCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\PsalmCommand;
+use PHPUnit\Framework\Test;
 
 $testCommands = [];
-if (class_exists(PHPUnit\Framework\Test::class)) {
+if (class_exists(Test::class)) {
     $testCommands[PHPUnitCommand::COMMAND_NAME] = PHPUnitCommand::class;
 }
 if (class_exists(Extension::class)) {
@@ -41,8 +42,8 @@ return [
     ],
     'yiisoft/yii-swagger' => [
         'annotation-paths' => [
-            dirname(__DIR__) . '/src/Debug/Controller',
-            dirname(__DIR__) . '/src/Debug/Middleware',
+            \dirname(__DIR__) . '/src/Debug/Controller',
+            \dirname(__DIR__) . '/src/Debug/Middleware',
         ],
     ],
 ];

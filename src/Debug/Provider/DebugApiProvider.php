@@ -29,7 +29,7 @@ final class DebugApiProvider implements ServiceProviderInterface
         $extensions = [
             RouteCollectorInterface::class => static function (
                 ContainerInterface $container,
-                RouteCollectorInterface $routeCollector
+                RouteCollectorInterface $routeCollector,
             ) {
                 /**
                  * Register debug middlewares twice because a `Subfolder` middleware may rewrite base URL
@@ -43,7 +43,7 @@ final class DebugApiProvider implements ServiceProviderInterface
         if (class_exists(Application::class)) {
             $extensions[Application::class] = static function (
                 ContainerInterface $container,
-                Application $application
+                Application $application,
             ): Application {
                 $applicationWrapper = $container->get(HttpApplicationWrapper::class);
                 $applicationWrapper->wrap($application);

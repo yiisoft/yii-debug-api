@@ -14,8 +14,7 @@ final class HttpApplicationWrapper
     public function __construct(
         private MiddlewareDispatcher $middlewareDispatcher,
         private array $middlewareDefinitions,
-    ) {
-    }
+    ) {}
 
     public function wrap(Application $application): void
     {
@@ -26,12 +25,12 @@ final class HttpApplicationWrapper
             /**
              * @psalm-suppress InaccessibleProperty
              */
-            static fn (Application $application) => $application->dispatcher = $middlewareDispatcher->withMiddlewares([
+            static fn(Application $application) => $application->dispatcher = $middlewareDispatcher->withMiddlewares([
                 ...$middlewareDefinitions,
                 ['class' => MiddlewareDispatcherMiddleware::class, '$middlewareDispatcher' => $application->dispatcher],
             ]),
             null,
-            $application
+            $application,
         );
 
         $closure($application);

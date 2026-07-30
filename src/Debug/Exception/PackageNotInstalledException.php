@@ -8,13 +8,15 @@ use Exception;
 use Throwable;
 use Yiisoft\FriendlyException\FriendlyExceptionInterface;
 
+use function sprintf;
+
 final class PackageNotInstalledException extends Exception implements FriendlyExceptionInterface
 {
     public function __construct(
         private string $packageName,
         string $message = '',
         int $code = 0,
-        ?Throwable $previous = null
+        ?Throwable $previous = null,
     ) {
         parent::__construct($message, $code, $previous);
     }

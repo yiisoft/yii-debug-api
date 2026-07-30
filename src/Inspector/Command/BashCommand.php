@@ -14,8 +14,7 @@ final class BashCommand implements CommandInterface
     public function __construct(
         private Aliases $aliases,
         private array $command,
-    ) {
-    }
+    ) {}
 
     public static function getTitle(): string
     {
@@ -50,7 +49,7 @@ final class BashCommand implements CommandInterface
 
         return new CommandResponse(
             status: $process->isSuccessful() ? CommandResponse::STATUS_OK : CommandResponse::STATUS_ERROR,
-            result: $processOutput . $process->getErrorOutput()
+            result: $processOutput . $process->getErrorOutput(),
         );
     }
 }

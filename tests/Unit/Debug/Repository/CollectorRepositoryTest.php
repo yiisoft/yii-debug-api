@@ -23,7 +23,7 @@ final class CollectorRepositoryTest extends TestCase
             [
                 ['total' => 7],
             ],
-            $repository->getSummary()
+            $repository->getSummary(),
         );
     }
 
@@ -36,7 +36,7 @@ final class CollectorRepositoryTest extends TestCase
 
         $this->assertSame(
             ['stub' => ['key' => 'value']],
-            $repository->getDetail('testId')
+            $repository->getDetail('testId'),
         );
     }
 
@@ -49,7 +49,7 @@ final class CollectorRepositoryTest extends TestCase
 
         $this->assertSame(
             ['object' => []],
-            $repository->getDumpObject('testId')
+            $repository->getDumpObject('testId'),
         );
     }
 
@@ -74,7 +74,7 @@ final class CollectorRepositoryTest extends TestCase
                 'stdClass',
                 'value',
             ],
-            $object
+            $object,
         );
     }
 }

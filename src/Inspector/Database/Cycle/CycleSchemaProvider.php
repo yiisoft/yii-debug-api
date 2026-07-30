@@ -10,9 +10,7 @@ use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 
 class CycleSchemaProvider implements SchemaProviderInterface
 {
-    public function __construct(private DatabaseProviderInterface $databaseProvider)
-    {
-    }
+    public function __construct(private DatabaseProviderInterface $databaseProvider) {}
 
     public function getTables(): array
     {

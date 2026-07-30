@@ -16,8 +16,7 @@ class CacheController
 {
     public function __construct(
         private DataResponseFactoryInterface $responseFactory,
-    ) {
-    }
+    ) {}
 
     public function view(
         ServerRequestInterface $request,
@@ -32,7 +31,7 @@ class CacheController
         if (!$container->has(CacheInterface::class)) {
             // TODO: fix message
             throw new RuntimeException(
-                'Psr\\SimpleCache\\CacheInterface does not exist in the application configuration.'
+                'Psr\\SimpleCache\\CacheInterface does not exist in the application configuration.',
             );
         }
         $cache = $container->get(CacheInterface::class);
@@ -63,7 +62,7 @@ class CacheController
         if (!$container->has(CacheInterface::class)) {
             // TODO: fix message
             throw new RuntimeException(
-                'Psr\\SimpleCache\\CacheInterface does not exist in the application configuration.'
+                'Psr\\SimpleCache\\CacheInterface does not exist in the application configuration.',
             );
         }
         $cache = $container->get(CacheInterface::class);
@@ -85,7 +84,7 @@ class CacheController
         if (!$container->has(CacheInterface::class)) {
             // TODO: fix message
             throw new RuntimeException(
-                'Psr\\SimpleCache\\CacheInterface does not exist in the application configuration.'
+                'Psr\\SimpleCache\\CacheInterface does not exist in the application configuration.',
             );
         }
         $cache = $container->get(CacheInterface::class);

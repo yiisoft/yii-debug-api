@@ -32,14 +32,21 @@ use Yiisoft\Yii\Debug\Api\Debug\Repository\CollectorRepositoryInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\ApplicationState;
 use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 use Yiisoft\Yii\Debug\Collector\Web\RequestCollector;
+use ReflectionObject;
+
+use function dirname;
+use function function_exists;
+use function in_array;
+use function sprintf;
+
+use const JSON_THROW_ON_ERROR;
 
 class InspectController
 {
     public function __construct(
         private DataResponseFactoryInterface $responseFactory,
         private Aliases $aliases,
-    ) {
-    }
+    ) {}
 
     public function config(ContainerInterface $container, ServerRequestInterface $request): ResponseInterface
     {
@@ -67,8 +74,8 @@ class InspectController
         $locales = array_keys($params['locale']['locales']);
         if ($locales === []) {
             throw new RuntimeException(
-                'Unable to determine list of available locales. ' .
-                'Make sure that "$params[\'locale\'][\'locales\']" contains all available locales.'
+                'Unable to determine list of available locales. '
+                . 'Make sure that "$params[\'locale\'][\'locales\']" contains all available locales.',
             );
         }
         $messages = [];
@@ -83,7 +90,7 @@ class InspectController
                 foreach ($locales as $locale) {
                     $messages[$categoryName][$locale] = array_merge(
                         $messages[$categoryName][$locale] ?? [],
-                        $categorySource->getMessages($locale)
+                        $categorySource->getMessages($locale),
                     );
                 }
             } catch (Throwable) {
@@ -101,7 +108,7 @@ class InspectController
          */
         $categorySources = $container->get('tag@translation.categorySource');
 
-        $body = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $body = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $categoryName = $body['category'] ?? '';
         $locale = $body['locale'] ?? '';
         $translationId = $body['translation'] ?? '';
@@ -120,9 +127,9 @@ class InspectController
                     $categoryName,
                     implode(
                         '", "',
-                        array_map(fn (CategorySource $categorySource) => $categorySource->getName(), $categorySources)
-                    )
-                )
+                        array_map(fn(CategorySource $categorySource) => $categorySource->getName(), $categorySources),
+                    ),
+                ),
             );
         }
         $messages = $categorySource->getMessages($locale);
@@ -195,7 +202,7 @@ class InspectController
 
         $directoryIterator = new RecursiveDirectoryIterator(
             $destination,
-            FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO
+            FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO,
         );
 
         $files = [];
@@ -222,7 +229,7 @@ class InspectController
                 [
                     'path' => $path,
                 ],
-                $this->serializeFileInfo($file)
+                $this->serializeFileInfo($file),
             );
         }
 
@@ -237,12 +244,12 @@ class InspectController
         $inspected = [...get_declared_classes(), ...get_declared_interfaces()];
         // TODO: think how to ignore heavy objects
         $patterns = [
-            fn (string $class) => !str_starts_with($class, 'ComposerAutoloaderInit'),
-            fn (string $class) => !str_starts_with($class, 'Composer\\'),
-            fn (string $class) => !str_starts_with($class, 'Yiisoft\\Yii\\Debug\\'),
-            fn (string $class) => !str_starts_with($class, 'Yiisoft\\ErrorHandler\\ErrorHandler'),
-            fn (string $class) => !str_contains($class, '@anonymous'),
-            fn (string $class) => !is_subclass_of($class, Throwable::class),
+            fn(string $class) => !str_starts_with($class, 'ComposerAutoloaderInit'),
+            fn(string $class) => !str_starts_with($class, 'Composer\\'),
+            fn(string $class) => !str_starts_with($class, 'Yiisoft\\Yii\\Debug\\'),
+            fn(string $class) => !str_starts_with($class, 'Yiisoft\\ErrorHandler\\ErrorHandler'),
+            fn(string $class) => !str_contains($class, '@anonymous'),
+            fn(string $class) => !is_subclass_of($class, Throwable::class),
         ];
         foreach ($patterns as $patternFunction) {
             $inspected = array_filter($inspected, $patternFunction);
@@ -318,7 +325,7 @@ class InspectController
     public function checkRoute(
         ServerRequestInterface $request,
         UrlMatcherInterface $matcher,
-        ServerRequestFactoryInterface $serverRequestFactory
+        ServerRequestFactoryInterface $serverRequestFactory,
     ): ResponseInterface {
         $queryParams = $request->getQueryParams();
         $path = $queryParams['route'] ?? null;
@@ -347,7 +354,7 @@ class InspectController
         }
 
         $route = $result->route();
-        $reflection = new \ReflectionObject($route);
+        $reflection = new ReflectionObject($route);
         $property = $reflection->getProperty('middlewareDefinitions');
         $middlewareDefinitions = $property->getValue($route);
         $action = end($middlewareDefinitions);
@@ -372,7 +379,7 @@ class InspectController
 
     public function request(
         ServerRequestInterface $request,
-        CollectorRepositoryInterface $collectorRepository
+        CollectorRepositoryInterface $collectorRepository,
     ): ResponseInterface {
         $request = $request->getQueryParams();
         $debugEntryId = $request['debugEntryId'] ?? null;
@@ -404,11 +411,10 @@ class InspectController
 
     public function buildCurl(
         ServerRequestInterface $request,
-        CollectorRepositoryInterface $collectorRepository
+        CollectorRepositoryInterface $collectorRepository,
     ): ResponseInterface {
         $request = $request->getQueryParams();
         $debugEntryId = $request['debugEntryId'] ?? null;
-
 
         $data = $collectorRepository->getDetail($debugEntryId);
         $rawRequest = $data[RequestCollector::class]['requestRaw'];
@@ -422,7 +428,7 @@ class InspectController
         } catch (Throwable $e) {
             return $this->responseFactory->createResponse([
                 'command' => null,
-                'exception' => (string)$e,
+                'exception' => (string) $e,
             ]);
         }
 
@@ -437,7 +443,7 @@ class InspectController
             '/^' . preg_quote($rootPath, '/') . '/',
             '',
             $path,
-            1
+            1,
         );
     }
 
@@ -494,8 +500,8 @@ class InspectController
                     'path' => $this->removeBasePath($rootPath, $destination),
                     'absolutePath' => $destination,
                 ],
-                $this->serializeFileInfo($file)
-            )
+                $this->serializeFileInfo($file),
+            ),
         );
     }
 }

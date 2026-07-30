@@ -17,13 +17,15 @@ use Yiisoft\Yii\Debug\Api\Inspector\CommandInterface;
 use function array_key_exists;
 use function is_array;
 use function is_string;
+use function sprintf;
+
+use const JSON_THROW_ON_ERROR;
 
 class CommandController
 {
     public function __construct(
         private DataResponseFactoryInterface $responseFactory,
-    ) {
-    }
+    ) {}
 
     public function index(ConfigInterface $config, Aliases $aliases): ResponseInterface
     {
@@ -90,8 +92,8 @@ class CommandController
             throw new InvalidArgumentException(
                 sprintf(
                     'Command must not be null. Available commands: "%s".',
-                    implode('", "', array_keys($commandList))
-                )
+                    implode('", "', array_keys($commandList)),
+                ),
             );
         }
 
@@ -100,8 +102,8 @@ class CommandController
                 sprintf(
                     'Unknown command "%s". Available commands: "%s".',
                     $commandName,
-                    implode('", "', array_keys($commandList))
-                )
+                    implode('", "', array_keys($commandList)),
+                ),
             );
         }
 
@@ -109,7 +111,7 @@ class CommandController
         if (is_string($commandClass) && $container->has($commandClass)) {
             $command = $container->get($commandClass);
         } else {
-            $command = new BashCommand($aliases, (array)$commandClass);
+            $command = new BashCommand($aliases, (array) $commandClass);
         }
         $result = $command->run();
 

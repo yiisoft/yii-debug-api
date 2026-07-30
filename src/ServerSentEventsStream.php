@@ -6,15 +6,25 @@ namespace Yiisoft\Yii\Debug\Api;
 
 use Closure;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
+use Stringable;
 
-final class ServerSentEventsStream implements StreamInterface, \Stringable
+use function sprintf;
+
+use const SEEK_SET;
+
+final class ServerSentEventsStream implements StreamInterface, Stringable
 {
     public array $buffer = [];
     private bool $eof = false;
 
     public function __construct(
         private Closure $stream,
-    ) {
+    ) {}
+
+    public function __toString(): string
+    {
+        return $this->getContents();
     }
 
     public function close(): void
@@ -49,12 +59,12 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
 
     public function seek($offset, $whence = SEEK_SET): void
     {
-        throw new \RuntimeException('Stream is not seekable');
+        throw new RuntimeException('Stream is not seekable');
     }
 
     public function rewind(): void
     {
-        throw new \RuntimeException('Stream is not seekable');
+        throw new RuntimeException('Stream is not seekable');
     }
 
     public function isWritable(): bool
@@ -64,7 +74,7 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
 
     public function write($string): int
     {
-        throw new \RuntimeException('Stream is not writable');
+        throw new RuntimeException('Stream is not writable');
     }
 
     public function isReadable(): bool
@@ -100,10 +110,5 @@ final class ServerSentEventsStream implements StreamInterface, \Stringable
     public function getMetadata($key = null): array
     {
         return [];
-    }
-
-    public function __toString(): string
-    {
-        return $this->getContents();
     }
 }

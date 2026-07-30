@@ -26,20 +26,24 @@ use Yiisoft\Yii\Debug\Storage\StorageInterface;
 use Yiisoft\Yii\View\Renderer\ViewRenderer;
 use OpenApi\Attributes as OA;
 
+use function dirname;
+use function sprintf;
+
+use const JSON_THROW_ON_ERROR;
+
 /**
  * Debug controller provides endpoints that expose information about requests processed that debugger collected.
  */
 #[OA\Tag(
     name: 'yii-debug-api',
-    description: 'Yii Debug API'
+    description: 'Yii Debug API',
 )]
 final class DebugController
 {
     public function __construct(
         private DataResponseFactoryInterface $responseFactory,
-        private CollectorRepositoryInterface $collectorRepository
-    ) {
-    }
+        private CollectorRepositoryInterface $collectorRepository,
+    ) {}
 
     /**
      * List of requests processed.
@@ -55,10 +59,10 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugSuccessResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
-        ]
+        ],
     )]
     public function index(): ResponseInterface
     {
@@ -79,8 +83,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugSuccessResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
             new OA\Response(
                 response: '404',
@@ -88,8 +92,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugNotFoundResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
         ],
         parameters: [
@@ -99,9 +103,9 @@ final class DebugController
                 in: 'path',
                 parameter: 'id',
                 description: 'Request ID for getting the summary',
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string'),
             ),
-        ]
+        ],
     )]
     public function summary(CurrentRoute $currentRoute): ResponseInterface
     {
@@ -123,8 +127,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugSuccessResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
             new OA\Response(
                 response: '404',
@@ -132,8 +136,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugNotFoundResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
         ],
         parameters: [
@@ -143,7 +147,7 @@ final class DebugController
                 in: 'path',
                 parameter: 'id',
                 description: 'Request ID for getting the summary',
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string'),
             ),
             new OA\Parameter(
                 name: 'collector',
@@ -151,9 +155,9 @@ final class DebugController
                 parameter: 'collector',
                 description: 'Collector for getting the detail information',
                 schema: new OA\Schema(type: 'string'),
-                allowEmptyValue: true
+                allowEmptyValue: true,
             ),
-        ]
+        ],
     )]
     public function view(
         CurrentRoute $currentRoute,
@@ -161,13 +165,13 @@ final class DebugController
         ContainerInterface $container,
     ): ResponseInterface {
         $data = $this->collectorRepository->getDetail(
-            $currentRoute->getArgument('id')
+            $currentRoute->getArgument('id'),
         );
 
         $collectorClass = $serverRequest->getQueryParams()['collector'] ?? null;
         if ($collectorClass !== null) {
             $data = $data[$collectorClass] ?? throw new NotFoundException(
-                sprintf("Requested collector doesn't exist: %s.", $collectorClass)
+                sprintf("Requested collector doesn't exist: %s.", $collectorClass),
             );
         }
         if (is_subclass_of($collectorClass, HtmlViewProviderInterface::class)) {
@@ -197,8 +201,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugSuccessResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
             new OA\Response(
                 response: '404',
@@ -206,8 +210,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugNotFoundResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
         ],
         parameters: [
@@ -217,7 +221,7 @@ final class DebugController
                 in: 'path',
                 parameter: 'id',
                 description: 'Request ID for getting the dump information',
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string'),
             ),
             new OA\Parameter(
                 name: 'collector',
@@ -226,14 +230,14 @@ final class DebugController
                 parameter: 'collector',
                 description: 'Collector for getting the dump information',
                 schema: new OA\Schema(type: 'string'),
-                allowEmptyValue: true
+                allowEmptyValue: true,
             ),
-        ]
+        ],
     )]
     public function dump(CurrentRoute $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getDumpObject(
-            $currentRoute->getArgument('id')
+            $currentRoute->getArgument('id'),
         );
 
         if ($currentRoute->getArgument('collector') !== null) {
@@ -263,8 +267,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugSuccessResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
             new OA\Response(
                 response: '404',
@@ -272,8 +276,8 @@ final class DebugController
                 content: new OA\JsonContent(
                     allOf: [
                         new OA\Schema(ref: '#/components/schemas/DebugNotFoundResponse'),
-                    ]
-                )
+                    ],
+                ),
             ),
         ],
         parameters: [
@@ -283,7 +287,7 @@ final class DebugController
                 in: 'path',
                 parameter: 'id',
                 description: 'Request ID for getting the object information',
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string'),
             ),
             new OA\Parameter(
                 name: 'objectId',
@@ -291,15 +295,15 @@ final class DebugController
                 in: 'path',
                 parameter: 'objectId',
                 description: 'ID for getting the object information',
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string'),
             ),
-        ]
+        ],
     )]
     public function object(CurrentRoute $currentRoute): ResponseInterface
     {
         $data = $this->collectorRepository->getObject(
             $currentRoute->getArgument('id'),
-            $currentRoute->getArgument('objectId')
+            $currentRoute->getArgument('objectId'),
         );
 
         if (null === $data) {
@@ -314,7 +318,7 @@ final class DebugController
 
     public function eventStream(
         StorageInterface $storage,
-        ResponseFactoryInterface $responseFactory
+        ResponseFactoryInterface $responseFactory,
     ): ResponseInterface {
         // TODO implement OS signal handling
         $compareFunction = static function () use ($storage) {
@@ -359,7 +363,7 @@ final class DebugController
                     sleep(1);
 
                     return true;
-                })
+                }),
             );
     }
 
@@ -377,7 +381,7 @@ final class DebugController
     private function createJsPanelResponse(
         ContainerInterface $container,
         string $collectorClass,
-        mixed $data
+        mixed $data,
     ): DataResponse {
         $asset = $collectorClass::getAsset();
         $module = $asset->getModule();
@@ -437,7 +441,7 @@ final class DebugController
     private function createHtmlPanelResponse(
         ContainerInterface $container,
         string $collectorClass,
-        mixed $data
+        mixed $data,
     ): DataResponse {
         if (!class_exists(ViewRenderer::class) || !$container->has(ViewRenderer::class)) {
             /**
@@ -448,7 +452,7 @@ final class DebugController
                 sprintf(
                     '"%s" is not defined in the dependency container.',
                     ViewRenderer::class,
-                )
+                ),
             );
         }
         $viewRenderer = $container->get(ViewRenderer::class);

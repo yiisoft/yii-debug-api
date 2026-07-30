@@ -16,6 +16,9 @@ use PHPUnit\Util\TestDox\NamePrettifier;
 use ReflectionClass;
 use Throwable;
 
+use const DIRECTORY_SEPARATOR;
+use const JSON_THROW_ON_ERROR;
+
 /**
  * @psalm-suppress InternalClass, InternalMethod, UndefinedClass
  */
@@ -39,7 +42,7 @@ class PHPUnitJSONReporter implements ResultPrinter
 
         file_put_contents(
             $path . DIRECTORY_SEPARATOR . self::FILENAME,
-            json_encode(array_values($this->data), JSON_THROW_ON_ERROR)
+            json_encode(array_values($this->data), JSON_THROW_ON_ERROR),
         );
     }
 
@@ -78,17 +81,11 @@ class PHPUnitJSONReporter implements ResultPrinter
         $this->logErroredTest($test, $t);
     }
 
-    public function startTestSuite(TestSuite $suite): void
-    {
-    }
+    public function startTestSuite(TestSuite $suite): void {}
 
-    public function endTestSuite(TestSuite $suite): void
-    {
-    }
+    public function endTestSuite(TestSuite $suite): void {}
 
-    public function startTest(Test $test): void
-    {
-    }
+    public function startTest(Test $test): void {}
 
     public function endTest(Test $test, float $time): void
     {

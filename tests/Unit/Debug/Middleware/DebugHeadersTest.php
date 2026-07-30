@@ -21,7 +21,7 @@ final class DebugHeadersTest extends TestCase
     {
         $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $urlGenerator->method('generate')->willReturnCallback(
-            fn (string $route, array $parameters) => $route . '?' . http_build_query($parameters)
+            fn(string $route, array $parameters) => $route . '?' . http_build_query($parameters),
         );
 
         $debugger = new Debugger(new MemoryStorage(), []);
@@ -37,7 +37,7 @@ final class DebugHeadersTest extends TestCase
 
     protected function createRequestHandler(): RequestHandlerInterface
     {
-        return new class () implements RequestHandlerInterface {
+        return new class implements RequestHandlerInterface {
             public function handle($request): ResponseInterface
             {
                 return new Response(200);

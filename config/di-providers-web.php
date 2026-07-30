@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Yiisoft\Yii\Debug\Api\Debug\Provider\DebugApiProvider;
 
-if (!(bool)($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
+if (!(bool) ($params['yiisoft/yii-debug-api']['enabled'] ?? false)) {
     return [];
 }
 

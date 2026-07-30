@@ -13,12 +13,16 @@ use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\BashCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandResponse;
 
+use function is_string;
+use function sprintf;
+
+use const JSON_THROW_ON_ERROR;
+
 final class ComposerController
 {
     public function __construct(
         private DataResponseFactoryInterface $responseFactory,
-    ) {
-    }
+    ) {}
 
     public function index(Aliases $aliases): ResponseInterface
     {
@@ -29,7 +33,7 @@ final class ComposerController
                 sprintf(
                     'Could not find composer.json by the path "%s".',
                     $composerJsonPath,
-                )
+                ),
             );
         }
         $result = [
@@ -47,7 +51,7 @@ final class ComposerController
         $package = $request->getQueryParams()['package'] ?? null;
         if ($package === null) {
             throw new InvalidArgumentException(
-                'Query parameter "package" should not be empty.'
+                'Query parameter "package" should not be empty.',
             );
         }
         $command = new BashCommand($aliases, ['composer', 'show', $package, '--all', '--format=json']);
@@ -65,13 +69,13 @@ final class ComposerController
     public function require(ServerRequestInterface $request, Aliases $aliases): ResponseInterface
     {
         // Request factory may be unable to parse JSON so don't rely on getParsedBody().
-        $parsedBody = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $parsedBody = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $package = $parsedBody['package'] ?? null;
         $version = $parsedBody['version'] ?? null;
         $isDev = $parsedBody['isDev'] ?? false;
         if ($package === null) {
             throw new InvalidArgumentException(
-                'Query parameter "package" should not be empty.'
+                'Query parameter "package" should not be empty.',
             );
         }
         $packageWithVersion = sprintf('%s:%s', $package, $version ?? '*');

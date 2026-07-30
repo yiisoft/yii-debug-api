@@ -83,7 +83,7 @@ final class DbSchemaProviderTest extends TestCase
             [
                 'id' => 'pk',
                 'email' => 'string',
-            ]
+            ],
         )->execute();
 
         $db->createCommand()->createTable(
