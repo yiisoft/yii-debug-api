@@ -32,9 +32,9 @@ return [
                 return new IpFilter(
                     validator: $validator,
                     responseFactory: $responseFactory,
-                    ipRanges: $params['yiisoft/yii-debug-api']['allowedIPs']
+                    ipRanges: $params['yiisoft/yii-debug-api']['allowedIPs'],
                 );
-            }
+            },
         )
         ->middleware(FormatDataResponseAsJson::class)
         ->middleware(ResponseDataWrapper::class)
@@ -67,9 +67,9 @@ return [
                 return new IpFilter(
                     validator: $validator,
                     responseFactory: $responseFactory,
-                    ipRanges: $params['yiisoft/yii-debug-api']['allowedIPs']
+                    ipRanges: $params['yiisoft/yii-debug-api']['allowedIPs'],
                 );
-            }
+            },
         )
         ->middleware(FormatDataResponseAsJson::class)
         ->middleware(ResponseDataWrapper::class)

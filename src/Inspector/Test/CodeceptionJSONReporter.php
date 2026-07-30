@@ -13,18 +13,12 @@ use Codeception\Test\Descriptor;
 use ReflectionClass;
 use ReflectionObject;
 
+use const DIRECTORY_SEPARATOR;
+use const JSON_THROW_ON_ERROR;
+
 final class CodeceptionJSONReporter extends Extension
 {
-    protected array $config = [
-        'output-path' => __DIR__,
-    ];
-    private array $data = [];
     public const FILENAME = 'codeception-report.json';
-
-    public function _initialize(): void
-    {
-        $this->_reconfigure(['settings' => ['silent' => true]]);
-    }
 
     public static array $events = [
         Events::TEST_SUCCESS => 'success',
@@ -32,6 +26,15 @@ final class CodeceptionJSONReporter extends Extension
         Events::TEST_ERROR => 'error',
         Events::RESULT_PRINT_AFTER => 'all',
     ];
+    protected array $config = [
+        'output-path' => __DIR__,
+    ];
+    private array $data = [];
+
+    public function _initialize(): void
+    {
+        $this->_reconfigure(['settings' => ['silent' => true]]);
+    }
 
     public function success(TestEvent $event): void
     {
@@ -70,7 +73,7 @@ final class CodeceptionJSONReporter extends Extension
     {
         file_put_contents(
             $this->config['output-path'] . DIRECTORY_SEPARATOR . self::FILENAME,
-            json_encode($this->data, JSON_THROW_ON_ERROR)
+            json_encode($this->data, JSON_THROW_ON_ERROR),
         );
     }
 

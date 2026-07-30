@@ -12,9 +12,7 @@ use Yiisoft\Yii\Debug\Api\Inspector\Database\SchemaProviderInterface;
 
 class DbSchemaProvider implements SchemaProviderInterface
 {
-    public function __construct(private ConnectionInterface $db)
-    {
-    }
+    public function __construct(private ConnectionInterface $db) {}
 
     public function getTables(): array
     {

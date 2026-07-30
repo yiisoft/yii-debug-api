@@ -19,7 +19,7 @@ use Yiisoft\Yii\Debug\Storage\StorageInterface;
  */
 
 return [
-    CollectorRepositoryInterface::class => static fn (StorageInterface $storage) => new CollectorRepository($storage),
+    CollectorRepositoryInterface::class => static fn(StorageInterface $storage) => new CollectorRepository($storage),
     SchemaProviderInterface::class => function (ContainerInterface $container) {
         if ($container->has(DatabaseProviderInterface::class)) {
             return $container->get(CycleSchemaProvider::class);
@@ -30,10 +30,10 @@ return [
         }
 
         throw new LogicException(
-            sprintf(
+            \sprintf(
                 'Inspecting database is not available. Configure "%s" service to be able to inspect database.',
                 ConnectionInterface::class,
-            )
+            ),
         );
     },
     HttpApplicationWrapper::class => [

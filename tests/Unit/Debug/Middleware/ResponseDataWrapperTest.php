@@ -76,7 +76,7 @@ final class ResponseDataWrapperTest extends TestCase
         $middleware = $this->createMiddleware();
         $response = $middleware->process(
             new ServerRequest(),
-            $this->createExceptionRequestHandler(new NotFoundException($errorMessage))
+            $this->createExceptionRequestHandler(new NotFoundException($errorMessage)),
         );
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
@@ -96,8 +96,7 @@ final class ResponseDataWrapperTest extends TestCase
         return new class ($response) implements RequestHandlerInterface {
             public function __construct(
                 private ResponseInterface $response,
-            ) {
-            }
+            ) {}
 
             public function handle($request): ResponseInterface
             {
@@ -111,8 +110,7 @@ final class ResponseDataWrapperTest extends TestCase
         return new class ($exception) implements RequestHandlerInterface {
             public function __construct(
                 private Throwable $exception,
-            ) {
-            }
+            ) {}
 
             public function handle($request): ResponseInterface
             {

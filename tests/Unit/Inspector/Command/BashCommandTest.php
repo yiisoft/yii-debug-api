@@ -9,6 +9,8 @@ use Yiisoft\Aliases\Aliases;
 use Yiisoft\Yii\Debug\Api\Inspector\Command\BashCommand;
 use Yiisoft\Yii\Debug\Api\Inspector\CommandResponse;
 
+use function dirname;
+
 final class BashCommandTest extends TestCase
 {
     public function testSuccess(): void

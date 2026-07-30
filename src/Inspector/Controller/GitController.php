@@ -15,13 +15,18 @@ use Yiisoft\Aliases\Aliases;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\VarDumper\VarDumper;
 
+use function dirname;
+use function in_array;
+use function sprintf;
+
+use const JSON_THROW_ON_ERROR;
+
 final class GitController
 {
     public function __construct(
         private DataResponseFactoryInterface $responseFactory,
         private Aliases $aliases,
-    ) {
-    }
+    ) {}
 
     public function summary(): ResponseInterface
     {
@@ -36,11 +41,11 @@ final class GitController
         $result = [
             'currentBranch' => $branch->getName(),
             'sha' => $branch->getCommitHash(),
-            'remotes' => array_map(fn (string $name) => [
+            'remotes' => array_map(fn(string $name) => [
                 'name' => $name,
                 'url' => trim($git->run('remote', ['get-url', $name])),
             ], $remoteNames),
-            'branches' => array_map(fn (Branch $branch) => $branch->getName(), $branches),
+            'branches' => array_map(fn(Branch $branch) => $branch->getName(), $branches),
             'lastCommit' => $this->serializeCommit($branch->getCommit()),
             'status' => explode("\n", $git->run('status')),
         ];
@@ -68,7 +73,7 @@ final class GitController
     {
         $git = $this->getGit();
 
-        $parsedBody = \json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $parsedBody = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         $branch = $parsedBody['branch'] ?? null;
 
         if ($branch === null) {
@@ -95,7 +100,7 @@ final class GitController
                     'Unknown command "%s". Available commands: "%s".',
                     $command,
                     implode('", "', $availableCommands),
-                )
+                ),
             );
         }
 
@@ -125,7 +130,7 @@ final class GitController
             sprintf(
                 'Could find any repositories up from "%s" directory.',
                 $projectPath,
-            )
+            ),
         );
     }
 

@@ -20,8 +20,7 @@ final class DebugHeaders implements MiddlewareInterface
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
         private ?Debugger $debugger = null,
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

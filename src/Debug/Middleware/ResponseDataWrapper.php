@@ -19,32 +19,30 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: 'DebugSuccessResponse',
     allOf: [
-        new OA\Schema(ref:'#/components/schemas/DebugResponse'),
+        new OA\Schema(ref: '#/components/schemas/DebugResponse'),
         new OA\Schema(properties: [
             new OA\Property(property: 'id', title: 'ID', description: 'ID', format: 'string'),
             new OA\Property(property: 'data', title: 'Data', description: 'Data', format: 'object', nullable: true),
             new OA\Property(property: 'error', title: 'Error', description: 'Error', format: 'string', nullable: true, example: null),
             new OA\Property(property: 'success', title: 'Success', description: 'Success', format: 'boolean', example: true),
         ]),
-    ]
+    ],
 )]
 #[OA\Schema(
     schema: 'DebugNotFoundResponse',
     allOf: [
-        new OA\Schema(ref:'#/components/schemas/DebugResponse'),
+        new OA\Schema(ref: '#/components/schemas/DebugResponse'),
         new OA\Schema(properties: [
             new OA\Property(property: 'id', title: 'ID', description: 'ID', format: 'string'),
             new OA\Property(property: 'data', title: 'Data', description: 'Data', format: 'object', nullable: true, example: null),
             new OA\Property(property: 'error', title: 'Error', description: 'Error', format: 'string'),
             new OA\Property(property: 'success', title: 'Success', description: 'Success', format: 'boolean', example: false),
         ]),
-    ]
+    ],
 )]
 final class ResponseDataWrapper implements MiddlewareInterface
 {
-    public function __construct(private DataResponseFactoryInterface $responseFactory, private CurrentRoute $currentRoute)
-    {
-    }
+    public function __construct(private DataResponseFactoryInterface $responseFactory, private CurrentRoute $currentRoute) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
