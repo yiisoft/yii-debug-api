@@ -1,27 +1,29 @@
+name: mutation test
+
 on:
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'psalm.xml'
-
+    paths: &paths
+      - 'config/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'infection.json.dist'
+      - 'phpunit.xml.dist'
+      - '.github/workflows/mutation.yml_'
   push:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'psalm.xml'
+    branches: ['master']
+    paths: *paths
 
-name: mutation test
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   mutation:
-    uses: yiisoft/actions/.github/workflows/roave-infection.yml@ab62d6b3b0e0cff6c9724ec5a395bedb41c639a2
+    uses: yiisoft/actions/.github/workflows/roave-infection.yml@master
     with:
       os: >-
         ['ubuntu-latest']
