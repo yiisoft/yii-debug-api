@@ -63,10 +63,10 @@
     "require-dev": {
         "codeception/codeception": "^5.0",
         "friendsofphp/php-cs-fixer": "^3.95",
-        "maglnet/composer-require-checker": "^4.2",
         "phpunit/phpunit": "^10.5",
         "rector/rector": "^2.1.1",
         "roave/infection-static-analysis-plugin": "^1.30",
+        "shipmonk/composer-dependency-analyser": "^1.8",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^5.15 || ^6.12",
         "yiisoft/active-record": "dev-master",
@@ -113,6 +113,7 @@
     },
     "scripts": {
         "cs-fix": "php-cs-fixer fix",
+        "dependency-analyser": "composer-dependency-analyser",
         "rector": "rector",
         "test": "phpunit --testdox --no-interaction",
         "test-watch": "phpunit-watcher watch"
