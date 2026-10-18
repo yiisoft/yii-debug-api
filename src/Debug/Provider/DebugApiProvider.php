@@ -46,9 +46,7 @@ final class DebugApiProvider implements ServiceProviderInterface
                 Application $application,
             ): Application {
                 $applicationWrapper = $container->get(HttpApplicationWrapper::class);
-                $applicationWrapper->wrap($application);
-
-                return $application;
+                return $applicationWrapper->wrap($application);
             };
         }
         return $extensions;

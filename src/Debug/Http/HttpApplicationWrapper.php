@@ -16,23 +16,29 @@ final class HttpApplicationWrapper
         private array $middlewareDefinitions,
     ) {}
 
-    public function wrap(Application $application): void
+    public function wrap(Application $application): Application
     {
         $middlewareDispatcher = $this->middlewareDispatcher;
         $middlewareDefinitions = $this->middlewareDefinitions;
 
+        /**
+         * `Application` properties are readonly, so create a new instance with a wrapped dispatcher.
+         *
+         * @psalm-suppress InaccessibleProperty
+         */
         $closure = Closure::bind(
-            /**
-             * @psalm-suppress InaccessibleProperty
-             */
-            static fn(Application $application) => $application->dispatcher = $middlewareDispatcher->withMiddlewares([
-                ...$middlewareDefinitions,
-                ['class' => MiddlewareDispatcherMiddleware::class, '$middlewareDispatcher' => $application->dispatcher],
-            ]),
+            static fn(Application $application): Application => new Application(
+                $middlewareDispatcher->withMiddlewares([
+                    ...$middlewareDefinitions,
+                    ['class' => MiddlewareDispatcherMiddleware::class, '$middlewareDispatcher' => $application->dispatcher],
+                ]),
+                $application->eventDispatcher,
+                $application->fallbackHandler,
+            ),
             null,
-            $application,
+            Application::class,
         );
 
-        $closure($application);
+        return $closure($application);
     }
 }
