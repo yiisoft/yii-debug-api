@@ -82,9 +82,7 @@ class InspectController
         foreach ($categorySources as $categorySource) {
             $categoryName = $categorySource->getName();
 
-            if (!isset($messages[$categoryName])) {
-                $messages[$categoryName] = [];
-            }
+            $messages[$categoryName] ??= [];
 
             try {
                 foreach ($locales as $locale) {

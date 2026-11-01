@@ -63,9 +63,9 @@
     "require-dev": {
         "codeception/codeception": "^5.0",
         "friendsofphp/php-cs-fixer": "^3.95",
+        "infection/infection": "^0.29.8 || ^0.35.8",
         "phpunit/phpunit": "^10.5",
         "rector/rector": "^2.1.1",
-        "roave/infection-static-analysis-plugin": "^1.30",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^5.15 || ^6.12",
